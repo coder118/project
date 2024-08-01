@@ -24,3 +24,4 @@ urlpatterns = [
     path('admin/', admin.site.urls),
 ]
 ##깃에 추가되는지 확인
+##아 이렇게 되는거야???
