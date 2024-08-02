@@ -1,0 +1,13 @@
+
+{%if book_title_list%}
+    <ul>
+        {%for title in book_title_list%}
+            <li><a href="/book/{{ title.id }}/">{{ title.book_Title }}</a></li>
+        {%endfor%}
+    </ul>
+{%else%}
+    <p>no book title</p>
+{%endif%}
+
+
+{% comment %} <a href="{{title}}"{{title}}</a> {% endcomment %}
