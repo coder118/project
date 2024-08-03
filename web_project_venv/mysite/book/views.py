@@ -3,6 +3,7 @@ from django.http import HttpResponse
 from django.template import loader
 
 from .models import bookT
+from .models import bookW
 # Create your views here.
 
 def index(request):
@@ -13,4 +14,11 @@ def index(request):
     }
     return render(request,'book/index.html',context)
     # return HttpResponse(template.render(context,request))
-    
+ 
+# 내가 만들어서 적어본것     
+def book_writer(request):
+    book_writer_list = bookW.objects.all()
+    context={
+        "book_writer_list": book_writer_list
+    }
+    return render(request,'book/index.html',context)
