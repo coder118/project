@@ -22,3 +22,9 @@ def book_writer(request):
         "book_writer_list": book_writer_list
     }
     return render(request,'book/index.html',context)
+
+def login_view(request):
+    return render(request,'book/login.html')
+
+def signup_view(request):
+    return render(request,'book/signup.html')
