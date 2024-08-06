@@ -155,11 +155,11 @@
             </div>
             <button type="submit">로그인</button>
         </form>
-        {% comment %} <div class="login-options">
-            <a href="{% url 'password_reset' %}">비밀번호 찾기</a>
-            <a href="{% url 'username_find' %}">아이디 찾기</a>
+         <div class="login-options">
+            {% comment %} <a href="{% url 'password_reset' %}">비밀번호 찾기</a>
+            <a href="{% url 'username_find' %}">아이디 찾기</a> {% endcomment %}
             <a href="{% url 'signup' %}">회원가입</a>
-        </div> {% endcomment %}
+        </div> 
     </div>
 </body>
 </html>

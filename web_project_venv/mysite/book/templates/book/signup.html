@@ -18,9 +18,11 @@
             padding: 20px;
             border-radius: 10px;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            width: 300px;
         }
         .signup-container h2 {
             margin-top: 0;
+            text-align: center;
         }
         .signup-container form {
             display: flex;
@@ -31,6 +33,7 @@
             padding: 10px;
             border: 1px solid #ddd;
             border-radius: 5px;
+            font-size: 14px;
         }
         .signup-container form button {
             padding: 10px;
@@ -39,6 +42,7 @@
             border: none;
             border-radius: 5px;
             cursor: pointer;
+            font-size: 16px;
         }
         .signup-container form button:hover {
             background-color: #45a049;
@@ -50,7 +54,11 @@
         <h2>회원가입</h2>
         <form method="post">
             {% csrf_token %}
-            {{ form.as_p }}
+            <input type="text" name="username" placeholder="아이디" required>
+            <input type="password" name="password1" placeholder="비밀번호" required>
+            <input type="password" name="password2" placeholder="비밀번호 확인" required>
+            <input type="text" name="name" placeholder="이름" required>
+            <input type="text" name="birthdate" placeholder="생년월일 8자리" required>
             <button type="submit">회원가입</button>
         </form>
     </div>
