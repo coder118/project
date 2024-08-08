@@ -5,6 +5,7 @@ from django.utils import timezone
 #model.py라는 파일은 데이터 베이스를 만들어주는 장소라는 듯? 
 
 
+
 class bookT(models.Model):
     book_Title = models.CharField(max_length=200)
     pub_date = models.DateTimeField("date published")
@@ -23,7 +24,11 @@ class bookW(models.Model):
     def __str__(self):
         return self.book_Writer
     
-    
-    
+ # 템플릿에서 정보를 입력받은 후에 저장할 데이터 베이스 생성   
+class Person(models.Model):
+    name = models.CharField(max_length=100)
+
+    def __str__(self):
+        return self.name
     
     

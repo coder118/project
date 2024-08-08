@@ -80,19 +80,29 @@
          <h2>실시간 인기글</h2>
          <p>여기에 실시간 인기글 내용이 표시됩니다.</p>
          {%if book_title_list%}
-        <ul>
-        {%for title in book_title_list%}
+        <ul> 
+        {%for title in book_title_list%}   {%comment%} 디비에 있는 책들의 값을 불러오는 것  {%endcomment%}
             <li><a href="/book/{{ title.id }}/">{{ title.book_Title }}</a></li>
         {%endfor%}
         </ul>
         {%else%}
         <p>no book title</p>
         {%endif%}
+
+        <h2>이름 입력</h2>
+        <form method="post" >
+            {% csrf_token %}
+            {{ form.as_p }}
+            {% comment %} <label for="your_name">Your name: </label>
+            <input id="your_name" type="text" name="your_name" maxlength="100" required> {% endcomment %}
+            <button type="submit">제출</button>
+        </form>
+
      </div>
  </body>
  </html>
  
-{% comment %} 걍 내가 만들어보려고 했던 것은 작가의 이름이 적혀있지 않으면 none를 적고 작가 이름이 있으면 출력하는 내용을 적으려고 함 {% endcomment %}
+{% comment %} 걍 내가 만들어보려고 했던 것은 작가의 이름이 적혀있지 않으면 none를 적고 작가 이름이 있으면 출력하는 내용을 적으려고 함 {% url 'get_name' %}{% endcomment %}
 
 
 
