@@ -26,8 +26,9 @@ class bookW(models.Model):
     
  # 템플릿에서 정보를 입력받은 후에 저장할 데이터 베이스 생성   
 class Person(models.Model):
-    name = models.CharField(max_length=100)
-
+    name = models.CharField(max_length=100,null=True)
+    age = models.CharField(max_length=3,null=True)
+    
     def __str__(self):
         return self.name
     
