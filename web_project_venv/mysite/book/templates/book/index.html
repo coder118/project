@@ -91,7 +91,7 @@
         {%endif%}
 
         <h2>이름 및  입력</h2> 
-        <form method="post" action="{% url 'index' %}" >
+        <form method="post" action="{% url 'get_name' %}" >
             {% csrf_token %}
             {% comment %} {{ form.as_p }}  이걸 사용해도 좋은데 필수 항목입니다라는 걸 없애기 위해서 아래처럼 하나씩 구현을 해줌 {% endcomment %}
             

@@ -8,6 +8,9 @@ urlpatterns = [
     path('login/', views.login_view, name='login'),
     path('signup/',views.signup_view,name='signup'),
     
-    # path('name/', views.get_name, name='get_name'),
+    path('get_name/', views.get_name, name='get_name'),
     path('success/', TemplateView.as_view(template_name='book/success.html'), name='success'),
+    
+    path('signup/check-duplicate/', views.check_duplicate, name='check_duplicate'),
+    path('signup/successful_user/',views.successful_user,name='successful_user'),
 ]

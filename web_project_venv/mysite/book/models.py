@@ -31,5 +31,15 @@ class Person(models.Model):
     
     def __str__(self):
         return self.name
+
+
+class User_information(models.Model):
+    username = models.CharField(max_length=100, unique=True, null=False)  # 아이디
+    password = models.CharField(max_length=100, null=False)               # 비밀번호
+    nickname = models.CharField(max_length=100, unique=True, null=False)  # 닉네임
+    birthdate = models.CharField(max_length=8, null=False)                # 생년월일 (YYYYMMDD)
+
+    def __str__(self):
+        return self.username
     
     
