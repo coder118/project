@@ -3,6 +3,9 @@ from django.http import HttpResponse
 from django.template import loader
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
+from django.contrib import messages #메세지 기능인듯?
+from django.contrib.auth import authenticate, login # 로그인할떄 사용함
+
 import json
 
 from .models import User_information
@@ -60,7 +63,7 @@ def get_name(request):
 
 
 @csrf_exempt
-def check_duplicate(request):
+def check_duplicate(request): #회원가입시 중복을 확인하는 함수 
     print('dupli')
     if request.method == 'POST':
         data = json.loads(request.body)
@@ -78,7 +81,7 @@ def check_duplicate(request):
     
     # return JsonResponse({'error': 'Invalid request method'}, status=400)
 
-def successful_user(request):
+def successful_user(request): #회원가입 한 후 디비에 저장하는 함수 
     print('user save')
     if request.method == 'POST':
         print('POST request received') 
@@ -91,9 +94,57 @@ def successful_user(request):
             print(form.errors)
             
     else:
-        
         form = UserForm() 
     return render(request, 'book/index.html', {'form': form})
+
+from django.contrib.auth.hashers import check_password
+# 로그인 처리하는 함수 문제가 좀 있음 
+# 비밀번호 해쉬화 저장해야 함 폼 파이 가면 해쉬화기능 킬 수가 있음 
+#로그인을 했을떄 그 사람의 계정으로 들어가서 각자의 데이터베이스가 만들어져야 함
+# 아주 기본적인 기능만 구현하는데 성공함 
+def trying_to_login(request): 
+    if request.method == 'POST':
+        user_id = request.POST.get('username')
+        pw = request.POST.get('password')
+        print(user_id,pw)
+        # 빈칸이 있는지 확인
+        if not user_id or not pw:
+            messages.error(request, '아이디와 비밀번호를 모두 입력해주세요.')
+            return render(request, 'book/login.html')
+
+        # 아이디 존재 여부 확인
+        try:
+            user = User_information.objects.get(username=user_id)
+            
+        except User_information.DoesNotExist:
+            # 아이디가 존재하지 않으면 메시지와 회원가입 링크 제공
+            messages.error(request, '없는 아이디입니다. 회원가입을 해주세요.')
+            return render(request, 'book/login.html')
+
+        # 사용자 인증
+        # user = authenticate(request, username=user_id, password=pw)
+        # print(f"Authenticated User: {user}")
+        # print(login(request,user))
+        # if user is not None:
+        #     login(request, user)
+        #     messages.success(request, '로그인 성공했습니다.')
+        #     return redirect('book/index.html')  # 로그인 성공 후 리디렉션
+        # else:
+        #     messages.error(request, '로그인 실패: 아이디나 비밀번호가 잘못되었습니다.')
+        #     return render(request, 'book/login.html')
+        if user.password == pw:  # 해시가 아닌 평문 비밀번호 비교
+            # 비밀번호가 맞을 경우 로그인 처리
+            messages.success(request, '로그인 성공했습니다.')
+            print("login success")
+            return redirect('index')  # 로그인 성공 후 리디렉션
+        else:
+            messages.error(request, '로그인 실패: 아이디나 비밀번호가 잘못되었습니다.')
+            return render(request, 'book/login.html')
+    else:
+        return render(request, 'book/login.html')
+    
+
+
 
 # 데이터 저장후에  book/signup/successful_user 경로로 넘어감
 # 그리고 데이터에 저장에 성공하고 원래 기본 화면창으로 넘어가는 기능이 필요함 

@@ -13,4 +13,6 @@ urlpatterns = [
     
     path('signup/check-duplicate/', views.check_duplicate, name='check_duplicate'),
     path('signup/successful_user/',views.successful_user,name='successful_user'),
+    
+    path('login/trying_to_login/',views.trying_to_login,name="trying_to_login"),
 ]
