@@ -1,84 +1,137 @@
-{% comment %} 
-{%if book_title_list%}
-    <ul>
-        {%for title in book_title_list%}
-            <li><a href="/book/{{ title.id }}/">{{ title.book_Title }}</a></li>
-        {%endfor%}
-    </ul>
-{%else%}
-    <p>no book title</p>
-{%endif%}
- {% endcomment %}
-
- <!DOCTYPE html>
- <html>
- <head>
-     <title>책 이야기</title>
-     <style>
-         body {
-             font-family: Arial, sans-serif;
-             margin: 0;
-             padding: 0;
-         }
-         .navbar {
-             display: flex;
-             justify-content: space-between;
-             background-color: #f1f1f1;
-             padding: 10px;
-             box-shadow: 0 4px 2px -2px gray;
-         }
-         .navbar a {
-             text-decoration: none;
-             color: black;
-             padding: 14px 20px;
-             font-weight: bold;
-         }
-         .navbar a:hover {
-             background-color: #ddd;
-             color: black;
-         }
-         .content {
-             padding: 20px;
-         }
-         .sidebar {
-             width: 200px;
-             float: left;
-             background-color: #f9f9f9;
-             height: 100vh;
-             box-shadow: 2px 0 5px rgba(0,0,0,0.1);
-         }
-         .sidebar a {
-             display: block;
-             color: black;
-             padding: 10px;
-             text-decoration: none;
-             font-weight: bold;
-         }
-         .sidebar a:hover {
-             background-color: #ddd;
-         }
-         .main-content {
-             margin-left: 220px;
-             padding: 20px;
-         }
-     </style>
- </head>
- <body>
-     <div class="navbar">
-         <a href="{% url 'index' %}">책 이야기</a>
-         <div>
-             <a href="{% url 'login' %}">로그인</a>
-             <a href="{% url 'signup' %}">회원가입</a> 
-         </div>
-     </div>
-     {% comment %} <div class="sidebar">
-         <a href="{% url 'popular' %}">인기글</a>
-         <a href="{% url 'other' %}">다른 생각</a>
-         <a href="{% url 'recommend' %}">책 추천</a>
-     </div> {% endcomment %}
-     <div class="main-content">
-         <h2>실시간 인기글</h2>
-         <p>여기에 실시간 인기글 내용이 표시됩니다.</p>
+<!DOCTYPE html>
+<html>
+<head>
+    <title>책 이야기</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #f1f1f1;
+            padding: 10px;
+            box-shadow: 0 4px 2px -2px gray;
+        }
+        .navbar a {
+            text-decoration: none;
+            color: black;
+            padding: 14px 20px;
+            font-weight: bold;
+        }
+        .navbar a:hover {
+            background-color: #ddd;
+            color: black;
+        }
+        .search-bar {
+            display: flex;
+            align-items: center;
+        }
+        .search-bar input[type="text"] {
+            padding: 12px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            width: 300px
+        }
+        .search-bar button {
+            padding: 12px 20px;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            margin-left: 5px;
+            cursor: pointer;
+            width: 100px
+        }
+        .search-bar button:hover {
+            background-color: #0056b3;
+        }
+        .content {
+            padding: 20px;
+        }
+        .sidebar {
+            width: 200px;
+            float: left;
+            background-color: #f9f9f9;
+            height: 100vh;
+            box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+        }
+        .sidebar a {
+            display: block;
+            color: black;
+            padding: 10px;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        .sidebar a:hover {
+            background-color: #ddd;
+        }
+        .main-content {
+            {% comment %} margin-left: 220px;
+            padding: 20px; {% endcomment %}
+            padding: 20px;
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: #fff;
+            {% comment %} border: 1px solid #ddd;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); {% endcomment %}
+        }
+        .category-bar {
+            background-color: #007BFF;
+            padding: 10px 0;
+            display: flex;
+            justify-content: space-around;
+            color: white;
+            font-weight: bold;
+        }
+        .category-bar a {
+            color: white;
+            text-decoration: none;
+            padding: 0 15px;
+        }
+        .category-bar a:hover {
+            text-decoration: underline;
+        }
+        .category-bar .vertical-line {
+            width: 2px;
+            height: 20px;
+            background-color: #000;
+            margin: 0 15px;
+           
+        }
+        
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <a href="{% url 'index' %}">책 이야기</a>
+        <div class="search-bar">
+            <input type="text" placeholder="검색어를 입력하세요">
+            <button>검색</button>
+        </div>
+        <div>
+            <a href="{% url 'login' %}">로그인</a>
+            <a href="{% url 'signup' %}">회원가입</a> 
+        </div>
+    </div>
+    
+    <div class="category-bar">
+        <a href="#">신작 소식</a>
+        <div class="vertical-line"></div> <!-- 첫 번째 세로선 추가 -->
+        <a href="#">추천글</a>
+        <a href="#">실시간 인기글</a>
+        <a href="#">커뮤니티</a>
+        <div class="vertical-line"></div> <!-- 두 번째 세로선 추가 -->
+        <a href="#">이벤트</a>
+    </div>
+    
+    <div class="main-content">
+        <h2>실시간 인기글</h2>
+        <p>여기에 실시간 인기글 내용이 표시됩니다.</p>
         
         {%if book_title_list%}
         <ul> 
@@ -108,12 +161,6 @@
             <button type="submit">제출</button>
         </form>
 
-     </div>
- </body>
- </html>
- 
-{% comment %} 걍 내가 만들어보려고 했던 것은 작가의 이름이 적혀있지 않으면 none를 적고 작가 이름이 있으면 출력하는 내용을 적으려고 함 {% url 'get_name' %}{% endcomment %}
-
-
-
-{% comment %} <a href="{{title}}"{{title}}</a> {% endcomment %}
+    </div>
+</body>
+</html>
