@@ -34,6 +34,310 @@
             padding: 12px;
             border: 1px solid #ccc;
             border-radius: 4px;
+            width: 300px;
+        }
+        .search-bar button {
+            padding: 12px 20px;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            margin-left: 5px;
+            cursor: pointer;
+        }
+        .search-bar button:hover {
+            background-color: #0056b3;
+        }
+        .content {
+            padding: 20px;
+        }
+        .sidebar {
+            width: 200px;
+            float: left;
+            background-color: #f9f9f9;
+            height: 100vh;
+            box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+        }
+        .sidebar a {
+            display: block;
+            color: black;
+            padding: 10px;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        .sidebar a:hover {
+            background-color: #ddd;
+        }
+        .main-content {
+            padding: 20px;
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: #fff;
+        }
+        .category-bar {
+            background-color: #007BFF;
+            padding: 10px 0;
+            display: flex;
+            justify-content: space-around;
+            color: white;
+            font-weight: bold;
+        }
+        .category-bar a {
+            color: white;
+            text-decoration: none;
+            padding: 0 15px;
+        }
+        .category-bar a:hover {
+            text-decoration: underline;
+        }
+        .category-bar .vertical-line {
+            width: 2px;
+            height: 20px;
+            background-color: #000;
+            margin: 0 15px;
+        }
+        .login-container {
+            margin-top: 20px;
+            background-color: white;
+            padding: 10px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            width: 200px;
+            {% comment %} height:200px; {% endcomment %}
+            {% comment %} margin-left: auto;
+            margin-right: auto; {% endcomment %}
+            {% comment %} margin-left: +500px;
+            margin-top: -30px; {% endcomment %}
+            transform: translate(330%, -135%);
+        }
+        .login-container h2 {
+            margin-top: 0;
+            text-align: center;
+        } 
+        .login-container form {
+            display: flex;
+            flex-direction: column;
+        }
+        .login-container form input {
+            margin-bottom: 10px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 14px; 
+        }
+        .login-container form button {
+            padding: 10px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        .login-container form button:hover {
+            background-color: #45a049;
+        }
+        
+        .login-options {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 10px;
+            font-size: 12px;
+        }
+        .login-options a {
+            text-decoration: none;
+            color: #007BFF;
+        }
+        .login-options a:hover {
+            text-decoration: underline;
+        }
+        .remember-me {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        .remember-me input {
+            margin-right: 5px;
+        }
+        .ip-security {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+            justify-content: space-between;
+        }
+        .ip-security input {
+            margin-right: 5px;
+        }
+    </style>
+    <script>
+        function validateLoginForm(event) {
+            event.preventDefault();  // 기본 폼 제출 동작을 막음
+        
+            // 폼 데이터 가져오기
+            const form = document.getElementById('loginform');
+            const username = form.username.value.trim();
+            const password = form.password.value.trim();
+        
+            // 빈칸 검증
+            if (!username) {
+                alert('아이디를 입력해주세요.');
+                return false;
+            }
+        
+            if (!password) {
+                alert('비밀번호를 입력해주세요.');
+                return false;
+            }
+        
+            // FormData 객체 생성 (폼 데이터를 전송)
+            const formData = new FormData(form);
+            // 서버로 폼 데이터를 비동기로 전송
+            fetch(form.action, {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': form.querySelector('[name=csrfmiddlewaretoken]').value  // CSRF 토큰 설정
+                },
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) {
+                    alert(data.error);
+                } else if (data.success) {
+                    window.location.href = data.redirect_url;  // 리디렉션
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('로그인 처리 중 오류가 발생했습니다.');
+            });
+            
+            return false;  // 폼 제출을 막음
+        }
+    </script>
+</head>
+<body>
+    <div class="navbar">
+        <a href="{% url 'index' %}">책 이야기</a>
+        <div class="search-bar">
+            <input type="text" placeholder="검색어를 입력하세요">
+            <button>검색</button>
+        </div>
+        <div>
+            <a href="{% url 'signup' %}">회원가입</a>
+        </div>
+    </div>
+    
+    <div class="category-bar">
+        <a href="#">신작 소식</a>
+        <div class="vertical-line"></div> <!-- 첫 번째 세로선 추가 -->
+        <a href="#">추천글</a>
+        <a href="#">실시간 인기글</a>
+        <a href="#">커뮤니티</a>
+        <div class="vertical-line"></div> <!-- 두 번째 세로선 추가 -->
+        <a href="#">이벤트</a>
+    </div>
+
+    <div class="main-content">
+        <h2>실시간 인기글</h2>
+        <p>여기에 실시간 인기글 내용이 표시됩니다.</p>
+        
+        {% if book_title_list %}
+        <ul>
+        {% for title in book_title_list %}
+            <li><a href="/book/{{ title.id }}/">{{ title.book_Title }}</a></li>
+        {% endfor %}
+        </ul>
+        {% else %}
+        <p>no book title</p>
+        {% endif %}
+
+        <h2>이름 및 나이 입력</h2> 
+        <form method="post" action="{% url 'get_name' %}">
+            {% csrf_token %}
+            {% comment %} {{ form.as_p }}  이걸 사용해도 좋은데 필수 항목입니다라는 걸 없애기 위해서 아래처럼 하나씩 구현을 해줌 {% endcomment %}
+            
+            {% comment %} {{ form.as_p }} {% endcomment %}
+            <label for="id_name">Name:</label>
+            <input type="text" name="name" id="id_name" value="{{ form.name.value }}">
+            <br>
+            <label for="id_age">Age:</label>
+            <input type="text" name="age" id="id_age" value="{{ form.age.value }}">
+            <br>  
+             {% comment %} <h2>나이 입력</h2> {{ form.as_p }} {% endcomment %}
+            {% comment %} <label for="your_name">Your name: </label>
+            <input id="your_name" type="text" name="your_name" maxlength="100" required> {% endcomment %}
+            <button type="submit">제출</button>
+        </form>
+
+        <!-- 로그인 창 추가 -->
+        <div class="login-container">
+            {% comment %} <h2>로그인</h2> {% endcomment %}
+            <form id="loginform" method="post" action="{% url 'trying_to_login' %}" onsubmit="return validateLoginForm(event);">
+                {% csrf_token %}
+                <input type="text" name="username" placeholder="아이디 또는 전화번호">
+                <input type="password" name="password" placeholder="비밀번호">
+                   
+            
+                <div class="remember-me">
+                    <input type="checkbox" name="remember">
+                    <label for="remember">로그인 상태 유지</label>
+                </div>
+                {% comment %} <div class="ip-security">
+                    <label for="ip-security">IP보안</label>
+                    <input type="checkbox" name="ip-security">
+                </div>  {% endcomment %}
+                <button type="submit">로그인</button>   
+            </form>
+
+            <div class="login-options">
+                <a href="{% url 'signup' %}">회원가입</a>
+            </div> 
+        </div>
+
+</body>
+</html>        
+
+
+
+
+<!--
+<!DOCTYPE html>
+<html>
+<head>
+    <title>책 이야기</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #f1f1f1;
+            padding: 10px;
+            box-shadow: 0 4px 2px -2px gray;
+        }
+        .navbar a {
+            text-decoration: none;
+            color: black;
+            padding: 14px 20px;
+            font-weight: bold;
+        }
+        .navbar a:hover {
+            background-color: #ddd;
+            color: black;
+        }
+        .search-bar {
+            display: flex;
+            align-items: center;
+        }
+        .search-bar input[type="text"] {
+            padding: 12px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
             width: 300px
         }
         .search-bar button {
@@ -118,8 +422,9 @@
             <a href="{% url 'signup' %}">회원가입</a> 
         </div>
     </div>
-    
-    <div class="category-bar">
+    -->
+
+    {% comment %} <div class="category-bar">
         <a href="#">신작 소식</a>
         <div class="vertical-line"></div> <!-- 첫 번째 세로선 추가 -->
         <a href="#">추천글</a>
@@ -128,39 +433,35 @@
         <div class="vertical-line"></div> <!-- 두 번째 세로선 추가 -->
         <a href="#">이벤트</a>
     </div>
-    
-    <div class="main-content">
+     {% endcomment %}
+    {% comment %} <div class="main-content">
         <h2>실시간 인기글</h2>
         <p>여기에 실시간 인기글 내용이 표시됩니다.</p>
         
         {%if book_title_list%}
         <ul> 
-        {%for title in book_title_list%}   {%comment%} 디비에 있는 책들의 값을 불러오는 것  {%endcomment%}
+        {%for title in book_title_list%}   
             <li><a href="/book/{{ title.id }}/">{{ title.book_Title }}</a></li>
         {%endfor%}
         </ul>
         {%else%}
         <p>no book title</p>
-        {%endif%}
+        {%endif%} {
 
         <h2>이름 및  입력</h2> 
         <form method="post" action="{% url 'get_name' %}" >
             {% csrf_token %}
-            {% comment %} {{ form.as_p }}  이걸 사용해도 좋은데 필수 항목입니다라는 걸 없애기 위해서 아래처럼 하나씩 구현을 해줌 {% endcomment %}
             
-            {% comment %} {{ form.as_p }} {% endcomment %}
             <label for="id_name">Name:</label>
             <input type="text" name="name" id="id_name" value="{{ form.name.value }}">
             <br>
             <label for="id_age">Age:</label>
             <input type="text" name="age" id="id_age" value="{{ form.age.value }}">
             <br>  
-            {% comment %} <h2>나이 입력</h2> {{ form.as_p }} {% endcomment %}
-            {% comment %} <label for="your_name">Your name: </label>
-            <input id="your_name" type="text" name="your_name" maxlength="100" required> {% endcomment %}
+           
             <button type="submit">제출</button>
         </form>
 
     </div>
 </body>
-</html>
+</html> {% endcomment %}
