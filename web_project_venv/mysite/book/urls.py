@@ -17,5 +17,5 @@ urlpatterns = [
     path('login/trying_to_login/',views.trying_to_login,name="trying_to_login"),
     path('logout/', views.logout_view, name='logout'),
     
-    # path('upload_profile_pic/', views.upload_profile_pic, name='upload_profile_pic'),마찬가지 이미지 업로드 url임
+    path('upload_profile_pic/', views.upload_profile_pic, name='upload_profile_pic'),#마찬가지 이미지 업로드 url임
 ]

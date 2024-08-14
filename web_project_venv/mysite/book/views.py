@@ -175,22 +175,27 @@ def logout_view(request):
     return redirect('index')
 
 # 이미지 업로드 코드인데 일단 너무 복잡한 것 같아서 보류함
-# from django.shortcuts import render, redirect 
-# from django.core.files.storage import FileSystemStorage
+from django.shortcuts import render, redirect 
+from django.core.files.storage import FileSystemStorage
+import os
 
-# def upload_profile_pic(request):
-#     if request.method == 'POST' and request.FILES['profile_pic']:
-#         profile_pic = request.FILES['profile_pic']
-#         fs = FileSystemStorage()
-#         filename = fs.save(profile_pic.name, profile_pic)
-#         uploaded_file_url = fs.url(filename)
+def upload_profile_pic(request):
+    if request.method == 'POST' and request.FILES['profile_pic']:
+        profile_pic = request.FILES['profile_pic']
+        fs = FileSystemStorage()
+        filename = fs.save(profile_pic.name, profile_pic)
+        uploaded_file_url = fs.url(filename)
+        # 파일의 절대 경로 생성
+        base_path = "C:\\web_project\\web_project_venv\\mysite"  # 기본 경로
+        full_path = os.path.join(base_path, uploaded_file_url.lstrip('/'))  # 앞의 '/' 제거
+        # 세션에 이미지 URL 저장
+        print('check')
+        print(full_path)
+        request.session['profile_pic'] = full_path
+        print(request.session['profile_pic'])
+        return redirect('index')  # 적절한 리다이렉션 URL로 변경하세요.
 
-#         # 세션에 이미지 URL 저장
-#         request.session['profile_pic'] = uploaded_file_url
-
-#         return redirect('index')  # 적절한 리다이렉션 URL로 변경하세요.
-
-#     return redirect('index')  # 적절한 템플릿으로 변경하세요.
+    return redirect('index')  # 적절한 템플릿으로 변경하세요.
 
 
 

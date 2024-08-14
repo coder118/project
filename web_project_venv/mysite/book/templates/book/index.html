@@ -341,12 +341,24 @@
                     {% load static %}
                     <div class="profile-pic">
                         {% comment %} <img src="{% if request.session.profile_pic %}{{ request.session.profile_pic }}{% else %}default-profile.png{% endif %}" alt="Profile Picture"> {% endcomment %}
-                        <img 
-                        src="{{ request.session.profile_pic }}" 
-                        {% comment %} src="{% if request.session.profile_pic %}{{ request.session.profile_pic }}{% else %}{% static 'images/default-profile.png' %}{% endif %}"  {% endcomment %}
-                        alt="Profile Picture" 
-                        style="cursor: pointer; width: 100px; height: 100px; border-radius: 50%;" 
-                        >
+                        <form method="post" action="{% url 'upload_profile_pic' %}" enctype="multipart/form-data">
+                            {% csrf_token %}
+                            <img 
+                                src="{{ request.session.profile_pic }}" 
+                                {% comment %} src="{% if request.session.profile_pic %}{{ request.session.profile_pic }}{% else %}{% static 'images/default-profile.png' %}{% endif %}"  {% endcomment %}
+                                alt="Profile Picture" 
+                                style="cursor: pointer; width: 100px; height: 100px; border-radius: 50%;" 
+                                onclick="document.getElementById('file-input').click();"
+                            >
+                            <input 
+                                type="file" 
+                                id="file-input" 
+                                name="profile_pic" 
+                                accept="image/*" 
+                                onchange="this.form.submit();"
+                            >
+                        </form> 
+                        
                     </div>
                     <h2>{{ request.session.username }}님</h2>
                     <div class="user-actions">
@@ -354,18 +366,8 @@
                         <a href="#" class="action-button">내가 올린 책</a> 
                     </div>
                     <a href="{% url 'logout' %}" class="logout-button">로그아웃</a>
-                </div>=
+                </div>
                 
-                {% comment %} <form method="post" action="{% url 'upload_profile_pic' %}" enctype="multipart/form-data" style="display: none;">
-                    {% csrf_token %}
-                    <input 
-                        type="file" 
-                        id="file-input" 
-                        name="profile_pic" 
-                        accept="image/*" 
-                        onchange="this.form.submit();"
-                    >
-                </form> {% endcomment %}
                 
             {% else %}
             <form id="loginform" method="post" action="{% url 'trying_to_login' %}" onsubmit="return validateLoginForm(event);">
