@@ -103,7 +103,7 @@
             border-radius: 10px;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
             width: 200px;
-            {% comment %} height:200px; {% endcomment %}
+            height:200px;
             {% comment %} margin-left: auto;
             margin-right: auto; {% endcomment %}
             {% comment %} margin-left: +500px;
@@ -168,6 +168,68 @@
         .ip-security input {
             margin-right: 5px;
         }
+        .user-info {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .profile-pic { 
+            width: 60px;  /* 프로필 사진 크기 */
+            height: 60px; 
+            border-radius: 50%;  /* 동그란 모양 */
+            overflow: hidden;  /* 이미지가 영역을 넘어가지 않도록 */
+            margin-bottom: 10px;  /* 아래 여백 */
+            cursor: pointer;  /* 클릭 가능한 커서 */
+            
+        }
+        
+        .profile-pic img {
+            width: 100%;  /* 사진을 컨테이너에 맞게 조정 */
+            height: auto;
+        }
+        
+        .user-info h2 {
+            margin: 0;
+            font-size: 20px;
+        }
+        
+        .user-actions {
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+            margin: 10px 0;  /* 상하 여백 */
+        }
+        
+        .action-button {
+            padding: 5px 10px;  /* 버튼 여백 조정 */
+            background-color: #007BFF;  /* 버튼 색상 */
+            color: white;
+            border: none;
+            border-radius: 5px;
+            text-decoration: none;  /* 링크 장식 제거 */
+            font-size: 14px;  /* 버튼 글자 크기 */
+        }
+        
+        .action-button:hover {
+            background-color: #0056b3;  /* 호버 색상 */
+        }
+        
+        .logout-button {
+            padding: 5px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 10px;
+            text-decoration: none;
+            font-size: 12px;  /* 로그아웃 버튼 크기 조정 */
+        }
+        
+        .logout-button:hover {
+            background-color: #45a049;  /* 호버 색상 */
+        }
     </style>
     <script>
         function validateLoginForm(event) {
@@ -214,6 +276,8 @@
             
             return false;  // 폼 제출을 막음
         }
+
+    
     </script>
 </head>
 <body>
@@ -272,7 +336,38 @@
 
         <!-- 로그인 창 추가 -->
         <div class="login-container">
-            {% comment %} <h2>로그인</h2> {% endcomment %}
+            {% if request.session.username %}    
+                <div class="user-info">
+                    {% load static %}
+                    <div class="profile-pic">
+                        {% comment %} <img src="{% if request.session.profile_pic %}{{ request.session.profile_pic }}{% else %}default-profile.png{% endif %}" alt="Profile Picture"> {% endcomment %}
+                        <img 
+                        src="{{ request.session.profile_pic }}" 
+                        {% comment %} src="{% if request.session.profile_pic %}{{ request.session.profile_pic }}{% else %}{% static 'images/default-profile.png' %}{% endif %}"  {% endcomment %}
+                        alt="Profile Picture" 
+                        style="cursor: pointer; width: 100px; height: 100px; border-radius: 50%;" 
+                        >
+                    </div>
+                    <h2>{{ request.session.username }}님</h2>
+                    <div class="user-actions">
+                        <a href="#" class="action-button">글쓰기</a>
+                        <a href="#" class="action-button">내가 올린 책</a> 
+                    </div>
+                    <a href="{% url 'logout' %}" class="logout-button">로그아웃</a>
+                </div>=
+                
+                {% comment %} <form method="post" action="{% url 'upload_profile_pic' %}" enctype="multipart/form-data" style="display: none;">
+                    {% csrf_token %}
+                    <input 
+                        type="file" 
+                        id="file-input" 
+                        name="profile_pic" 
+                        accept="image/*" 
+                        onchange="this.form.submit();"
+                    >
+                </form> {% endcomment %}
+                
+            {% else %}
             <form id="loginform" method="post" action="{% url 'trying_to_login' %}" onsubmit="return validateLoginForm(event);">
                 {% csrf_token %}
                 <input type="text" name="username" placeholder="아이디 또는 전화번호">
@@ -283,18 +378,17 @@
                     <input type="checkbox" name="remember">
                     <label for="remember">로그인 상태 유지</label>
                 </div>
-                {% comment %} <div class="ip-security">
-                    <label for="ip-security">IP보안</label>
-                    <input type="checkbox" name="ip-security">
-                </div>  {% endcomment %}
                 <button type="submit">로그인</button>   
             </form>
-
             <div class="login-options">
                 <a href="{% url 'signup' %}">회원가입</a>
             </div> 
+            {% endif %}
         </div>
 
+
+
+    </div>
 </body>
 </html>        
 

@@ -5,6 +5,7 @@ from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib import messages #메세지 기능인듯?
 from django.contrib.auth import authenticate, login # 로그인할떄 사용함
+from django.contrib.auth import logout
 
 import json
 
@@ -158,12 +159,38 @@ def trying_to_login(request):
 
         # 비밀번호 확인
         if user.password == pw:  # 해시가 아닌 평문 비밀번호 비교
+            request.session['username'] = user_id
             return JsonResponse({'success': '로그인 성공했습니다!', 'redirect_url': '/book/'})  # 로그인 성공 후 리디렉션할 URL
         else:
             return JsonResponse({'error': '로그인 실패: 아이디나 비밀번호가 잘못되었습니다.'})
 
     return render(request, 'book/login.html')
     
+
+def logout_view(request):
+    print(request)
+    print(request.session.get('username'))
+    logout(request)
+    request.session.flush() # 세션 삭제
+    return redirect('index')
+
+# 이미지 업로드 코드인데 일단 너무 복잡한 것 같아서 보류함
+# from django.shortcuts import render, redirect 
+# from django.core.files.storage import FileSystemStorage
+
+# def upload_profile_pic(request):
+#     if request.method == 'POST' and request.FILES['profile_pic']:
+#         profile_pic = request.FILES['profile_pic']
+#         fs = FileSystemStorage()
+#         filename = fs.save(profile_pic.name, profile_pic)
+#         uploaded_file_url = fs.url(filename)
+
+#         # 세션에 이미지 URL 저장
+#         request.session['profile_pic'] = uploaded_file_url
+
+#         return redirect('index')  # 적절한 리다이렉션 URL로 변경하세요.
+
+#     return redirect('index')  # 적절한 템플릿으로 변경하세요.
 
 
 
