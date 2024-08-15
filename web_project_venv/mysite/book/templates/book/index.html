@@ -8,6 +8,7 @@
             margin: 0;
             padding: 0;
         }
+
         .navbar {
             display: flex;
             justify-content: space-between;
@@ -26,6 +27,7 @@
             background-color: #ddd;
             color: black;
         }
+
         .search-bar {
             display: flex;
             align-items: center;
@@ -68,17 +70,14 @@
         .sidebar a:hover {
             background-color: #ddd;
         }
-        .main-content {
-            padding: 20px;
-            max-width: 800px;
-            margin: 0 auto;
-            background-color: #fff;
-        }
+
+        {% comment %} 카테고리 영역 {% endcomment %}
         .category-bar {
             background-color: #007BFF;
             padding: 10px 0;
             display: flex;
             justify-content: space-around;
+            {% comment %} justify-content: space-between; {% endcomment %}
             color: white;
             font-weight: bold;
         }
@@ -96,19 +95,35 @@
             background-color: #000;
             margin: 0 15px;
         }
+
+        .main-content {
+            padding: 20px;
+            {% comment %} max-width: 900px; {% endcomment %}
+            margin: 0 auto;
+            background-color: #fff;
+            max-width: 100%;
+            max-height: 100%;
+        }
+
         .login-container {
-            margin-top: 20px;
+            {% comment %} margin-top: 20px;
             background-color: white;
             padding: 10px;
             border-radius: 10px;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
             width: 200px;
-            height:200px;
+            height:200px; {% endcomment %}
             {% comment %} margin-left: auto;
             margin-right: auto; {% endcomment %}
             {% comment %} margin-left: +500px;
             margin-top: -30px; {% endcomment %}
-            transform: translate(330%, -135%);
+            {% comment %} transform: translate(330%, -135%); {% endcomment %}
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            width: 200px;
+            height: 200px;
         }
         .login-container h2 {
             margin-top: 0;
@@ -159,15 +174,20 @@
         .remember-me input {
             margin-right: 5px;
         }
-        .ip-security {
+
+        {% comment %} 로그인시 오른쪽에 게시글 작성판을 뜨게 하기 위해서 묶음 {% endcomment %}
+        .login-post-container {
+            float: right; 
             display: flex;
-            align-items: center;
-            margin-bottom: 20px;
-            justify-content: space-between;
+            {% comment %} justify-content: flex-start; /* 로그인과 게시글 작성만 한 줄에 배치 */
+            align-items: flex-start; /* 요소들을 위쪽 정렬 */ {% endcomment %}
+            {% comment %} margin-top: 10px; /* 위쪽 간격 조정 */ {% endcomment %}
+            gap: 20px; /* 로그인 창과 게시글 작성 폼 사이의 간격 */
+            {% comment %} transform: translate(60%, -60%); {% endcomment %}
+            
         }
-        .ip-security input {
-            margin-right: 5px;
-        }
+
+        {% comment %} 로그인 성공시에 뜨는 화면 {% endcomment %}
         .user-info {
             display: flex;
             flex-direction: column;
@@ -209,6 +229,7 @@
             border-radius: 5px;
             text-decoration: none;  /* 링크 장식 제거 */
             font-size: 14px;  /* 버튼 글자 크기 */
+           
         }
         
         .action-button:hover {
@@ -230,6 +251,63 @@
         .logout-button:hover {
             background-color: #45a049;  /* 호버 색상 */
         }
+
+
+        .post-container{
+            width: 450px;
+            hight: 100px;
+            {% comment %} margin: 10px ; {% endcomment %}
+            padding: 10px;
+            border: 1px solid black;
+            border-radius: 1px;
+            
+            display: block; 
+            {% comment %} margin-left: auto; 
+            margin-right: auto {% endcomment %}
+        }
+        
+        
+        .form-group {
+            margin-bottom: 15px;
+            
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        
+        .form-group input[type="text"] {
+            width: 97%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        .form-group textarea{
+            width: 97%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        .form-group select {
+            
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            
+        }
+        
+        .submit-button {
+            background-color: #007bff;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        
+
     </style>
     <script>
         function validateLoginForm(event) {
@@ -306,6 +384,96 @@
         <h2>실시간 인기글</h2>
         <p>여기에 실시간 인기글 내용이 표시됩니다.</p>
         
+       
+
+        <!-- 로그인 창 추가 -->
+        <div class="login-post-container">
+            <div class="login-container">
+                {% if request.session.username %}    
+                    <div class="user-info">
+                        {% load static %}
+                        <div class="profile-pic">
+                            {% comment %} <img src="{% if request.session.profile_pic %}{{ request.session.profile_pic }}{% else %}default-profile.png{% endif %}" alt="Profile Picture"> {% endcomment %}
+                            <form method="post" action="{% url 'upload_profile_pic' %}" enctype="multipart/form-data">
+                                {% csrf_token %}
+                                <img 
+                                    src="{{ request.session.profile_pic }}" 
+                                    {% comment %} src="{% if request.session.profile_pic %}{{ request.session.profile_pic }}{% else %}{% static 'images/default-profile.png' %}{% endif %}"  {% endcomment %}
+                                    alt="Profile Picture" 
+                                    style="cursor: pointer; width: 100px; height: 100px; border-radius: 50%;" 
+                                    onclick="document.getElementById('file-input').click();"
+                                >
+                                <input 
+                                    type="file" 
+                                    id="file-input" 
+                                    name="profile_pic" 
+                                    accept="image/*" 
+                                    onchange="this.form.submit();"
+                                >
+                            </form> 
+                            
+                        </div>
+                        <h2>{{ request.session.username }}님</h2>
+                        <div class="user-actions">
+                            <a href="#" class="action-button">글쓰기</a>
+                            <a href="#" class="action-button">내가 올린 책</a> 
+                            
+                        </div>
+                        
+                        <a href="{% url 'logout' %}" class="logout-button">로그아웃</a>
+                    </div>
+                {% else %}
+                <form id="loginform" method="post" action="{% url 'trying_to_login' %}" onsubmit="return validateLoginForm(event);">
+                    {% csrf_token %}
+                    <input type="text" name="username" placeholder="아이디 또는 전화번호">
+                    <input type="password" name="password" placeholder="비밀번호">
+                    
+                
+                    <div class="remember-me">
+                        <input type="checkbox" name="remember">
+                        <label for="remember">로그인 상태 유지</label>
+                    </div>
+                    <button type="submit">로그인</button>   
+                </form>
+                <div class="login-options">
+                    <a href="{% url 'signup' %}">회원가입</a>
+                </div> 
+                {% endif %}
+            </div>
+
+
+            {% if request.session.username %}    
+                <div class="post-container">
+                    <form method="post" >
+                        {% csrf_token %}
+                        <div class="form-group">
+                            <label for="board-selection">게시판을 선택해 주세요.</label>
+                            <select id="board-selection" name="board">
+                                <option value="" selected>게시판을 선택하세요.</option>
+                                <option value="board1">게시판 1</option>
+                                <option value="board2">게시판 2</option>
+                                <!-- 다른 게시판 옵션 추가 가능 -->
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="post-title">제목을 입력해 주세요.</label>
+                            <input type="text" id="post-title" name="title" placeholder="제목을 입력해 주세요.">
+                        </div>
+
+                        <div class="form-group">
+                            <textarea id="post-content" name="content" placeholder="내용을 입력하세요." rows="10"></textarea>
+                        </div>
+
+                        <div class="form-group">
+                            <button type="submit" class="submit-button">게시물 등록</button>
+                        </div>
+                    </form>
+                </div>
+            {% endif %}     
+        </div>
+
+
         {% if book_title_list %}
         <ul>
         {% for title in book_title_list %}
@@ -315,7 +483,7 @@
         {% else %}
         <p>no book title</p>
         {% endif %}
-
+    
         <h2>이름 및 나이 입력</h2> 
         <form method="post" action="{% url 'get_name' %}">
             {% csrf_token %}
@@ -333,64 +501,10 @@
             <input id="your_name" type="text" name="your_name" maxlength="100" required> {% endcomment %}
             <button type="submit">제출</button>
         </form>
-
-        <!-- 로그인 창 추가 -->
-        <div class="login-container">
-            {% if request.session.username %}    
-                <div class="user-info">
-                    {% load static %}
-                    <div class="profile-pic">
-                        {% comment %} <img src="{% if request.session.profile_pic %}{{ request.session.profile_pic }}{% else %}default-profile.png{% endif %}" alt="Profile Picture"> {% endcomment %}
-                        <form method="post" action="{% url 'upload_profile_pic' %}" enctype="multipart/form-data">
-                            {% csrf_token %}
-                            <img 
-                                src="{{ request.session.profile_pic }}" 
-                                {% comment %} src="{% if request.session.profile_pic %}{{ request.session.profile_pic }}{% else %}{% static 'images/default-profile.png' %}{% endif %}"  {% endcomment %}
-                                alt="Profile Picture" 
-                                style="cursor: pointer; width: 100px; height: 100px; border-radius: 50%;" 
-                                onclick="document.getElementById('file-input').click();"
-                            >
-                            <input 
-                                type="file" 
-                                id="file-input" 
-                                name="profile_pic" 
-                                accept="image/*" 
-                                onchange="this.form.submit();"
-                            >
-                        </form> 
-                        
-                    </div>
-                    <h2>{{ request.session.username }}님</h2>
-                    <div class="user-actions">
-                        <a href="#" class="action-button">글쓰기</a>
-                        <a href="#" class="action-button">내가 올린 책</a> 
-                    </div>
-                    <a href="{% url 'logout' %}" class="logout-button">로그아웃</a>
-                </div>
-                
-                
-            {% else %}
-            <form id="loginform" method="post" action="{% url 'trying_to_login' %}" onsubmit="return validateLoginForm(event);">
-                {% csrf_token %}
-                <input type="text" name="username" placeholder="아이디 또는 전화번호">
-                <input type="password" name="password" placeholder="비밀번호">
-                   
-            
-                <div class="remember-me">
-                    <input type="checkbox" name="remember">
-                    <label for="remember">로그인 상태 유지</label>
-                </div>
-                <button type="submit">로그인</button>   
-            </form>
-            <div class="login-options">
-                <a href="{% url 'signup' %}">회원가입</a>
-            </div> 
-            {% endif %}
-        </div>
-
-
-
     </div>
+
+
+
 </body>
 </html>        
 
