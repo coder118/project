@@ -6,6 +6,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.contrib import messages #메세지 기능인듯?
 from django.contrib.auth import authenticate, login # 로그인할떄 사용함
 from django.contrib.auth import logout
+from django.shortcuts import get_object_or_404
 
 import json
 
@@ -13,7 +14,7 @@ from .models import User_information
 from .models import bookT
 from .models import bookW
 # Create your views here.
-from .form import PersonForm,UserForm
+from .form import PersonForm,UserForm,PostForm
  
  
 def index(request):
@@ -62,7 +63,7 @@ def get_name(request):
     return render(request, 'book/index.html', {'form': form})
 
 
-
+###회원 가입과 로그인 기능 중복확인함수까지
 @csrf_exempt
 def check_duplicate(request): #회원가입시 중복을 확인하는 함수 
     print('dupli')
@@ -144,6 +145,7 @@ def trying_to_login(request):
     # else:
     #     return render(request, 'book/login.html')
     if request.method == 'POST':
+        
         user_id = request.POST.get('username')
         pw = request.POST.get('password')
         print(user_id,pw)
@@ -197,6 +199,37 @@ def upload_profile_pic(request):
 
     return redirect('index')  # 적절한 템플릿으로 변경하세요.
 
+###게시판 
+
+
+def post_view(request):
+    return render(request, 'book/post_create.html')
+
+def post_save(request):
+    print('post upload')
+    
+    # user_id = request.POST.get('username')
+    # print(user_id)
+    user_id = request.session.get('username')  # 세션에 저장된 사용자계졍의 값을 가져온다.
+    if request.method == 'POST':
+        print('POST POST request received') 
+        
+        print("현재 로그인된 사용자:",user_id )
+        form = PostForm(request.POST)
+        
+        if form.is_valid():
+            post = form.save(commit=False)  # 모델 인스턴스를 생성하되 아직 저장하지 않음
+            
+            post.author=  User_information.objects.get(username=user_id)#바로 세션값을 사용할 수 없어서 인스턴스 값을 사용을 해준다.
+            post.save()  # 모델에 데이터 저장
+            return redirect('index')  # 성공 시 리디렉션
+        else:
+            print(form.errors)
+            
+    else:
+        form = PostForm() 
+    return render(request, 'book/index.html', {'form': form})
+        
 
 
 # 데이터 저장후에  book/signup/successful_user 경로로 넘어감

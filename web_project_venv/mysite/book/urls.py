@@ -8,6 +8,7 @@ urlpatterns = [
     path('login/', views.login_view, name='login'),
     path('signup/',views.signup_view,name='signup'),
     
+    
     path('get_name/', views.get_name, name='get_name'),
     path('success/', TemplateView.as_view(template_name='book/success.html'), name='success'),
     
@@ -18,4 +19,8 @@ urlpatterns = [
     path('logout/', views.logout_view, name='logout'),
     
     path('upload_profile_pic/', views.upload_profile_pic, name='upload_profile_pic'),#마찬가지 이미지 업로드 url임
+
+    path('post_create/',views.post_view,name='post_view'),
+    path('post_create/post_save/',views.post_save,name='post_save'),
+
 ]

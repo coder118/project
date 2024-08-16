@@ -415,7 +415,7 @@
                         </div>
                         <h2>{{ request.session.username }}님</h2>
                         <div class="user-actions">
-                            <a href="#" class="action-button">글쓰기</a>
+                            <a href="{%url 'post_view'%}" class="action-button">글쓰기</a>
                             <a href="#" class="action-button">내가 올린 책</a> 
                             
                         </div>
@@ -442,7 +442,7 @@
             </div>
 
 
-            {% if request.session.username %}    
+            {% comment %} {% if request.session.username %}    
                 <div class="post-container">
                     <form method="post" >
                         {% csrf_token %}
@@ -470,7 +470,9 @@
                         </div>
                     </form>
                 </div>
-            {% endif %}     
+            {% endif %}      {% endcomment %}
+
+
         </div>
 
 

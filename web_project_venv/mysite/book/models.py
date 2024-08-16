@@ -41,5 +41,28 @@ class User_information(models.Model):
 
     def __str__(self):
         return self.username
+
+class Tag(models.Model):
+    name = models.CharField(max_length=50, unique=True)  # 태그 이름
+
+    def __str__(self):
+        return self.name
     
+class Post_information(models.Model):
+    STATUS_CHOICES = [
+        ('published', '공개'),
+        ('unpublished', '비공개'),
+    ]
+
+    title = models.CharField(max_length=255, null=False)                  # 제목
+    content = models.TextField(null=False)                                # 내용
+    category = models.CharField(max_length=100, blank=True)               # 카테고리
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='published')  # 상태
+    author = models.ForeignKey(User_information, on_delete=models.CASCADE)  # 작성자
+    created_at = models.DateTimeField(auto_now_add=True)                  # 작성일
+    updated_at = models.DateTimeField(auto_now=True)                      # 수정일
+    tags = models.ManyToManyField('Tag', blank=True)  # 태그 추가
+    views = models.IntegerField(default=0)  #조회수
     
+    def __str__(self):
+        return self.title
