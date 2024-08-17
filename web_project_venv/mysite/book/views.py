@@ -7,8 +7,10 @@ from django.contrib import messages #메세지 기능인듯?
 from django.contrib.auth import authenticate, login # 로그인할떄 사용함
 from django.contrib.auth import logout
 from django.shortcuts import get_object_or_404
-
+from django.core.paginator import Paginator
 import json
+from django.views.generic import ListView
+from .models import Post_information
 
 from .models import User_information
 from .models import bookT
@@ -20,14 +22,23 @@ from .form import PersonForm,UserForm,PostForm
 def index(request):
     print("titlelist")
     
-    book_title_list=bookT.objects.all()
+    # book_title_list=bookT.objects.all()
     # template = loader.get_template('book/index.html')
-    context={
-        'book_title_list' : book_title_list,
-    }
+    # context={
+    #     'book_title_list' : book_title_list,
+    # }
     # if request.method == 'POST':# 이게 핵심이었어 form.as_p를 실행하면 안됐어 근데 내가 강제로 input을 만들어주니까 이곳으로 넘어가면서 get_name을 호출함 
     #     print('stop')
     #     return get_name(request)
+    post_list = Post_information.objects.all()
+    paginator = Paginator(post_list, 10)  # 페이지당 20개의 게시물을 표시합니다
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
+    context = {
+        'page_obj': page_obj,
+    }
+    
     return render(request,'book/index.html',context)
     # return HttpResponse(template.render(context,request))
  
@@ -205,6 +216,7 @@ def upload_profile_pic(request):
 def post_view(request):
     return render(request, 'book/post_create.html')
 
+from django.utils import timezone
 def post_save(request):
     print('post upload')
     
@@ -221,7 +233,24 @@ def post_save(request):
             post = form.save(commit=False)  # 모델 인스턴스를 생성하되 아직 저장하지 않음
             
             post.author=  User_information.objects.get(username=user_id)#바로 세션값을 사용할 수 없어서 인스턴스 값을 사용을 해준다.
+            print("저장 전 created_at:", post.created_at)
+            print("저장 전 updated_at:", post.updated_at)
+            
+            post.created_at = timezone.now()  # 현재 시간으로 설정
+            post.updated_at = timezone.now()   # 현재 시간으로 설정
+            
             post.save()  # 모델에 데이터 저장
+            print("저장 후 created_at:", post.created_at)
+            print("저장 후 updated_at:", post.updated_at)
+            # create= post.created_at
+            # update= post.updated_at
+            
+            # post.created_at = create
+            # post.updated_at = update
+            # # post.refresh_from_db()
+            # # post.created_at=post.created_at
+            # # post.updated_at=post.updated_at
+            # post.save() 
             return redirect('index')  # 성공 시 리디렉션
         else:
             print(form.errors)
@@ -232,6 +261,17 @@ def post_save(request):
         
 
 
+# class PostListView(ListView):
+#     print("postlist working")
+#     model = Post_information
+#     template_name = 'index.html'  # 사용할 템플릿 파일
+#     context_object_name = 'posts_information'  # 템플릿에서 사용할 컨텍스트 변수 이름
+#     paginate_by = 20  # 페이지당 표시할 게시글 수
+#     print("workin done")
+#     def get_context_data(self, **kwargs):
+#         context = super().get_context_data(**kwargs)
+#         print(context['posts_information'])  # 데이터가 제대로 전달되는지 확인
+#         return context
 # 데이터 저장후에  book/signup/successful_user 경로로 넘어감
 # 그리고 데이터에 저장에 성공하고 원래 기본 화면창으로 넘어가는 기능이 필요함 
 

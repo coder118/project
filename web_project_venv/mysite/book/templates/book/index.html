@@ -306,6 +306,89 @@
             border-radius: 5px;
             cursor: pointer;
         }
+
+
+        .post-list {
+            list-style-type: none;
+            padding: 10px;
+            margin:30px;
+            margin-right:130px;
+            margin-left:130px;
+        }
+        .post-item {
+            padding: 10px 0;
+            border-bottom: 1px solid #ccc;
+        }
+        .post-title {
+            font-size: 18px;
+            font-weight: bold;
+            color: #1a0dab; /* 강조된 파란색 */
+            text-decoration: none;
+        }
+        .post-category {
+            font-size: 14px;
+            color: #888;
+        }
+        .post-meta {
+            font-size: 12px;
+            color: #aaa;
+        }
+        
+        {% comment %} 페이지 넘어가는 버튼 {% endcomment %}
+        .pagination {
+            display: flex;
+            justify-content: center; /* 중앙 정렬 */
+            margin: 20px 0; /* 위아래 여백 */
+        }
+        
+        .step-links {
+            display: flex;
+            align-items: center; /* 수직 정렬 */
+        }
+        .pagination-controls {
+            display: flex; /* 버튼들을 가로로 나열 */
+            text-decoration: none;
+            padding: 10px 15px; /* 패딩 추가 */
+            margin: 0 5px; /* 좌우 여백 */
+            font-weight: bold; /* 볼드체 */
+            color: #333; /* 글자 색상 */
+            border: 1px solid #ccc; /* 테두리 추가 */
+            border-radius: 5px; /* 모서리 둥글게 */
+        }
+        .pagination-controls2{
+            display: flex; /* 버튼들을 가로로 나열 */
+            text-decoration: none;
+            padding: 10px 15px; /* 패딩 추가 */
+            margin: 0 5px; /* 좌우 여백 */
+            font-weight: bold; /* 볼드체 */
+            color: #333; /* 글자 색상 */
+            border: 1px solid #ccc; /* 테두리 추가 */
+            border-radius: 5px; /* 모서리 둥글게 */s
+        }
+        
+        .pagination-link {
+            text-decoration: none; /* 링크의 밑줄 제거 */
+            color: #007BFF; /* 링크 색상 */
+            padding: 10px 15px; /* 패딩 추가 */
+            border: 1px solid #007BFF; /* 테두리 추가 */
+            border-radius: 5px; /* 모서리 둥글게 */
+            margin: 0 5px; /* 좌우 여백 */
+            transition: background-color 0.3s, color 0.3s; /* 부드러운 전환 효과 */
+        }
+        
+        .pagination-link:hover {
+            background-color: #007BFF; /* 배경색 변경 */
+            color: white; /* 글자 색상 변경 */
+        }
+        
+        .current {
+            padding: 10px 15px; /* 패딩 추가 */
+            margin: 0 5px; /* 좌우 여백 */
+            font-weight: bold; /* 볼드체 */
+            color: #333; /* 글자 색상 */
+            border: 1px solid #ccc; /* 테두리 추가 */
+            border-radius: 5px; /* 모서리 둥글게 */
+        }
         
 
     </style>
@@ -380,11 +463,7 @@
         <a href="#">이벤트</a>
     </div>
 
-    <div class="main-content">
-        <h2>실시간 인기글</h2>
-        <p>여기에 실시간 인기글 내용이 표시됩니다.</p>
-        
-       
+    <div class="main-content">     
 
         <!-- 로그인 창 추가 -->
         <div class="login-post-container">
@@ -440,8 +519,6 @@
                 </div> 
                 {% endif %}
             </div>
-
-
             {% comment %} {% if request.session.username %}    
                 <div class="post-container">
                     <form method="post" >
@@ -471,12 +548,84 @@
                     </form>
                 </div>
             {% endif %}      {% endcomment %}
-
-
         </div>
 
+        <div class="post-list" >
+            <h2>실시간 인기글</h2>
+            {% comment %} <p>{{ posts_information }}</p>
+            <ul class="post-list">
+                {% for post in posts_information %}
+                <li class="post-item">
+                    <a href="{% url 'post_detail' post.id %}" class="post-title">{{ post.title }}</a>
+                    <div class="post-category">{{ post.category }}</div>
+                    <div class="post-meta">{{ post.created_at|date:"Y-m-d H:i" }} / {{ post.author }}</div>
+                </li>
+                {% empty %}
+                <li>게시글이 없습니다.</li>
+                {% endfor %}
+            </ul>
+            <!-- 페이지네이션 -->
+            <div class="pagination">
+                <span class="step-links">
+                    {% if posts_information.has_previous %}
+                        <a href="?page=1">&laquo; 처음</a>
+                        <a href="?page={{ posts.previous_page_number }}">이전</a>
+                    {% endif %}
+        
+                    <span class="current">
+                        페이지 {{ posts_information.number }} / {{ posts_information.paginator.num_pages }}
+                    </span>
+        
+                    {% if posts_information.has_next %}
+                        <a href="?page={{ posts_information.next_page_number }}">다음</a>
+                        <a href="?page={{ posts_information.paginator.num_pages }}">끝 &raquo;</a>
+                    {% endif %}
+                </span>
+            </div> {% endcomment %}
+            <ul class="post-list">
+                {% for post in page_obj %}
+                <li class="post-item">
+                    <div class="post-title">{{ post.title }}</a>
+                    {% comment %} <a href="{% url 'post_detail' post.id %}" class="post-title"> {% endcomment %}
+                    <div class="post-category">{{ post.category }}</div>
+                    <div class="post-meta">{{ post.created_at|date:"Y-m-d H:i" }} / {{ post.author.nickname }}</div>
+                </li>
+                {% empty %}
+                <li>게시글이 없습니다.</li>
+                {% endfor %}
+            </ul>
+            
+            <!-- 페이지네이션 -->
+            <div class="pagination">
+                <span class="step-links">
+                    {% if page_obj.has_previous %}
+                    <div class="pagination-controls">
+                        <a href="?page=1">&laquo; 처음</a>
+                    </div>
+                    <div class="pagination-controls2">
+                        <a href="?page={{ page_obj.previous_page_number }}">이전</a>
+                    </div>
+                    {% endif %}
+            
+                    <span class="current">
+                        페이지 {{ page_obj.number }} / {{ page_obj.paginator.num_pages }}
+                    </span>
+            
+                    {% if page_obj.has_next %}
+                    <div class="pagination-controls">
+                        <a href="?page={{ page_obj.next_page_number }}">다음</a>
+                    </div>
+                    <div class="pagination-controls2">
+                        <a href="?page={{ page_obj.paginator.num_pages }}">끝 &raquo;</a>
+                    </div>
+                    {% endif %}
+                </span>
+            </div>
+            
 
-        {% if book_title_list %}
+        </div>
+        
+        {% comment %} {% if book_title_list %}
         <ul>
         {% for title in book_title_list %}
             <li><a href="/book/{{ title.id }}/">{{ title.book_Title }}</a></li>
@@ -492,7 +641,7 @@
             {% comment %} {{ form.as_p }}  이걸 사용해도 좋은데 필수 항목입니다라는 걸 없애기 위해서 아래처럼 하나씩 구현을 해줌 {% endcomment %}
             
             {% comment %} {{ form.as_p }} {% endcomment %}
-            <label for="id_name">Name:</label>
+            {% comment %} <label for="id_name">Name:</label>
             <input type="text" name="name" id="id_name" value="{{ form.name.value }}">
             <br>
             <label for="id_age">Age:</label>
@@ -501,9 +650,9 @@
              {% comment %} <h2>나이 입력</h2> {{ form.as_p }} {% endcomment %}
             {% comment %} <label for="your_name">Your name: </label>
             <input id="your_name" type="text" name="your_name" maxlength="100" required> {% endcomment %}
-            <button type="submit">제출</button>
-        </form>
-    </div>
+            {% comment %} <button type="submit">제출</button>
+        </form> {% endcomment %}
+    </div> 
 
 
 
