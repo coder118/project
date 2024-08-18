@@ -4,7 +4,7 @@ from . import views # 현 디렉의 views.py파일을 임포트함
 
 urlpatterns = [
     path('', views.index, name='index'),
-    path('book_writer/',views.book_writer,name='book_writer'),
+    # path('book_writer/',views.book_writer,name='book_writer'),
     path('login/', views.login_view, name='login'),
     path('signup/',views.signup_view,name='signup'),
     
@@ -23,5 +23,6 @@ urlpatterns = [
     path('post_create/',views.post_view,name='post_view'),
     path('post_create/post_save/',views.post_save,name='post_save'),
     # path('', views.PostListView.as_view(), name='post_list'),
+    path('<int:pk>/', views.post_detail, name='post_detail'),
 
 ]

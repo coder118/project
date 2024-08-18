@@ -31,6 +31,7 @@ def index(request):
     #     print('stop')
     #     return get_name(request)
     post_list = Post_information.objects.all()
+    print(post_list)
     paginator = Paginator(post_list, 10)  # 페이지당 20개의 게시물을 표시합니다
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
@@ -38,12 +39,31 @@ def index(request):
     context = {
         'page_obj': page_obj,
     }
-    
+    print(context)
     return render(request,'book/index.html',context)
     # return HttpResponse(template.render(context,request))
  
+
+def post_detail(request, pk):
+    post = get_object_or_404(Post_information, pk=pk)
+    print(post)
+    usernames = User_information.objects.values_list('username', flat=True)
+    
+    #comments = Comment.objects.filter(post=post)  # 댓글 모델을 사용하여 해당 게시물에 대한 댓글 가져오기
+    other_posts = Post_information.objects.exclude(pk=pk)  # 현재 게시물을 제외한 다른 게시물 가져오기
+    post.views += 1
+    post.save() 
+    context = {
+        'post': post,
+        'user':request.session.get('username'),
+        'user_check':usernames, # 유저 정보 데이터 베이스에서 유저 아이디 값을 가져와서 현재 들어와있는 유저가 usercheck안에 존재 하면 댓글 작성 가능하게 
+        'other_posts': other_posts,
+    }
+    print(context)
+    return render(request, 'book/post_detail.html', context) 
+
 # 내가 만들어서 적어본것     
-def book_writer(request):
+#def book_writer(request):
     book_writer_list = bookW.objects.all()
     context={
         "book_writer_list": book_writer_list

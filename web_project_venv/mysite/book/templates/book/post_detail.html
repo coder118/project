@@ -1,0 +1,194 @@
+{% comment %} {% extends 'book/index.html' %} {% endcomment %}
+<!DOCTYPE html>
+<head>
+    <style>
+    body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+        width: 1200px; /* 원하는 고정 너비 설정 */
+        height: 800px; /* 원하는 고정 높이 설정 */
+
+        {% comment %} position: relative; /* 요소의 위치를 기준으로 설정 */ {% endcomment %}
+        margin: auto; /* 화면 중앙에 위치시키기 위해 */
+    }
+    .navbar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background-color: #f1f1f1;
+        padding: 10px;
+        box-shadow: 0 4px 2px -2px gray;
+    }
+    .navbar a {
+        text-decoration: none;
+        color: black;
+        padding: 14px 20px;
+        font-weight: bold;
+    }
+    .navbar a:hover {
+        background-color: #ddd;
+        color: black;
+    }
+
+    .search-bar {
+        display: flex;
+        align-items: center;
+    }
+    .search-bar input[type="text"] {
+        padding: 12px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        width: 300px;
+    }
+    .search-bar button {
+        padding: 12px 20px;
+        background-color: #007BFF;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        margin-left: 5px;
+        cursor: pointer;
+    }
+    .search-bar button:hover {
+        background-color: #0056b3;
+    }
+    .content {
+        padding: 20px;
+    }
+    .sidebar {
+        width: 200px;
+        float: left;
+        background-color: #f9f9f9;
+        height: 100vh;
+        box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+    }
+    .sidebar a {
+        display: block;
+        color: black;
+        padding: 10px;
+        text-decoration: none;
+        font-weight: bold;
+    }
+    .sidebar a:hover {
+        background-color: #ddd;
+    }
+
+    {% comment %} 카테고리 영역 {% endcomment %}
+    .category-bar {
+        background-color: #007BFF;
+        padding: 10px 0;
+        display: flex;
+        justify-content: space-around;
+        {% comment %} justify-content: space-between; {% endcomment %}
+        color: white;
+        font-weight: bold;
+    }
+    .category-bar a {
+        color: white;
+        text-decoration: none;
+        padding: 0 15px;
+    }
+    .category-bar a:hover {
+        text-decoration: underline;
+    }
+    .category-bar .vertical-line {
+        width: 2px;
+        height: 20px;
+        background-color: #000;
+        margin: 0 15px;
+    }
+    </style>
+    <script>
+        function showSignupPopup() {
+            alert("회원가입 후 댓글을 작성할 수 있습니다.");
+            window.location.href = "{% url 'signup' %}";
+        }   
+    </script>
+</head>
+{% comment %} {% block content %} {% endcomment %}
+<body>
+
+    <div class="navbar">
+        <a href="{% url 'index' %}">책 이야기</a>
+        <div class="search-bar">
+            <input type="text" placeholder="검색어를 입력하세요">
+            <button>검색</button>
+        </div>
+        <div>
+            <a href="{% url 'signup' %}">회원가입</a>
+        </div>
+    </div>
+    <div class="category-bar">
+        <a href="#">신작 소식</a>
+        <div class="vertical-line"></div> <!-- 첫 번째 세로선 추가 -->
+        <a href="#">추천글</a>
+        <a href="#">실시간 인기글</a>
+        <a href="#">커뮤니티</a>
+        <div class="vertical-line"></div> <!-- 두 번째 세로선 추가 -->
+        <a href="#">이벤트</a>
+    </div>
+
+    <div class="post-detail-container">
+        <div class="post-content">
+            <h1>{{ post.title }}</h1>
+            <div class="post-meta">
+                <span>{{ post.created_at|date:"Y-m-d H:i" }}</span> |
+                <span>{{ post.author.nickname }}</span>
+                <span>{{ post.author.username }}</span>
+                <span>조회수{{post.views}}</span>
+                
+            </div>
+            <div class="post-body">
+                {{ post.content|linebreaks }}
+            </div>
+        </div>
+
+        {% comment %} <h2>댓글</h2>
+        <ul>
+            {% for comment in comments %}
+                <li>{{ comment.author }}: {{ comment.text }}</li>
+            {% empty %}
+                <li>댓글이 없습니다.</li>
+            {% endfor %}
+        </ul> {% endcomment %}
+
+        <!-- 댓글 작성 섹션 -->
+        <div class="comments-section">
+            <h3>댓글</h3>
+            {% if user in user_check %} 
+            {% comment %} user.is_authenticated  {% endcomment %}
+                <form method="post">
+                    {% csrf_token %}
+                    <textarea name="comment" placeholder="댓글을 입력하세요." rows="4"></textarea>
+                    <button type="submit">댓글 작성</button>
+                </form>
+            {% else %}
+                <button onclick="showSignupPopup()">로그인 또는 회원가입 후 댓글을 작성할 수 있습니다.</button>
+            {% endif %}
+            
+            <!-- 댓글 목록 -->
+            <ul class="comments-list">
+                {% for comment in post.comments.all %}
+                    <li>{{ comment.author.nickname }}: {{ comment.content }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+        
+        
+        {% comment %} <h2>다른 게시물</h2>
+        <ul>
+            {% for other_post in other_posts %}
+                <li><a href="{% url 'post_detail' other_post.pk %}">{{ other_post.title }}</a></li>
+            {% empty %}
+                <li>다른 게시물이 없습니다.</li>
+            {% endfor %}
+        </ul> {% endcomment %}
+
+
+    </div>
+
+
+</body>
+</html>
+{% comment %} {% endblock %} {% endcomment %}

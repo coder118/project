@@ -7,6 +7,11 @@
             font-family: Arial, sans-serif;
             margin: 0;
             padding: 0;
+            width: 1200px; /* 원하는 고정 너비 설정 */
+            height: 800px; /* 원하는 고정 높이 설정 */
+
+            {% comment %} position: relative; /* 요소의 위치를 기준으로 설정 */ {% endcomment %}
+            margin: auto; /* 화면 중앙에 위치시키기 위해 */
         }
 
         .navbar {
@@ -462,7 +467,6 @@
         <div class="vertical-line"></div> <!-- 두 번째 세로선 추가 -->
         <a href="#">이벤트</a>
     </div>
-
     <div class="main-content">     
 
         <!-- 로그인 창 추가 -->
@@ -585,10 +589,12 @@
             <ul class="post-list">
                 {% for post in page_obj %}
                 <li class="post-item">
-                    <div class="post-title">{{ post.title }}</a>
-                    {% comment %} <a href="{% url 'post_detail' post.id %}" class="post-title"> {% endcomment %}
+                    {% comment %} <div class="post-title">{{ post.title }}</a> {% endcomment %}
+                    <a href="{% url 'post_detail' post.pk %}" class="post-title">{{ post.title }}</a>
+                    {% comment %} <int:pk>/
+                          {% endcomment %}
                     <div class="post-category">{{ post.category }}</div>
-                    <div class="post-meta">{{ post.created_at|date:"Y-m-d H:i" }} / {{ post.author.nickname }}</div>
+                    <div class="post-meta">{{ post.created_at|date:"Y-m-d H:i" }} / {{ post.author.nickname }} / 조회수:{{ post.views }}</div>
                 </li>
                 {% empty %}
                 <li>게시글이 없습니다.</li>
