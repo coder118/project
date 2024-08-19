@@ -8,6 +8,7 @@ from django.contrib.auth import authenticate, login # 로그인할떄 사용함
 from django.contrib.auth import logout
 from django.shortcuts import get_object_or_404
 from django.core.paginator import Paginator
+from django.db.models import Q
 import json
 from django.views.generic import ListView
 from .models import Post_information
@@ -30,7 +31,7 @@ def index(request):
     # if request.method == 'POST':# 이게 핵심이었어 form.as_p를 실행하면 안됐어 근데 내가 강제로 input을 만들어주니까 이곳으로 넘어가면서 get_name을 호출함 
     #     print('stop')
     #     return get_name(request)
-    post_list = Post_information.objects.all()
+    post_list = Post_information.objects.all().order_by('-created_at')
     print(post_list)
     paginator = Paginator(post_list, 10)  # 페이지당 20개의 게시물을 표시합니다
     page_number = request.GET.get('page')
@@ -46,7 +47,7 @@ def index(request):
 
 def post_detail(request, pk):
     post = get_object_or_404(Post_information, pk=pk)
-    print(post)
+    
     usernames = User_information.objects.values_list('username', flat=True)
     
     #comments = Comment.objects.filter(post=post)  # 댓글 모델을 사용하여 해당 게시물에 대한 댓글 가져오기
@@ -59,9 +60,42 @@ def post_detail(request, pk):
         'user_check':usernames, # 유저 정보 데이터 베이스에서 유저 아이디 값을 가져와서 현재 들어와있는 유저가 usercheck안에 존재 하면 댓글 작성 가능하게 
         'other_posts': other_posts,
     }
-    print(context)
     return render(request, 'book/post_detail.html', context) 
 
+
+def search_posts(request):
+    print('searchpost')
+    # query = request.GET.get('q')  # 검색어를 GET 요청에서 가져오기
+    existing_query = request.session.get('search_query', None)
+    new_query = request.POST.get('search-post') or request.GET.get('search-post')
+    print("first query",existing_query,new_query)
+    # 새로운 쿼리가 들어오면 세션에 저장
+    if new_query and new_query != existing_query:
+        request.session['search_query'] = new_query
+        query = new_query
+    else:
+        query = existing_query
+    
+    # query = request.POST.get('search-post') or request.GET.get('search-post')
+    results = []
+
+    if query:
+        # 제목 또는 내용에 검색어가 포함된 게시글 검색
+        results = Post_information.objects.filter(Q(title__icontains=query) | Q(content__icontains=query))
+    print('searchbar',results)
+    paginator = Paginator(results, 2)  # 페이지당 20개의 게시물을 표시합니다
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
+    context = {
+        'page_obj': page_obj,
+        'results':1,
+        'query': query,
+    }
+    print(context)
+    print('checking',existing_query,new_query)
+    return render(request, 'book/index.html', context)
+# {'results': results, 'query': query}
 # 내가 만들어서 적어본것     
 #def book_writer(request):
     book_writer_list = bookW.objects.all()

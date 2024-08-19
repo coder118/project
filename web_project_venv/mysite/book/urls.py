@@ -24,5 +24,6 @@ urlpatterns = [
     path('post_create/post_save/',views.post_save,name='post_save'),
     # path('', views.PostListView.as_view(), name='post_list'),
     path('<int:pk>/', views.post_detail, name='post_detail'),
+    path('search_post', views.search_posts, name='search_posts'),
 
 ]

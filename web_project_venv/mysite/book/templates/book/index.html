@@ -450,8 +450,11 @@
     <div class="navbar">
         <a href="{% url 'index' %}">책 이야기</a>
         <div class="search-bar">
-            <input type="text" placeholder="검색어를 입력하세요">
-            <button>검색</button>
+            <form action="{% url 'search_posts' %}" method="post">
+                {% csrf_token %}
+                <input type="text" name ="search-post" placeholder="검색어를 입력하세요"  value="{{ query }}">
+                <button>검색</button>
+            </form>
         </div>
         <div>
             <a href="{% url 'signup' %}">회원가입</a>
@@ -555,7 +558,7 @@
         </div>
 
         <div class="post-list" >
-            <h2>실시간 인기글</h2>
+            
             {% comment %} <p>{{ posts_information }}</p>
             <ul class="post-list">
                 {% for post in posts_information %}
@@ -586,46 +589,95 @@
                     {% endif %}
                 </span>
             </div> {% endcomment %}
-            <ul class="post-list">
-                {% for post in page_obj %}
-                <li class="post-item">
-                    {% comment %} <div class="post-title">{{ post.title }}</a> {% endcomment %}
-                    <a href="{% url 'post_detail' post.pk %}" class="post-title">{{ post.title }}</a>
-                    {% comment %} <int:pk>/
-                          {% endcomment %}
-                    <div class="post-category">{{ post.category }}</div>
-                    <div class="post-meta">{{ post.created_at|date:"Y-m-d H:i" }} / {{ post.author.nickname }} / 조회수:{{ post.views }}</div>
-                </li>
-                {% empty %}
-                <li>게시글이 없습니다.</li>
-                {% endfor %}
-            </ul>
             
+            
+
+            {% if results == 1%} 
+                    <h2>검색 결과 </h2>
+                    <ul class="post-list">
+                        {% for post in page_obj %}
+                            <li class="post-item">
+                                {% comment %} <a href="{% url 'post_detail' post.id %}">{{ post.title }}</a> - {{ post.created_at }} {% endcomment %}
+                                <a href="{% url 'post_detail' post.pk %}" class="post-title">{{ post.title }}</a>
+                       
+                                <div class="post-category">{{ post.category }}</div>
+                                <div class="post-meta">{{ post.created_at|date:"Y-m-d H:i" }} / {{ post.author.nickname }} / 조회수:{{ post.views }}</div>
+                            </li>
+                        {% endfor %}
+                    </ul>
+            {% else %}
+                    <h2>실시간 인기글</h2>
+                    <ul class="post-list">
+                        {% for post in page_obj %}
+                        <li class="post-item">
+                            {% comment %} <div class="post-title">{{ post.title }}</a> {% endcomment %}
+                            <a href="{% url 'post_detail' post.pk %}" class="post-title">{{ post.title }}</a>
+                            {% comment %} <int:pk>/
+                                {% endcomment %}
+                            <div class="post-category">{{ post.category }}</div>
+                            <div class="post-meta">{{ post.created_at|date:"Y-m-d H:i" }} / {{ post.author.nickname }} / 조회수:{{ post.views }}</div>
+                        </li>
+                        {% empty %}
+                        <li>게시글이 없습니다.</li>
+                        {% endfor %}
+                    </ul>
+            {% endif %}
+          
+
             <!-- 페이지네이션 -->
             <div class="pagination">
-                <span class="step-links">
-                    {% if page_obj.has_previous %}
-                    <div class="pagination-controls">
-                        <a href="?page=1">&laquo; 처음</a>
-                    </div>
-                    <div class="pagination-controls2">
-                        <a href="?page={{ page_obj.previous_page_number }}">이전</a>
-                    </div>
-                    {% endif %}
-            
-                    <span class="current">
-                        페이지 {{ page_obj.number }} / {{ page_obj.paginator.num_pages }}
+                {%if results == 1%}
+                    <span class="step-links">
+                        {% if page_obj.has_previous %}
+                        <div class="pagination-controls">
+                            <a href="search_post?page=1">&laquo; 처음</a>
+                        </div>
+                        <div class="pagination-controls2">
+                            <a href="search_post?page={{ page_obj.previous_page_number }}">이전</a>
+                        </div>
+                        {% endif %}
+                
+                        <span class="current">
+                            페이지 {{ page_obj.number }} / {{ page_obj.paginator.num_pages }}
+                        </span>
+                
+                        {% if page_obj.has_next %}
+                        <div class="pagination-controls">
+                            <a href="search_post?page={{ page_obj.next_page_number }}">다음</a>
+                        </div>
+                        <div class="pagination-controls2">
+                            <a href="search_post?page={{ page_obj.paginator.num_pages }}">끝 &raquo;</a>
+                        </div>
                     </span>
-            
-                    {% if page_obj.has_next %}
-                    <div class="pagination-controls">
-                        <a href="?page={{ page_obj.next_page_number }}">다음</a>
-                    </div>
-                    <div class="pagination-controls2">
-                        <a href="?page={{ page_obj.paginator.num_pages }}">끝 &raquo;</a>
-                    </div>
+                {% endif %}
+                {%else%}
+                    <span class="step-links">
+                        {% if page_obj.has_previous %}
+                        <div class="pagination-controls">
+                            <a href="?page=1">&laquo; 처음</a>
+                        </div>
+                        <div class="pagination-controls2">
+                            <a href="?page={{ page_obj.previous_page_number }}">이전</a>
+                        </div>
+                        {% endif %}
+                
+                        <span class="current">
+                            페이지 {{ page_obj.number }} / {{ page_obj.paginator.num_pages }}
+                        </span>
+                
+                        {% if page_obj.has_next %}
+                        <div class="pagination-controls">
+                            <a href="?page={{ page_obj.next_page_number }}">다음</a>
+                        </div>
+                        <div class="pagination-controls2">
+                            <a href="?page={{ page_obj.paginator.num_pages }}">끝 &raquo;</a>
+                        </div>
+                    </span>
                     {% endif %}
-                </span>
+                
+
+                {%endif%}
+                
             </div>
             
 
