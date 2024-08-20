@@ -13,11 +13,11 @@ import json
 from django.views.generic import ListView
 from .models import Post_information
 
-from .models import User_information
+from .models import User_information, Comment, Comment_Reply
 from .models import bookT
 from .models import bookW
 # Create your views here.
-from .form import PersonForm,UserForm,PostForm
+from .form import PersonForm,UserForm,PostForm,CommentForm, CommentReplyForm
  
  
 def index(request):
@@ -32,7 +32,7 @@ def index(request):
     #     print('stop')
     #     return get_name(request)
     post_list = Post_information.objects.all().order_by('-created_at')
-    print(post_list)
+    # print(post_list)
     paginator = Paginator(post_list, 10)  # 페이지당 20개의 게시물을 표시합니다
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
@@ -40,7 +40,7 @@ def index(request):
     context = {
         'page_obj': page_obj,
     }
-    print(context)
+    # print(context)
     return render(request,'book/index.html',context)
     # return HttpResponse(template.render(context,request))
  
@@ -48,6 +48,7 @@ def index(request):
 def post_detail(request, pk):
     post = get_object_or_404(Post_information, pk=pk)
     
+    comments = post.comments.all()  # 해당 게시물에 대한 댓글 가져오기
     usernames = User_information.objects.values_list('username', flat=True)
     
     #comments = Comment.objects.filter(post=post)  # 댓글 모델을 사용하여 해당 게시물에 대한 댓글 가져오기
@@ -59,8 +60,76 @@ def post_detail(request, pk):
         'user':request.session.get('username'),
         'user_check':usernames, # 유저 정보 데이터 베이스에서 유저 아이디 값을 가져와서 현재 들어와있는 유저가 usercheck안에 존재 하면 댓글 작성 가능하게 
         'other_posts': other_posts,
+        
+        'comments': comments,  # 댓글 목록 추가
+        'comment_form': CommentForm(),  # 댓글 폼 추가
+        'reply_form': CommentReplyForm(),  # 대댓글 폼 추가
     }
+    # print('comment',context)
     return render(request, 'book/post_detail.html', context) 
+
+def save_comment(request, pk): #댓글 저장
+    post = get_object_or_404(Post_information, pk=pk)
+    print(post)
+    
+    print(request.POST)
+    user_id = request.session.get('username')
+    if request.method == 'POST':
+        if 'comment_submit' in request.POST:
+            
+            print("save commmmmment")
+            comment_form = CommentForm(request.POST)
+            if comment_form.is_valid():
+                new_comment = comment_form.save(commit=False)
+                new_comment.author = User_information.objects.get(username=user_id)
+                new_comment.post = post
+                new_comment.save()
+                print(new_comment)
+                return redirect('post_detail', pk=pk)
+            else:
+                print(comment_form.errors)
+                
+        elif 'reply_submit' in request.POST:
+            reply_form = CommentReplyForm(request.POST)
+            if reply_form.is_valid():
+                # comment_id = request.POST.get('comment_id')
+                # parent_comment = get_object_or_404(Comment, id=comment_id)
+                # new_reply = reply_form.save(commit=False)
+                # new_reply.author = User_information.objects.get(username=user_id)
+                # new_reply.comment = parent_comment
+                # new_reply.save()
+                # return redirect('post_detail', pk=pk)
+                new_reply = reply_form.save(commit=False)
+                parent_comment_id = request.POST.get('comment_id')
+                print(f"Received comment_id: {parent_comment_id}")
+                if parent_comment_id:
+                    parent_comment = get_object_or_404(Comment, id=parent_comment_id)
+                    new_reply.comment = parent_comment
+                else:
+                    parent_reply_id = request.POST.get('parent_reply_id')
+                    
+                print(f"Received parent_reply_id: {parent_reply_id}")
+                parent_reply = None
+                if parent_reply_id:
+                    parent_reply = get_object_or_404(Comment_Reply, id=parent_reply_id)
+                    # 최상위 부모 댓글을 찾는 로직
+                    while parent_reply.parent:  # 부모가 있을 경우 계속 올라감
+                        parent_reply = parent_reply.parent
+
+                    # 최상위 부모 댓글을 new_reply.comment에 설정
+                    new_reply.comment = parent_reply.comment 
+                    # 여기서 parent_reply.comment는 최상위 부모 댓글
+                    print(new_reply.comment)
+                
+                new_reply.author = User_information.objects.get(username=user_id)
+                # new_reply.comment=Comment.objects.get(comment=)
+                new_reply.parent = parent_reply
+                new_reply.save()
+                # print(f"Parent Comment: {parent_comment}")
+                print(f"Parent Reply: {parent_reply}")
+                print(f"New Reply: {new_reply}")
+                return redirect('post_detail', pk=pk)
+    return redirect('post_detail', pk=pk)
 
 
 def search_posts(request):

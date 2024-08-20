@@ -66,3 +66,39 @@ class Post_information(models.Model):
     
     def __str__(self):
         return self.title
+    
+    
+
+class Comment(models.Model):
+    post = models.ForeignKey(Post_information, related_name='comments', on_delete=models.CASCADE)  # 게시물과의 관계
+    author = models.ForeignKey(User_information, on_delete=models.CASCADE)  # 작성자
+    content = models.TextField(null=False)  # 댓글 내용
+    created_at = models.DateTimeField(auto_now_add=True)  # 작성 시간
+    likes = models.IntegerField(default=0)  # 좋아요 수
+    
+    def __str__(self):
+        return f'{self.author.nickname}: {self.content[:20]}'
+
+class Comment_Reply(models.Model):
+    parent = models.ForeignKey('self', null=True, blank=True, related_name='replies', on_delete=models.CASCADE)
+    
+    comment = models.ForeignKey(Comment, related_name='replies', on_delete=models.CASCADE)  # 댓글과의 관계
+    author = models.ForeignKey(User_information, on_delete=models.CASCADE)  # 작성자
+    content = models.TextField(null=False)  # 대댓글 내용
+    created_at = models.DateTimeField(auto_now_add=True)  # 작성 시간
+    likes = models.IntegerField(default=0)  # 좋아요 수
+
+    def __str__(self):
+        return f'{self.author.nickname}: {self.content[:20]}'
+
+class Like(models.Model):
+    user = models.ForeignKey(User_information, on_delete=models.CASCADE)  # 좋아요한 사용자
+    comment = models.ForeignKey(Comment, related_name='comment_likes', null=True, blank=True, on_delete=models.CASCADE)  # 댓글과의 관계
+    reply = models.ForeignKey(Comment_Reply, related_name='reply_likes', null=True, blank=True, on_delete=models.CASCADE)  # 대댓글과의 관계
+    created_at = models.DateTimeField(auto_now_add=True)  # 좋아요 누른 시간
+
+    def __str__(self):
+        if self.comment:
+            return f'{self.user.nickname} liked comment: {self.comment.content[:20]}'
+        if self.reply:
+            return f'{self.user.nickname} liked reply: {self.reply.content[:20]}'

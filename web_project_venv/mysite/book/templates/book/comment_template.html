@@ -1,0 +1,24 @@
+<li>
+    <strong>{{ comment.author.nickname }}</strong> {{ comment.content }}
+    <span>{{ comment.created_at|date:"Y-m-d H:i" }}</span>
+    <span>좋아요: {{ comment.likes }}</span>
+    <button onclick="likeComment({{ comment.id }})">좋아요</button>
+
+    {% if user in user_check %}
+        <button onclick="toggleReplyForm({{ comment.id }}, false)">대댓글</button>
+        <div id="reply-form-{{ comment.id }}" style="display: none;">
+            <form method="post" action="{% url 'save_comment' post.pk %}">
+                {% csrf_token %}
+                <textarea name="content" placeholder="대댓글을 입력하세요." rows="2"></textarea>
+                <input type="hidden" name="parent_id" value="{{ comment.id }}">
+                <button type="submit" name="reply_submit">대댓글 작성</button>
+            </form>
+        </div>
+    {% endif %}
+
+    <ul class="replies-list" style="margin-left: 20px;">
+        {% for reply in comment.replies.all %}
+            {% include 'comment_template.html' with comment=reply %}
+        {% endfor %}
+    </ul>
+</li>

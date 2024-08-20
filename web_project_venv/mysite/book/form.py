@@ -1,6 +1,6 @@
 #입력을 받은 폼값을 디비로 옮기는 곳인가?
 from django import forms
-from .models import Person,User_information,Post_information
+from .models import Person,User_information,Post_information, Comment, Comment_Reply
 from django.contrib.auth.hashers import make_password
 
 class PersonForm(forms.ModelForm):
@@ -26,3 +26,13 @@ class PostForm(forms.ModelForm):
     class Meta:
         model = Post_information
         fields = ['title', 'content', 'category', 'status','tags']
+        
+class CommentForm(forms.ModelForm):
+    class Meta:
+        model = Comment
+        fields = ['content']
+
+class CommentReplyForm(forms.ModelForm):
+    class Meta:
+        model = Comment_Reply
+        fields = ['content']    
