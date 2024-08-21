@@ -68,67 +68,117 @@ def post_detail(request, pk):
     # print('comment',context)
     return render(request, 'book/post_detail.html', context) 
 
-def save_comment(request, pk): #댓글 저장
-    post = get_object_or_404(Post_information, pk=pk)
-    print(post)
+# def save_comment(request, pk): #댓글 저장
+#     post = get_object_or_404(Post_information, pk=pk)
+#     print(post)
     
-    print(request.POST)
+#     print(request.POST)
+#     user_id = request.session.get('username')
+#     if request.method == 'POST':
+#         if 'comment_submit' in request.POST:
+            
+#             print("save commmmmment")
+#             comment_form = CommentForm(request.POST)
+#             if comment_form.is_valid():
+#                 new_comment = comment_form.save(commit=False)
+#                 new_comment.author = User_information.objects.get(username=user_id)
+#                 new_comment.post = post
+#                 new_comment.save()
+#                 print(new_comment)
+#                 return redirect('post_detail', pk=pk)
+#             else:
+#                 print(comment_form.errors)
+                
+#         elif 'reply_submit' in request.POST:
+#             reply_form = CommentReplyForm(request.POST)
+#             if reply_form.is_valid():
+#                 # comment_id = request.POST.get('comment_id')
+#                 # parent_comment = get_object_or_404(Comment, id=comment_id)
+#                 # new_reply = reply_form.save(commit=False)
+#                 # new_reply.author = User_information.objects.get(username=user_id)
+#                 # new_reply.comment = parent_comment
+#                 # new_reply.save()
+#                 # return redirect('post_detail', pk=pk)
+#                 new_reply = reply_form.save(commit=False)
+#                 parent_comment_id = request.POST.get('comment_id')
+#                 print(f"Received comment_id: {parent_comment_id}")
+#                 if parent_comment_id:
+#                     parent_comment = get_object_or_404(Comment, id=parent_comment_id)
+#                     new_reply.comment = parent_comment
+#                 else:
+#                     parent_reply_id = request.POST.get('parent_reply_id')
+                    
+#                 print(f"Received parent_reply_id: {parent_reply_id}")
+#                 parent_reply = None
+#                 if parent_reply_id:
+#                     parent_reply = get_object_or_404(Comment_Reply, id=parent_reply_id)
+#                     # 최상위 부모 댓글을 찾는 로직
+#                     while parent_reply.parent:  # 부모가 있을 경우 계속 올라감
+#                         parent_reply = parent_reply.parent
+
+#                     # 최상위 부모 댓글을 new_reply.comment에 설정
+#                     new_reply.comment = parent_reply.comment 
+#                     # 여기서 parent_reply.comment는 최상위 부모 댓글
+#                     print(new_reply.comment)
+                
+#                 new_reply.author = User_information.objects.get(username=user_id)
+#                 # new_reply.comment=Comment.objects.get(comment=)
+#                 new_reply.parent = parent_reply
+#                 new_reply.save()
+#                 # print(f"Parent Comment: {parent_comment}")
+#                 print(f"Parent Reply: {parent_reply}")
+#                 print(f"New Reply: {new_reply}")
+#                 return redirect('post_detail', pk=pk)
+#     return redirect('post_detail', pk=pk)
+
+def save_comment(request, pk):  # 댓글 저장
+    post = get_object_or_404(Post_information, pk=pk)
     user_id = request.session.get('username')
+
     if request.method == 'POST':
         if 'comment_submit' in request.POST:
-            
-            print("save commmmmment")
+            # 일반 댓글 처리
             comment_form = CommentForm(request.POST)
             if comment_form.is_valid():
                 new_comment = comment_form.save(commit=False)
                 new_comment.author = User_information.objects.get(username=user_id)
                 new_comment.post = post
                 new_comment.save()
-                print(new_comment)
                 return redirect('post_detail', pk=pk)
             else:
                 print(comment_form.errors)
-                
+
         elif 'reply_submit' in request.POST:
+            # 대댓글 처리
+            print("대댓글")
             reply_form = CommentReplyForm(request.POST)
             if reply_form.is_valid():
-                # comment_id = request.POST.get('comment_id')
-                # parent_comment = get_object_or_404(Comment, id=comment_id)
-                # new_reply = reply_form.save(commit=False)
-                # new_reply.author = User_information.objects.get(username=user_id)
-                # new_reply.comment = parent_comment
-                # new_reply.save()
-                # return redirect('post_detail', pk=pk)
                 new_reply = reply_form.save(commit=False)
-                parent_comment_id = request.POST.get('comment_id')
+                new_reply.author = User_information.objects.get(username=user_id)
+                print(request.POST)
+                print(request)
+                # 부모 댓글 또는 대댓글 ID 가져오기
+                parent_comment_id = request.POST.get('parent_id')
                 print(f"Received comment_id: {parent_comment_id}")
-                if parent_comment_id:
+                count=Comment.objects.all().count()
+                print(count)
+                if int(parent_comment_id) <= count:
                     parent_comment = get_object_or_404(Comment, id=parent_comment_id)
                     new_reply.comment = parent_comment
                 else:
+                    # 대댓글의 대댓글 처리
                     parent_reply_id = request.POST.get('parent_reply_id')
-                    
-                print(f"Received parent_reply_id: {parent_reply_id}")
-                parent_reply = None
-                if parent_reply_id:
-                    parent_reply = get_object_or_404(Comment_Reply, id=parent_reply_id)
-                    # 최상위 부모 댓글을 찾는 로직
-                    while parent_reply.parent:  # 부모가 있을 경우 계속 올라감
-                        parent_reply = parent_reply.parent
+                    print(f"Received parent_reply_id: {parent_reply_id}")
+                    if parent_reply_id:
+                        parent_reply = get_object_or_404(Comment_Reply, id=parent_reply_id)
+                        new_reply.parent = parent_reply
+                        # while parent_reply.parent:  # 최상위 부모 댓글 찾기
+                        #     parent_reply = parent_reply.parent
+                        # new_reply.comment = parent_reply.comment  # 최상위 부모 댓글 설정
 
-                    # 최상위 부모 댓글을 new_reply.comment에 설정
-                    new_reply.comment = parent_reply.comment 
-                    # 여기서 parent_reply.comment는 최상위 부모 댓글
-                    print(new_reply.comment)
-                
-                new_reply.author = User_information.objects.get(username=user_id)
-                # new_reply.comment=Comment.objects.get(comment=)
-                new_reply.parent = parent_reply
                 new_reply.save()
-                # print(f"Parent Comment: {parent_comment}")
-                print(f"Parent Reply: {parent_reply}")
-                print(f"New Reply: {new_reply}")
                 return redirect('post_detail', pk=pk)
+
     return redirect('post_detail', pk=pk)
 
 

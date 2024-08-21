@@ -5,12 +5,13 @@
     <button onclick="likeComment({{ comment.id }})">좋아요</button>
 
     {% if user in user_check %}
-        <button onclick="toggleReplyForm({{ comment.id }}, false)">대댓글</button>
+        <button onclick="toggleReplyForm({{ comment.id }}, true )">대댓글</button>
         <div id="reply-form-{{ comment.id }}" style="display: none;">
             <form method="post" action="{% url 'save_comment' post.pk %}">
                 {% csrf_token %}
                 <textarea name="content" placeholder="대댓글을 입력하세요." rows="2"></textarea>
                 <input type="hidden" name="parent_id" value="{{ comment.id }}">
+                <input type="hidden" name="parent_reply_id" value="{{ comment.id }}">
                 <button type="submit" name="reply_submit">대댓글 작성</button>
             </form>
         </div>
@@ -18,7 +19,53 @@
 
     <ul class="replies-list" style="margin-left: 20px;">
         {% for reply in comment.replies.all %}
-            {% include 'comment_template.html' with comment=reply %}
+            {% include 'book/comment_template.html' with comment=reply %}
         {% endfor %}
     </ul>
 </li>
+{% comment %} 
+
+def save_comment(request, pk):  # 댓글 저장
+    post = get_object_or_404(Post_information, pk=pk)
+    user_id = request.session.get('username')
+
+    if request.method == 'POST':
+        if 'comment_submit' in request.POST:
+            # 일반 댓글 처리
+            comment_form = CommentForm(request.POST)
+            if comment_form.is_valid():
+                new_comment = comment_form.save(commit=False)
+                new_comment.author = User_information.objects.get(username=user_id)
+                new_comment.post = post
+                new_comment.save()
+                return redirect('post_detail', pk=pk)
+            else:
+                print(comment_form.errors)
+
+        elif 'reply_submit' in request.POST:
+            # 대댓글 처리
+            reply_form = CommentReplyForm(request.POST)
+            if reply_form.is_valid():
+                new_reply = reply_form.save(commit=False)
+                new_reply.author = User_information.objects.get(username=user_id)
+
+                # 부모 댓글 또는 대댓글 ID 가져오기
+                parent_comment_id = request.POST.get('parent_id')
+                if parent_comment_id:
+                    parent_comment = get_object_or_404(Comment, id=parent_comment_id)
+                    new_reply.comment = parent_comment
+                else:
+                    # 대댓글의 대댓글 처리
+                    parent_reply_id = request.POST.get('parent_reply_id')
+                    if parent_reply_id:
+                        parent_reply = get_object_or_404(Comment_Reply, id=parent_reply_id)
+                        new_reply.parent = parent_reply
+                        while parent_reply.parent:  # 최상위 부모 댓글 찾기
+                            parent_reply = parent_reply.parent
+                        new_reply.comment = parent_reply.comment  # 최상위 부모 댓글 설정
+
+                new_reply.save()
+                return redirect('post_detail', pk=pk)
+
+    return redirect('post_detail', pk=pk)
+ {% endcomment %}

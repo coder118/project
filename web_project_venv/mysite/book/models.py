@@ -82,7 +82,7 @@ class Comment(models.Model):
 class Comment_Reply(models.Model):
     parent = models.ForeignKey('self', null=True, blank=True, related_name='replies', on_delete=models.CASCADE)
     
-    comment = models.ForeignKey(Comment, related_name='replies', on_delete=models.CASCADE)  # 댓글과의 관계
+    comment = models.ForeignKey(Comment, null=True, blank=True, related_name='replies', on_delete=models.CASCADE)  # 댓글과의 관계
     author = models.ForeignKey(User_information, on_delete=models.CASCADE)  # 작성자
     content = models.TextField(null=False)  # 대댓글 내용
     created_at = models.DateTimeField(auto_now_add=True)  # 작성 시간
