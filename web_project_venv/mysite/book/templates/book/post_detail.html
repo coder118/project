@@ -98,7 +98,101 @@
         background-color: #000;
         margin: 0 15px;
     }
-    
+
+    .post-detail-container {
+        padding: 20px;
+    }
+    .post-header {
+        background-color: #f9f9f9;
+        padding: 10px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    .post-meta {
+        color: #777;
+        font-size: 0.9em;
+    }
+    .post-body {
+        padding: 20px;
+        background-color: #fff;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        margin-top: 10px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    .comment-form {
+        display: flex; /* Flexbox 사용 */
+        align-items: flex-start; /* 세로 정렬 */
+    }
+    .comments-section {
+        margin-top: 20px;
+    }
+    .comments-section textarea {
+        width: 100%; /* 댓글 창의 너비에 맞추기 */
+        box-sizing: border-box; /* 패딩과 경계선 포함하여 전체 너비 계산 */
+        min-height: 100px; /* 최소 높이 설정 */
+        margin-right: 10px;
+        resize: vertical; /* 세로 방향으로만 크기 조절 가능 */
+    }
+    .comment-form button {
+        box-sizing: border-box; /* 패딩과 경계선 포함하여 전체 너비 계산 */
+        min-height: 100px; /* 최소 높이 설정 */
+        resize: vertical;
+    }
+    .comments-list {
+        {% comment %} margin-top: 20px; {% endcomment %}
+        list-style-type: none;
+        padding: 0;
+    }
+    .comment-item {
+        {% comment %} margin-bottom: 20px; /* 댓글 간의 간격 추가 */ {% endcomment %}
+    }
+
+    .comment-box {
+        padding: 10px 0;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        background-color: #f9f9f9;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    } 
+    .comment-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    .comment-author {
+        font-weight: bold;
+        margin-bottom: 5px;
+        font-size: 1.2em; /* 닉네임을 더 크게 표시 */
+        color: #333; /* 닉네임 강조 */
+    }
+    .comment-meta {
+        text-align: right;
+        font-size: 0.9em;
+        color: #777;
+    }
+    .comment-content { 
+        margin-top: 5px;
+        font-size: 1em;
+        line-height: 1.5em;
+        color: #444;
+    }
+    .reply-form {
+        {% comment %} margin-top: 10px; {% endcomment %}
+        {% comment %} margin-left: 20px; /* 대댓글을 들여쓰기하여 계층 구조를 나타냄 */ {% endcomment %}
+    }
+    .replies-list {
+        {% comment %} margin-top: 10px; {% endcomment %}
+        {% comment %} margin-left: 20px; /* 대댓글을 들여쓰기하여 계층 구조를 나타냄 */ {% endcomment %}
+        {% comment %} border-bottom: 1px solid #ddd; /* 대댓글 경계선 */ {% endcomment %}
+        {% comment %} border-top: 1px solid #ddd; /* 대댓글 경계선 */ {% endcomment %}
+        
+        {% comment %} padding-left: 10px; /* 경계선과의 간격 */ {% endcomment %}
+
+        
+    }
     </style>
     <script>
         function showSignupPopup() {
@@ -155,13 +249,15 @@
     <div class="post-detail-container">
         <div class="post-content">
             <h1>{{ post.title }}</h1>
+            <span>{{ post.created_at|date:"Y-m-d H:i" }}</span> 
             <div class="post-meta">
-                <span>{{ post.created_at|date:"Y-m-d H:i" }}</span> |
+                
                 <span>{{ post.author.nickname }}</span>
-                <span>{{ post.author.username }}</span>
+                {% comment %} <span>{{ post.author.username }}</span> {% endcomment %}
                 <span>조회수{{post.views}}</span>
                 
             </div>
+            <hr> {% comment %} 상단과 본문을 구분 {% endcomment %}
             <div class="post-body">
                 {{ post.content|linebreaks }}
             </div>
@@ -178,10 +274,10 @@
 
         <!-- 댓글 작성 섹션 -->
         <div class="comments-section">
-            <h3>댓글</h3>
+            <h3>댓글 (총 {{ post.comment.all|length }}개)</h3>
             {% if user in user_check %} 
             {% comment %} user.is_authenticated  {% endcomment %}
-                <form method="post" action="{% url 'save_comment' post.pk %}">
+                <form method="post" action="{% url 'save_comment' post.pk %}" class = "comment-form">
                     {% csrf_token %}
                     <textarea name="content" placeholder="댓글을 입력하세요." rows="4"></textarea>
                     <button type="submit" name="comment_submit">댓글 작성</button>
@@ -195,6 +291,7 @@
                 {% for comment in post.comments.all %}
                     
                     {% include 'book/comment_template.html' with comment=comment %}
+                    
                 {% endfor %}
             </ul>
         </div>

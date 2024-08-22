@@ -160,6 +160,15 @@ def save_comment(request, pk):  # 댓글 저장
                 # 부모 댓글 또는 대댓글 ID 가져오기
                 parent_comment_id = request.POST.get('parent_id')
                 print(f"Received comment_id: {parent_comment_id}")
+#                 너무 큰 허점이 있다.
+# count 값이 곧 comment 디비의 값들의 개수이다. 
+# 난 지금 parent_id하고 parent_reply_id를 똑같이 받아오는 중이다.
+
+# 들어온 id값이 count보다 작거나 같다면 댓글 아래 대댓글을 달 수 있다. 하지만 
+# 값이 커진다면 대댓글의 대댓글을 달수가 있는 것이다. 
+
+# comment디비의 count값이 적으면 괜찮을 수도 있지만 값이 커지면 커지고 comment_reply를 달려고 할 경우에는 댓글이 이상한 곳에 달릴 경우가 생긴다.
+
                 count=Comment.objects.all().count()
                 print(count)
                 if int(parent_comment_id) <= count:
