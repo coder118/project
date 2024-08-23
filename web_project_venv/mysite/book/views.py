@@ -54,10 +54,14 @@ def post_detail(request, pk):
     #comments = Comment.objects.filter(post=post)  # 댓글 모델을 사용하여 해당 게시물에 대한 댓글 가져오기
     other_posts = Post_information.objects.exclude(pk=pk)  # 현재 게시물을 제외한 다른 게시물 가져오기
     post.views += 1
+    user_info = User_information.objects.filter(username=request.session.get('username')).first()
+    print(type(user_info))
+    print(type(usernames))
     post.save() 
     context = {
         'post': post,
-        'user':request.session.get('username'),
+        'user':user_info,
+        'comment_user':request.session.get('username'),
         'user_check':usernames, # 유저 정보 데이터 베이스에서 유저 아이디 값을 가져와서 현재 들어와있는 유저가 usercheck안에 존재 하면 댓글 작성 가능하게 
         'other_posts': other_posts,
         
@@ -65,7 +69,8 @@ def post_detail(request, pk):
         'comment_form': CommentForm(),  # 댓글 폼 추가
         'reply_form': CommentReplyForm(),  # 대댓글 폼 추가
     }
-    # print('comment',context)
+    # print('comme/nt',context)
+    print(type(context['user']),type(post.author))
     return render(request, 'book/post_detail.html', context) 
 
 # def save_comment(request, pk): #댓글 저장
@@ -171,7 +176,7 @@ def save_comment(request, pk):  # 댓글 저장
 
                 count=Comment.objects.all().count()
                 print(count)
-                if int(parent_comment_id) <= count:
+                if int(parent_comment_id) <= count :# pk를 잘이용하면 될 것 같다. 해당 게시물내에 있는 댓글이어야 한다. 
                     parent_comment = get_object_or_404(Comment, id=parent_comment_id)
                     new_reply.comment = parent_comment
                 else:
@@ -407,41 +412,92 @@ def post_save(request):
     user_id = request.session.get('username')  # 세션에 저장된 사용자계졍의 값을 가져온다.
     if request.method == 'POST':
         print('POST POST request received') 
-        
-        print("현재 로그인된 사용자:",user_id )
         form = PostForm(request.POST)
         
-        if form.is_valid():
-            post = form.save(commit=False)  # 모델 인스턴스를 생성하되 아직 저장하지 않음
-            
-            post.author=  User_information.objects.get(username=user_id)#바로 세션값을 사용할 수 없어서 인스턴스 값을 사용을 해준다.
-            print("저장 전 created_at:", post.created_at)
-            print("저장 전 updated_at:", post.updated_at)
-            
+        
+        post_id = request.POST.get('post_id')  # 숨겨진 필드로 게시물 ID를 받아옴
+        print(post_id)
+        if post_id:  # 수정 작업인 경우
+            print("adujust")
+            print(request.POST.get('title'))
+            post = Post_information.objects.get(id=post_id)
+            post.title = request.POST.get('title')
+            post.category = request.POST.get('category')
+            post.content = request.POST.get('content')
+            post.status = request.POST.get('status')
+            post.tag = request.POST.get('tag-input')
+            post.author=  User_information.objects.get(username=user_id)
             post.created_at = timezone.now()  # 현재 시간으로 설정
-            post.updated_at = timezone.now()   # 현재 시간으로 설정
+            post.save()
+            return redirect('index')
             
-            post.save()  # 모델에 데이터 저장
-            print("저장 후 created_at:", post.created_at)
-            print("저장 후 updated_at:", post.updated_at)
-            # create= post.created_at
-            # update= post.updated_at
             
-            # post.created_at = create
-            # post.updated_at = update
-            # # post.refresh_from_db()
-            # # post.created_at=post.created_at
-            # # post.updated_at=post.updated_at
-            # post.save() 
-            return redirect('index')  # 성공 시 리디렉션
+        
+        if form.is_valid():
+                    post = form.save(commit=False)  # 모델 인스턴스를 생성하되 아직 저장하지 않음
+                    
+                    post.author=  User_information.objects.get(username=user_id)#바로 세션값을 사용할 수 없어서 인스턴스 값을 사용을 해준다.
+                    print("저장 전 created_at:", post.created_at)
+                    print("저장 전 updated_at:", post.updated_at)
+                    
+                    post.created_at = timezone.now()  # 현재 시간으로 설정
+                    post.updated_at = timezone.now()   # 현재 시간으로 설정
+                    
+                    post.save()  # 모델에 데이터 저장
+                    print("저장 후 created_at:", post.created_at)
+                    print("저장 후 updated_at:", post.updated_at)
+                    # create= post.created_at
+                    # update= post.updated_at
+                    
+                    # post.created_at = create
+                    # post.updated_at = update
+                    # # post.refresh_from_db()
+                    # # post.created_at=post.created_at
+                    # # post.updated_at=post.updated_at
+                    # post.save() 
+                    return redirect('index')  # 성공 시 리디렉션
         else:
-            print(form.errors)
-            
+                    print(form.errors)
+                    
     else:
         form = PostForm() 
     return render(request, 'book/index.html', {'form': form})
         
 
+def edit_post(request, pk):
+    #post = get_object_or_404(Post_information, pk=pk)
+    post = Post_information.objects.get(id=pk)
+    
+    if request.method == 'POST':
+        post.save()
+        return render(request, 'book/edit_post.html', {'post': post})
+     
+    # post = get_object_or_404(Post_information, pk=pk)
+    # print(post)
+    # if request.method == 'POST':
+    #     # 기존 게시물의 내용을 업데이트합니다.
+    #     print(request.POST.get('title'))
+    #     post.title = request.POST.get('title')
+    #     post.category = request.POST.get('category')
+    #     post.content = request.POST.get('content')
+    #     post.status = request.POST.get('status')
+    #     post.tag = request.POST.get('tag-input')  # 태그도 업데이트합니다.
+        
+    #     post.save()  # 변경사항을 저장합니다.
+        
+    #     return redirect('index')  # 수정 후 이동할 페이지를 설정합니다.
+    
+    # return render(request, 'book/edit_post.html', {'post': post})
+        
+   
+
+
+
+def delete_post(request, pk):
+    post = get_object_or_404(Post_information, pk=pk)
+    if request.method == 'POST':
+        post.delete()
+        return redirect('index')  # 삭제 후 리디렉션
 
 # class PostListView(ListView):
 #     print("postlist working")

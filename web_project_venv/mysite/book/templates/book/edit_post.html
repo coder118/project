@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>책 이야기 - 게시글 작성</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: white;
+            margin: 0;
+            padding: 20px;
+        }
+        .header {
+            margin-bottom: 20px;
+            font-size: 24px;
+            font-weight: bold;
+            color: #333;
+        }
+        .post_center{
+            margin-right:30px;
+            margin-left:30px;
+            margin-top:50px;
+            margin-bottom:25px;
+            padding:5px;
+        }
+        .form-group {
+            margin-top:20px;
+            margin-bottom: 20px;
+        }
+        .form-group input[type="text"], 
+        .form-group textarea {
+            width: 99%;
+            padding: 10px;
+            font-size: 16px;
+            border: none;
+            {% comment %} border-bottom: 2px solid #ddd; {% endcomment %}
+            background-color: transparent;
+            outline: none;
+        }
+        .form-group select{
+            width: 100%;
+            padding: 10px;
+            font-size: 16px;
+            border: none;
+            border-bottom: 2px solid #ddd;
+            background-color: transparent;
+            outline: none;
+        }
+        .tag-input textarea{
+            width: 100%;
+            padding: 10px;
+            font-size: 16px;
+            border: none;
+            background-color: transparent;
+            outline: none;
+        }
+        .form-group input[type="text"]:focus, 
+        .form-group select:focus, 
+        .form-group textarea:focus {
+            border-bottom: 2px solid #333;
+        }
+        .form-group textarea {
+            resize: none;
+            height: 300px;
+        }
+        .form-group .status {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .form-group .status label {
+            display: inline-block;
+            margin-right: 10px;
+            font-weight: normal;
+        }
+        .form-group .status select {
+            width: auto;
+            min-width: 150px;
+        }
+        .submit-button {
+            background-color: black;
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 18px;
+            margin-top: 20px;
+            width: 30%;
+            box-sizing: border-box;            
+        }
+        .submit-button:hover {
+            background-color: #45a049;
+        }
+        .button-container {
+            display: flex;              /* Flexbox 사용 */
+            justify-content: center;    /* 가로 중앙 정렬 */
+            margin-top: 20px;          /* 버튼과 위 요소 간 간격 조정 */
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <a href = "{% url 'index' %}">책 이야기</a>
+    </div>
+    <form method="post" action="{% url 'post_save' %}">
+
+        {% csrf_token %}
+        <input type="hidden" name="post_id" value="{{ post.id }}"> 
+        <div class="post_center">
+            <div class="form-group">
+                {% comment %} {{ form.title }} {% endcomment %}
+                <input type="text" id="title" name="title" placeholder="제목을 입력하세요" value="{{ post.title}}"  required>
+            </div>
+            <div class="form-group">
+                <select id="category" name="category"   >
+                    <option value="">카테고리를 선택하세요</option>
+                    <option value="category1"{% if post.category == 'category1' %}selected{% endif %}>카테고리 1</option>
+                    <option value="category2"{% if post.category == 'category2' %}selected{% endif %}>카테고리 2</option>
+                    <!-- 다른 카테고리 추가 가능 -->
+                </select>
+            </div>
+            <div class="form-group">
+                <textarea id="content" name="content" placeholder="내용을 입력하세요" required>{{post.content}}</textarea>
+            </div>
+            <div class="form-group status">
+                <label for="status">상태:</label>
+                <select id="status" name="status"  required>
+                    <option value="published"{% if post.status == 'published' %}selected{% endif %}>공개</option>
+                    <option value="unpublished" {% if post.status == 'unpublished' %}selected{% endif %}>비공개</option>
+                </select>
+            </div>
+            <div class="tag-input">
+                <textarea id="tag-input" name="tag-input" placeholder="#태그" >{{post.tag}}</textarea>
+            </div>
+        </div>
+        <div class="button-container"> 
+            <button type="submit" class="submit-button">수정 완료</button>
+        </div>
+    </form>
+</body>
+</html>

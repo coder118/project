@@ -13,7 +13,7 @@
     
 
         <div class ="comment-meta">
-        {% if user in user_check %}
+        {% if comment_user in user_check %}
             <button onclick="toggleReplyForm({{ comment.id }}, true )">대댓글</button>
             <div id="reply-form-{{ comment.id }}" class="reply-form" style="display: none;">
                 <form method="post" action="{% url 'save_comment' post.pk %}">

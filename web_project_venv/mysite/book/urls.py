@@ -22,6 +22,8 @@ urlpatterns = [
 
     path('post_create/',views.post_view,name='post_view'),
     path('post_create/post_save/',views.post_save,name='post_save'),
+    path('<int:pk>/edit/', views.edit_post, name='edit_post'),
+    path('<int:pk>/delete/', views.delete_post, name='delete_post'),
     # path('', views.PostListView.as_view(), name='post_list'),
     path('<int:pk>/', views.post_detail, name='post_detail'),
     path('<int:pk>/comment/', views.save_comment, name='save_comment'),
