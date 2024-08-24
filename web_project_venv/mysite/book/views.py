@@ -173,22 +173,41 @@ def save_comment(request, pk):  # 댓글 저장
 # 값이 커진다면 대댓글의 대댓글을 달수가 있는 것이다. 
 
 # comment디비의 count값이 적으면 괜찮을 수도 있지만 값이 커지면 커지고 comment_reply를 달려고 할 경우에는 댓글이 이상한 곳에 달릴 경우가 생긴다.
-
-                count=Comment.objects.all().count()
-                print(count)
-                if int(parent_comment_id) <= count :# pk를 잘이용하면 될 것 같다. 해당 게시물내에 있는 댓글이어야 한다. 
-                    parent_comment = get_object_or_404(Comment, id=parent_comment_id)
+                # post_comment=Comment.objects.filter(post_id=pk) # 현 게시판의 댓글 목록 반환+ 부모 댓글의 값들만 
+                # count=Comment.objects.all().count()
+                # print(count)
+                # print(post_comment)
+                # 결국엔 comment 내부에 값이 존재하지 않을때 reply값이 실행이 되어야 했던 거니까 try-except문을 사용함으로 해결
+                
+               
+                
+                
+                try:
+                    parent_comment = Comment.objects.get( id=parent_comment_id) 
                     new_reply.comment = parent_comment
-                else:
-                    # 대댓글의 대댓글 처리
+                except Comment.DoesNotExist:
                     parent_reply_id = request.POST.get('parent_reply_id')
                     print(f"Received parent_reply_id: {parent_reply_id}")
                     if parent_reply_id:
                         parent_reply = get_object_or_404(Comment_Reply, id=parent_reply_id)
                         new_reply.parent = parent_reply
-                        # while parent_reply.parent:  # 최상위 부모 댓글 찾기
-                        #     parent_reply = parent_reply.parent
-                        # new_reply.comment = parent_reply.comment  # 최상위 부모 댓글 설정
+                
+                # if parent_comment_id :# pk를 잘이용하면 될 것 같다. 해당 게시물내에 있는 댓글이어야 한다. 
+                #     parent_comment = get_object_or_404(Comment, id=parent_comment_id)
+                #     print(parent_comment)
+                #     if parent_comment in post_comment:
+                #         print("success")
+                #         new_reply.comment = parent_comment
+                #     else:
+                #         # 대댓글의 대댓글 처리
+                #         parent_reply_id = request.POST.get('parent_reply_id')
+                #         print(f"Received parent_reply_id: {parent_reply_id}")
+                #         if parent_reply_id:
+                #             parent_reply = get_object_or_404(Comment_Reply, id=parent_reply_id)
+                #             new_reply.parent = parent_reply
+                            # while parent_reply.parent:  # 최상위 부모 댓글 찾기
+                            #     parent_reply = parent_reply.parent
+                            # new_reply.comment = parent_reply.comment  # 최상위 부모 댓글 설정
 
                 new_reply.save()
                 return redirect('post_detail', pk=pk)
