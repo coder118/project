@@ -223,6 +223,18 @@
                 replyForm.style.display = "none";
             }
         }
+
+
+        function toggleEditForm(commentId) {
+            const editForm = document.getElementById(`edit-form-${commentId}`);
+            
+            // 폼이 보이는 상태인지 숨겨진 상태인지 확인
+            if (editForm.style.display === "none" || editForm.style.display === "") {
+                editForm.style.display = "block";  // 폼을 보이게 함
+            } else {
+                editForm.style.display = "none";  // 폼을 숨김
+            }
+        }
     
     </script>
 </head>

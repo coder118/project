@@ -24,6 +24,10 @@ urlpatterns = [
     path('post_create/post_save/',views.post_save,name='post_save'),
     path('<int:pk>/edit/', views.edit_post, name='edit_post'),
     path('<int:pk>/delete/', views.delete_post, name='delete_post'),
+    
+    path('<int:pk>/edit_comment/', views.edit_comment, name='edit_comment'),
+    path('<int:pk>/delete_comment/', views.delete_comment, name='delete_comment'),
+    
     # path('', views.PostListView.as_view(), name='post_list'),
     path('<int:pk>/', views.post_detail, name='post_detail'),
     path('<int:pk>/comment/', views.save_comment, name='save_comment'),

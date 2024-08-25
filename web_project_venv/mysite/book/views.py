@@ -73,68 +73,7 @@ def post_detail(request, pk):
     print(type(context['user']),type(post.author))
     return render(request, 'book/post_detail.html', context) 
 
-# def save_comment(request, pk): #댓글 저장
-#     post = get_object_or_404(Post_information, pk=pk)
-#     print(post)
-    
-#     print(request.POST)
-#     user_id = request.session.get('username')
-#     if request.method == 'POST':
-#         if 'comment_submit' in request.POST:
-            
-#             print("save commmmmment")
-#             comment_form = CommentForm(request.POST)
-#             if comment_form.is_valid():
-#                 new_comment = comment_form.save(commit=False)
-#                 new_comment.author = User_information.objects.get(username=user_id)
-#                 new_comment.post = post
-#                 new_comment.save()
-#                 print(new_comment)
-#                 return redirect('post_detail', pk=pk)
-#             else:
-#                 print(comment_form.errors)
-                
-#         elif 'reply_submit' in request.POST:
-#             reply_form = CommentReplyForm(request.POST)
-#             if reply_form.is_valid():
-#                 # comment_id = request.POST.get('comment_id')
-#                 # parent_comment = get_object_or_404(Comment, id=comment_id)
-#                 # new_reply = reply_form.save(commit=False)
-#                 # new_reply.author = User_information.objects.get(username=user_id)
-#                 # new_reply.comment = parent_comment
-#                 # new_reply.save()
-#                 # return redirect('post_detail', pk=pk)
-#                 new_reply = reply_form.save(commit=False)
-#                 parent_comment_id = request.POST.get('comment_id')
-#                 print(f"Received comment_id: {parent_comment_id}")
-#                 if parent_comment_id:
-#                     parent_comment = get_object_or_404(Comment, id=parent_comment_id)
-#                     new_reply.comment = parent_comment
-#                 else:
-#                     parent_reply_id = request.POST.get('parent_reply_id')
-                    
-#                 print(f"Received parent_reply_id: {parent_reply_id}")
-#                 parent_reply = None
-#                 if parent_reply_id:
-#                     parent_reply = get_object_or_404(Comment_Reply, id=parent_reply_id)
-#                     # 최상위 부모 댓글을 찾는 로직
-#                     while parent_reply.parent:  # 부모가 있을 경우 계속 올라감
-#                         parent_reply = parent_reply.parent
 
-#                     # 최상위 부모 댓글을 new_reply.comment에 설정
-#                     new_reply.comment = parent_reply.comment 
-#                     # 여기서 parent_reply.comment는 최상위 부모 댓글
-#                     print(new_reply.comment)
-                
-#                 new_reply.author = User_information.objects.get(username=user_id)
-#                 # new_reply.comment=Comment.objects.get(comment=)
-#                 new_reply.parent = parent_reply
-#                 new_reply.save()
-#                 # print(f"Parent Comment: {parent_comment}")
-#                 print(f"Parent Reply: {parent_reply}")
-#                 print(f"New Reply: {new_reply}")
-#                 return redirect('post_detail', pk=pk)
-#     return redirect('post_detail', pk=pk)
 
 def save_comment(request, pk):  # 댓글 저장
     post = get_object_or_404(Post_information, pk=pk)
@@ -178,10 +117,7 @@ def save_comment(request, pk):  # 댓글 저장
                 # print(count)
                 # print(post_comment)
                 # 결국엔 comment 내부에 값이 존재하지 않을때 reply값이 실행이 되어야 했던 거니까 try-except문을 사용함으로 해결
-                
-               
-                
-                
+
                 try:
                     parent_comment = Comment.objects.get( id=parent_comment_id) 
                     new_reply.comment = parent_comment
@@ -214,6 +150,57 @@ def save_comment(request, pk):  # 댓글 저장
 
     return redirect('post_detail', pk=pk)
 
+
+def edit_comment(request,pk):
+    try:
+        print("parent")
+        parent_comment = Comment.objects.get( id=pk) 
+        print(parent_comment)
+        if request.method == 'POST':
+            #comment_form = CommentForm(request.POST)
+            new_content = request.POST.get('content')
+            print(new_content)
+            parent_comment.content = new_content
+            parent_comment.save()
+            return redirect('post_detail', pk=parent_comment.post.id)
+    except Comment.DoesNotExist:
+        print("reply")
+        parent_reply = Comment_Reply.objects.get( id=pk) 
+        print(parent_reply)
+        if request.method == 'POST':
+           
+            new_reply_content = request.POST.get('content')
+            print(new_reply_content)
+            parent_reply.content = new_reply_content
+            parent_reply.save()
+            
+            try:
+                # 우선 comment 필드에서 게시글 ID를 가져옴
+                post_id = parent_reply.comment.post.id
+            except AttributeError:
+                # 만약 comment 필드가 None이면 parent 필드를 통해 게시글 ID를 가져옴
+                post_id = parent_reply.parent.comment.post.id
+            
+            return redirect('post_detail',pk=post_id)
+               #return render(request, 'book/comment_template.html', {'comment_r': parent_reply })
+       
+def delete_comment(request,pk):
+    try:
+        parent_comment = Comment.objects.get( id=pk) 
+        if request.method == 'POST':
+            parent_comment.delete()
+            return redirect('post_detail',pk=parent_comment.post.id)
+    except Comment.DoesNotExist:
+        parent_reply = Comment_Reply.objects.get( id=pk) 
+        if request.method == 'POST':
+            parent_reply.delete()
+            try:
+                # 우선 comment 필드에서 게시글 ID를 가져옴
+                post_id = parent_reply.comment.post.id
+            except AttributeError:
+                # 만약 comment 필드가 None이면 parent 필드를 통해 게시글 ID를 가져옴
+                post_id = parent_reply.parent.comment.post.id
+            return redirect('post_detail',pk=post_id)
 
 def search_posts(request):
     print('searchpost')
@@ -423,6 +410,7 @@ def post_view(request):
     return render(request, 'book/post_create.html')
 
 from django.utils import timezone
+
 def post_save(request):
     print('post upload')
     
@@ -511,12 +499,15 @@ def edit_post(request, pk):
    
 
 
-
 def delete_post(request, pk):
     post = get_object_or_404(Post_information, pk=pk)
     if request.method == 'POST':
         post.delete()
         return redirect('index')  # 삭제 후 리디렉션
+
+
+                
+        
 
 # class PostListView(ListView):
 #     print("postlist working")

@@ -24,6 +24,22 @@
                     <button type="submit" name="reply_submit">대댓글 작성</button>
                 </form>
             </div>
+            {% if comment.author == user %}
+                <form method="post" action="{% url 'delete_comment' comment.id %}" style="display:inline;">
+                    {% csrf_token %}
+                    <button type="submit" onclick="return confirm('정말로 삭제하시겠습니까?');">삭제</button>
+                </form>
+
+                <button type="button" onclick="toggleEditForm({{ comment.id }})">수정</button>
+
+                <div id="edit-form-{{ comment.id }}" class="edit-form" style="display: none;">
+                    <form method="post" action="{% url 'edit_comment' comment.id %}">
+                        {% csrf_token %}
+                        <textarea name="content" placeholder="댓글을 수정하세요." rows="2">{{ comment.content }}</textarea>
+                        <button type="submit" name="update_submit">수정 완료</button>
+                    </form>
+                </div>
+            {% endif %}
         {% endif %}
         </div>
     </div>
