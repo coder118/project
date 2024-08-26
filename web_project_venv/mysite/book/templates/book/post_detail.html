@@ -287,7 +287,30 @@
                     <button type="submit" onclick="return confirm('정말로 삭제하시겠습니까?');">삭제</button>
                 </form>
             </div>
+            {% comment %} <div>
+                <form method="post" action="{% url 'post_like' post.pk %}" style="display:inline;">
+                    {% csrf_token %}
+                    <button type="submit" onclick="return confirm('회원가입 혹은 로그인을 하셔야 합니다.');">좋아요</button>
+                </form>
+            </div> {% endcomment %}
+
         {% endif %}
+
+        {% if comment_user in user_check %} 
+            <div>
+                <form method="post" action="{% url 'post_like' post.pk %}" style="display:inline;">
+                    {% csrf_token %}
+                    <button type="submit">좋아요</button><p>좋아요 수: {{ like_count }}</p>
+                </form>
+            </div>
+        {%else%}
+            <div>
+                <form method="post"  style="display:inline;">
+                    {% csrf_token %}
+                    <button type="submit" onclick="return confirm('회원가입 혹은 로그인을 하셔야 합니다.');">좋아요</button>
+                </form>
+            </div>
+        {%endif%}
 
         </div>
 

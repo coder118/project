@@ -13,7 +13,7 @@ import json
 from django.views.generic import ListView
 from .models import Post_information
 
-from .models import User_information, Comment, Comment_Reply
+from .models import User_information, Comment, Comment_Reply,Like
 from .models import bookT
 from .models import bookW
 # Create your views here.
@@ -57,6 +57,7 @@ def post_detail(request, pk):
     user_info = User_information.objects.filter(username=request.session.get('username')).first()
     print(type(user_info))
     print(type(usernames))
+    like_count = post.like_users.count()
     post.save() 
     context = {
         'post': post,
@@ -64,6 +65,7 @@ def post_detail(request, pk):
         'comment_user':request.session.get('username'),
         'user_check':usernames, # 유저 정보 데이터 베이스에서 유저 아이디 값을 가져와서 현재 들어와있는 유저가 usercheck안에 존재 하면 댓글 작성 가능하게 
         'other_posts': other_posts,
+        'like_count':like_count, #좋아요 카운팅
         
         'comments': comments,  # 댓글 목록 추가
         'comment_form': CommentForm(),  # 댓글 폼 추가
@@ -506,8 +508,34 @@ def delete_post(request, pk):
         return redirect('index')  # 삭제 후 리디렉션
 
 
+def post_like(request, pk):
+    print('like')
+    post = get_object_or_404(Post_information, pk=pk)
+    user_id = request.session.get('username')
+    print(request.user)
+    
+    user = User_information.objects.get(username=user_id)
+    print(user)
+    if post.like_users.filter(pk=user.pk).exists():
+        print("cancel like button")
+        post.like_users.remove(user)
+        return redirect('post_detail', pk=pk)
+    else:
+        print('add like')
+        post.like_users.add(user)
+    # 이미 좋아요를 누른 경우
+    # if Like.objects.filter(user=user).exists():
+    #     print("cancel like button")
+    #     # 좋아요 취소
+    #     Like.objects.filter(user=user).delete()
+    #     return redirect('post_detail', pk=pk)
+    # print('press like')
+    # # 좋아요 누르기
+    # like = Like.objects.create(user=user)
+    # like.save()
+    return redirect('post_detail', pk=pk)
                 
-        
+      #  , post=post
 
 # class PostListView(ListView):
 #     print("postlist working")

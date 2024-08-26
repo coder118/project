@@ -1,6 +1,7 @@
 import datetime
 from django.db import models
 from django.utils import timezone
+from django.conf import settings
 # Create your models here.
 #model.py라는 파일은 데이터 베이스를 만들어주는 장소라는 듯? 
 
@@ -58,7 +59,10 @@ class Post_information(models.Model):
     content = models.TextField(null=False)                                # 내용
     category = models.CharField(max_length=100, blank=True)               # 카테고리
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='published')  # 상태
+    
     author = models.ForeignKey(User_information, on_delete=models.CASCADE)  # 작성자
+    like_users = models.ManyToManyField(User_information,default=1, related_name='post_like_user',blank =True)
+    
     created_at = models.DateTimeField(auto_now_add=True)                  # 작성일
     updated_at = models.DateTimeField(auto_now=True)                      # 수정일
     tags = models.ManyToManyField('Tag', blank=True)  # 태그 추가
