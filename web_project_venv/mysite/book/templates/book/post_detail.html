@@ -301,6 +301,8 @@
                 <form method="post" action="{% url 'post_like' post.pk %}" style="display:inline;">
                     {% csrf_token %}
                     <button type="submit">좋아요</button><p>좋아요 수: {{ like_count }}</p>
+                    
+                    
                 </form>
             </div>
         {%else%}
@@ -325,7 +327,7 @@
 
         <!-- 댓글 작성 섹션 -->
         <div class="comments-section">
-            <h3>댓글 (총 {{ post.comment.all|length }}개)</h3>
+            <h3>댓글 (총 {{ post.comments.all|length }}개)</h3>
             {% if comment_user in user_check %} 
             {% comment %} user.is_authenticated  {% endcomment %}
                 <form method="post" action="{% url 'save_comment' post.pk %}" class = "comment-form">

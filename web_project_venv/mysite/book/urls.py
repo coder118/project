@@ -33,6 +33,8 @@ urlpatterns = [
     # path('', views.PostListView.as_view(), name='post_list'),
     path('<int:pk>/', views.post_detail, name='post_detail'),
     path('<int:pk>/comment/', views.save_comment, name='save_comment'),
+    path('<int:pk>/comment_like/',views.comment_like, name = "comment_like"),
+    
     path('search_post', views.search_posts, name='search_posts'),
 
 ]

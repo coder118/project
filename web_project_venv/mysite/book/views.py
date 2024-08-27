@@ -49,6 +49,8 @@ def post_detail(request, pk):
     post = get_object_or_404(Post_information, pk=pk)
     
     comments = post.comments.all()  # 해당 게시물에 대한 댓글 가져오기
+    #comments_R = post.comments.comment.all()
+    
     usernames = User_information.objects.values_list('username', flat=True)
     
     #comments = Comment.objects.filter(post=post)  # 댓글 모델을 사용하여 해당 게시물에 대한 댓글 가져오기
@@ -58,7 +60,15 @@ def post_detail(request, pk):
     print(type(user_info))
     print(type(usernames))
     like_count = post.like_users.count()
+    
     post.save() 
+    
+    for comment in comments:
+        comment.like_count = comment.comment_like_users.count()
+        # 대댓글에 대해서도 좋아요 수 추가
+        for reply in comment.replies.all():
+            reply.like_count = reply.commentR_like_users.count()
+    
     context = {
         'post': post,
         'user':user_info,
@@ -68,6 +78,7 @@ def post_detail(request, pk):
         'like_count':like_count, #좋아요 카운팅
         
         'comments': comments,  # 댓글 목록 추가
+        
         'comment_form': CommentForm(),  # 댓글 폼 추가
         'reply_form': CommentReplyForm(),  # 대댓글 폼 추가
     }
@@ -146,7 +157,7 @@ def save_comment(request, pk):  # 댓글 저장
                             # while parent_reply.parent:  # 최상위 부모 댓글 찾기
                             #     parent_reply = parent_reply.parent
                             # new_reply.comment = parent_reply.comment  # 최상위 부모 댓글 설정
-
+                
                 new_reply.save()
                 return redirect('post_detail', pk=pk)
 
@@ -537,6 +548,50 @@ def post_like(request, pk):
                 
       #  , post=post
 
+def comment_like(request,pk):
+    print("commentlike")
+    user_id = request.session.get('username')
+    user = User_information.objects.get(username=user_id)
+    try:
+        comment = Comment.objects.get(id=pk)
+        print(comment)
+        if comment.comment_like_users.filter(pk=user.pk).exists():
+            print("comemntcancel like button")
+            comment.comment_like_users.remove(user)
+           
+        else:
+            print('commentadd like')
+            comment.comment_like_users.add(user)
+        
+        # comment_like_count = comment.comment_like_users.count()
+        # context = {
+        #     'comment_like_count': comment_like_count,
+            
+        # }
+        # pk=comment.post.id
+        # return render(request, 'book/post_detail.html', context)
+        return redirect('post_detail', pk=comment.post.id)
+    
+    except Comment.DoesNotExist:
+        print("commentreply")
+        comment_reply = Comment_Reply.objects.get(id=pk) 
+        try:
+                # 우선 comment 필드에서 게시글 ID를 가
+            post_id = comment_reply.comment.post.id
+        except AttributeError:
+                # 만약 comment 필드가 None이면 parent 필드를 통해 게시글 ID를 가져옴
+            post_id = comment_reply.parent.comment.post.id
+        print(comment_reply)
+        if comment_reply.commentR_like_users.filter(pk=user.pk).exists():
+            print("cpmmentReplycancel like button")
+            comment_reply.commentR_like_users.remove(user)
+        else:
+            print('comment reply add like')
+            comment_reply.commentR_like_users.add(user)
+        
+        
+        return redirect('post_detail', pk=post_id)
+    
 # class PostListView(ListView):
 #     print("postlist working")
 #     model = Post_information

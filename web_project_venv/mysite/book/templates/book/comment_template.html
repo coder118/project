@@ -5,8 +5,49 @@
             <strong class="comment-author">{{ comment.author.nickname }}</strong>
             <div class="comment-meta">
                 <span>{{ comment.created_at|date:"Y-m-d H:i" }}</span>
-                <span>좋아요: {{ comment.likes }}</span>
-                <button onclick="likeComment({{ comment.id }})">좋아요</button>
+                {% comment %} <span>좋아요: {{ comment.likes }}</span>
+                <button onclick="likeComment({{ comment.id }})">좋아요</button> {% endcomment %}
+                {% comment %} {% if comment_user in user_check %} 
+                    <div>
+                        <form method="post" action="{% url 'comment_like' comment.id %}" style="display:inline;">
+                            {% csrf_token %}
+                            <button type="submit">좋아요</button> <span>좋아요: {{ comment.comment_like_users.count  }}</span> 
+                            <span>좋아요: {{ reply.commentR_like_users.count }}</span>
+                        </form>
+                    </div> 
+                {%else%}
+                    <div>
+                        <form method="post"  style="display:inline;">
+                            {% csrf_token %}
+                            <button type="submit" onclick="return confirm('회원가입 혹은 로그인을 하셔야 합니다.');">좋아요</button>
+                        </form>
+                    </div>
+                {%endif%} {% endcomment %}
+                
+                {% if comment.parent or comment.comment %}
+                    <!-- 대댓글의 좋아요 처리 -->
+                    <span>좋아요: {{ comment.commentR_like_users.count }}</span>
+                    <span>{{comment.is_reply}}</span>
+                    {% if comment_user in user_check %}
+                        <form method="post" action="{% url 'comment_like' comment.id %}" style="display:inline;">
+                            {% csrf_token %}
+                            <button type="submit">좋아요</button>
+                        </form>
+                    {% else %}
+                        <button type="button" onclick="return confirm('회원가입 혹은 로그인을 하셔야 합니다.');">좋아요</button>
+                    {% endif %}
+                {% else %}
+                    <!-- 댓글의 좋아요 처리 -->
+                    <span>좋아요: {{ comment.comment_like_users.count }}</span>
+                    {% if comment_user in user_check %}
+                        <form method="post" action="{% url 'comment_like' comment.id %}" style="display:inline;">
+                            {% csrf_token %}
+                            <button type="submit">좋아요</button>
+                        </form>
+                    {% else %}
+                        <button type="button" onclick="return confirm('회원가입 혹은 로그인을 하셔야 합니다.');">좋아요</button>
+                    {% endif %}
+                {% endif %}
             </div>
         </div>
         <div class="comment-content">{{ comment.content }}</div>

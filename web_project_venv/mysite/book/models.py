@@ -75,7 +75,10 @@ class Post_information(models.Model):
 
 class Comment(models.Model):
     post = models.ForeignKey(Post_information, related_name='comments', on_delete=models.CASCADE)  # 게시물과의 관계
+    
     author = models.ForeignKey(User_information, on_delete=models.CASCADE)  # 작성자
+    comment_like_users = models.ManyToManyField(User_information,default=1, related_name='comment_like_user',blank =True)
+    
     content = models.TextField(null=False)  # 댓글 내용
     created_at = models.DateTimeField(auto_now_add=True)  # 작성 시간
     likes = models.IntegerField(default=0)  # 좋아요 수
@@ -87,7 +90,10 @@ class Comment_Reply(models.Model):
     parent = models.ForeignKey('self', null=True, blank=True, related_name='replies', on_delete=models.CASCADE)
     
     comment = models.ForeignKey(Comment, null=True, blank=True, related_name='replies', on_delete=models.CASCADE)  # 댓글과의 관계
+    
     author = models.ForeignKey(User_information, on_delete=models.CASCADE)  # 작성자
+    commentR_like_users = models.ManyToManyField(User_information,default=1, related_name='commentR_like_user',blank =True)
+    
     content = models.TextField(null=False)  # 대댓글 내용
     created_at = models.DateTimeField(auto_now_add=True)  # 작성 시간
     likes = models.IntegerField(default=0)  # 좋아요 수
