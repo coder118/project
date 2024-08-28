@@ -590,7 +590,23 @@
                 </span>
             </div> {% endcomment %}
             
+            <div>
+                <form method="get" action="{% url 'post_sort' %}" style="display:inline;">
+                    
+                    <input type="hidden" name="sort" value="views_desc">
+                    <button type="submit" {% if request.GET.sort == 'views_desc' %}class="active"{% endif %}>
+                        조회수 높은 순
+                    </button>
+                </form>
             
+                <form method="get" action="{% url 'post_sort' %}" style="display:inline;">
+                    {% comment %} {% csrf_token %} {% endcomment %}
+                    <input type="hidden" name="sort" value="views_asc">
+                    <button type="submit" {% if request.GET.sort == 'views_asc' %}class="active"{% endif %}>
+                        조회수 낮은 순
+                    </button>
+                </form>
+            </div>
 
             {% if results == 1%} 
                     <h2>검색 결과 </h2>

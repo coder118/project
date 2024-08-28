@@ -86,6 +86,29 @@ def post_detail(request, pk):
     print(type(context['user']),type(post.author))
     return render(request, 'book/post_detail.html', context) 
 
+def post_sort(request):
+    print("sort")
+    sort_option = request.GET.get('sort')
+    # 기본 정렬: 최신순
+    if sort_option == 'views_desc':
+        print('-view')
+        posts = Post_information.objects.all().order_by('-views')
+    elif sort_option == 'views_asc':
+        print("view")
+        posts = Post_information.objects.all().order_by('views')
+    else:
+        posts = Post_information.objects.all().order_by('-created_at')
+    
+    # 페이지네이션 추가
+    paginator = Paginator(posts, 10)  # 페이지 당 10개의 게시글
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+    
+    context = {
+        'page_obj': page_obj,
+    }
+    print(context)
+    return render(request, 'book/index.html', context)
 
 
 def save_comment(request, pk):  # 댓글 저장
