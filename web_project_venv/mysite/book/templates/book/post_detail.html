@@ -214,6 +214,24 @@
     #scrollToTopBtn:hover {
         background-color: #333; /* 마우스 오버 시 배경색 */
     }
+
+    .best-comments {
+        margin-bottom: 20px;
+    }
+    
+    .best-comment-box {
+        background-color: #d0e7ff; /* 파란색 배경 */
+        padding: 10px;
+        margin-bottom: 10px;
+        border-radius: 5px;
+        border: 1px solid #a0c4ff;
+    }
+    
+    .best-comments h3 {
+        color: #0044cc; /* 파란색 제목 */
+        font-weight: bold;
+    }
+    
     </style>
     <script>
         function showSignupPopup() {
@@ -361,6 +379,32 @@
                 <button onclick="showSignupPopup()">로그인 또는 회원가입 후 댓글을 작성할 수 있습니다.</button>
             {% endif %}
             
+            {% comment %} <div class="best-comments">
+                <h3>베스트 댓글</h3>
+                {% for comment in best_comments %}
+                    <div class="best-comment-box">
+                        {% include 'book/comment_template.html' with comment=comment %}
+                    </div>
+                {% endfor %}
+            </div> {% endcomment %}
+
+            <div class="best-comments">
+                <h3>베스트 댓글</h3>
+                {% for comment in best_comments %}
+                    <div class="best-comment-box">
+                        {% comment %} {% if comment.parent or comment.comment %} {% endcomment %}
+                          
+                            <strong>{{ comment.author.nickname }}</strong>: {{ comment.content|truncatechars:50 }}
+                            
+                        {% comment %} {% else %} {% endcomment %}
+                            
+                            {% comment %} <strong>{{ comment.author.nickname }}</strong>: {{ comment.content|truncatechars:50 }} {% endcomment %}
+                            
+                        {% comment %} {% endif %} {% endcomment %}
+                        <span>좋아요: {{ comment.like_count }}</span>
+                    </div>
+                {% endfor %}
+            </div>
             <!-- 댓글 목록 -->
             <ul class="comments-list">
                 {% for comment in post.comments.all %}

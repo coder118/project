@@ -13,7 +13,7 @@ from django.db.models import Count
 import json
 from django.views.generic import ListView
 from .models import Post_information
-
+from itertools import chain
 from .models import User_information, Comment, Comment_Reply,Like
 from .models import bookT
 from .models import bookW
@@ -45,6 +45,17 @@ def index(request):
     return render(request,'book/index.html',context)
     # return HttpResponse(template.render(context,request))
  
+def get_all_replies(comment):
+    """재귀적으로 모든 대댓글과 대대댓글을 가져오는 함수"""
+    all_replies = []
+    direct_replies = comment.replies.all()
+
+    
+    for reply in direct_replies:
+        all_replies.append(reply)   
+        all_replies.extend(get_all_replies(reply))
+    print(all_replies,'alll')
+    return all_replies
 
 def post_detail(request, pk):
     post = get_object_or_404(Post_information, pk=pk)
@@ -62,7 +73,26 @@ def post_detail(request, pk):
     print(type(usernames))
     like_count = post.like_users.count()
     
+    
     post.save() 
+    comments_anno = post.comments.annotate(like_count=Count('comment_like_users'))
+    comment_replies = []
+    for comment in comments_anno:
+        replies = get_all_replies(comment)
+        for reply in replies:
+            # 각 대댓글에 대해 좋아요 수를 추가
+            reply.like_count = reply.commentR_like_users.count()
+            comment_replies.append(reply)
+    comments_anno = [comment for comment in comments_anno if comment.comment_like_users.count() > 0]
+    comment_replies = [reply for reply in comment_replies if reply.commentR_like_users.count() > 0]
+    comment_replies.sort(key=lambda x: x.commentR_like_users.count(), reverse=True)
+
+    # 댓글과 대댓글을 합쳐서 상위 3개의 항목을 선택
+    combined = list(chain(comments_anno, comment_replies))
+    combined.sort(key=lambda x: x.like_count, reverse=True)
+    best_combined = combined[:3]
+
+    #best_comments = comments.annotate(like_count=Count('comment_like_users')).filter(like_count__gt=0).order_by('-like_count')[:3]
     
     for comment in comments:
         comment.like_count = comment.comment_like_users.count()
@@ -79,12 +109,14 @@ def post_detail(request, pk):
         'like_count':like_count, #좋아요 카운팅
         
         'comments': comments,  # 댓글 목록 추가
-        
+        'best_comments': best_combined,
         'comment_form': CommentForm(),  # 댓글 폼 추가
         'reply_form': CommentReplyForm(),  # 대댓글 폼 추가
     }
     # print('comme/nt',context)
     print(type(context['user']),type(post.author))
+    print(comments)
+    
     return render(request, 'book/post_detail.html', context) 
 
 def post_sort(request):
