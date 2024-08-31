@@ -61,8 +61,7 @@ def post_detail(request, pk):
     post = get_object_or_404(Post_information, pk=pk)
     
     comments = post.comments.all()  # 해당 게시물에 대한 댓글 가져오기
-    #comments_R = post.comments.comment.all()
-    
+  
     usernames = User_information.objects.values_list('username', flat=True)
     
     #comments = Comment.objects.filter(post=post)  # 댓글 모델을 사용하여 해당 게시물에 대한 댓글 가져오기
@@ -86,7 +85,7 @@ def post_detail(request, pk):
     comments_anno = [comment for comment in comments_anno if comment.comment_like_users.count() > 0]
     comment_replies = [reply for reply in comment_replies if reply.commentR_like_users.count() > 0]
     comment_replies.sort(key=lambda x: x.commentR_like_users.count(), reverse=True)
-
+    print(comment_replies,'commentreply')
     # 댓글과 대댓글을 합쳐서 상위 3개의 항목을 선택
     combined = list(chain(comments_anno, comment_replies))
     combined.sort(key=lambda x: x.like_count, reverse=True)
@@ -109,12 +108,13 @@ def post_detail(request, pk):
         'like_count':like_count, #좋아요 카운팅
         
         'comments': comments,  # 댓글 목록 추가
+        'reply':comment_replies,
         'best_comments': best_combined,
         'comment_form': CommentForm(),  # 댓글 폼 추가
         'reply_form': CommentReplyForm(),  # 대댓글 폼 추가
     }
     # print('comme/nt',context)
-    print(type(context['user']),type(post.author))
+    print(context['reply'],type(post.author))
     print(comments)
     
     return render(request, 'book/post_detail.html', context) 

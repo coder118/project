@@ -2,8 +2,13 @@
 <html>
 <head>
     <title>책 이야기</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Gugi&display=swap" rel="stylesheet">
     <style>
         body {
+            {% comment %} Gugi {% endcomment %}
             font-family: Arial, sans-serif;
             margin: 0;
             padding: 0;
@@ -13,7 +18,7 @@
             {% comment %} position: relative; /* 요소의 위치를 기준으로 설정 */ {% endcomment %}
             margin: auto; /* 화면 중앙에 위치시키기 위해 */
         }
-
+        
         .navbar {
             display: flex;
             justify-content: space-between;
@@ -21,12 +26,14 @@
             background-color: #f1f1f1;
             padding: 10px;
             box-shadow: 0 4px 2px -2px gray;
+            
         }
         .navbar a {
             text-decoration: none;
             color: black;
             padding: 14px 20px;
             font-weight: bold;
+            font-size:30px
         }
         .navbar a:hover {
             background-color: #ddd;
@@ -316,16 +323,16 @@
         .post-list {
             list-style-type: none;
             padding: 10px;
-            margin:30px;
+            margin:10px;
             margin-right:130px;
-            margin-left:130px;
+            {% comment %} margin-left:130px; {% endcomment %}
         }
         .post-item {
             padding: 10px 0;
             border-bottom: 1px solid #ccc;
         }
         .post-title {
-            font-size: 18px;
+            font-size: 20px;
             font-weight: bold;
             color: #1a0dab; /* 강조된 파란색 */
             text-decoration: none;
@@ -442,13 +449,14 @@
             
             return false;  // 폼 제출을 막음
         }
-
-    
+       
+       
     </script>
 </head>
 <body>
+    
     <div class="navbar">
-        <a href="{% url 'index' %}">책 이야기</a>
+        <a href="{% url 'index' %}" style="font-family: 'Gugi' ;">책 이야기</a>
         <div class="search-bar">
             <form action="{% url 'search_posts' %}" method="post">
                 {% csrf_token %}
@@ -456,11 +464,11 @@
                 <button>검색</button>
             </form>
         </div>
-        <div>
-            <a href="{% url 'signup' %}">회원가입</a>
-        </div>
+        
     </div>
-    
+    {% comment %} <div>
+        <a href="{% url 'signup' %}">회원가입</a>
+    </div> {% endcomment %}
     <div class="category-bar">
         <a href="#">신작 소식</a>
         <div class="vertical-line"></div> <!-- 첫 번째 세로선 추가 -->
@@ -589,8 +597,9 @@
                     {% endif %}
                 </span>
             </div> {% endcomment %}
-            
+     
             <div>
+                
                 <form method="get" action="{% url 'post_sort' %}" style="display:inline;">        
                     <input type="hidden" name="sort" value="views_desc">
                     <button type="submit" {% if request.GET.sort == 'views_desc' %}class="active"{% endif %}>
@@ -642,7 +651,8 @@
                         {% for post in page_obj %}
                         <li class="post-item">
                             {% comment %} <div class="post-title">{{ post.title }}</a> {% endcomment %}
-                            <a href="{% url 'post_detail' post.pk %}" class="post-title">{{ post.title }}</a>
+                           
+                            <a href="{% url 'post_detail' post.pk %}" class="post-title">{{ post.title }}  [{{post.comments.all|length}}]</a>
                             {% comment %} <int:pk>/
                                 {% endcomment %}
                             <div class="post-category">{{ post.category }}</div>
