@@ -31,8 +31,13 @@ def index(request):
     # }
     # if request.method == 'POST':# 이게 핵심이었어 form.as_p를 실행하면 안됐어 근데 내가 강제로 input을 만들어주니까 이곳으로 넘어가면서 get_name을 호출함 
     #     print('stop')
-    #     return get_name(request)
-    post_list = Post_information.objects.all().annotate(like_count=Count('like_users')).order_by('-created_at')#좋아요도 표시
+    #     return get_name(request) 
+    category = request.GET.get('category','all')  # 선택된 카테고리 가져오기
+    print(category)
+    if category == 'all' or category == '': 
+        post_list = Post_information.objects.all().annotate(like_count=Count('like_users')).order_by('-created_at')#좋아요도 표시
+    else:
+        post_list = Post_information.objects.filter(category=category).annotate(like_count=Count('like_users')).order_by('-created_at')#좋아요도 표시
     # print(post_list)
     paginator = Paginator(post_list, 10)  # 페이지당 20개의 게시물을 표시합니다
     page_number = request.GET.get('page')
@@ -122,23 +127,32 @@ def post_detail(request, pk):
 def post_sort(request):
     print("sort")
     sort_option = request.GET.get('sort')
+    category = request.GET.get('category')
     # 기본 정렬: 최신순
-    if sort_option == 'views_desc':
-        print('-view')
-        posts = Post_information.objects.all().annotate(like_count=Count('like_users')).order_by('-views')
-    elif sort_option == 'views_asc':
-        print("view")
-        posts = Post_information.objects.all().annotate(like_count=Count('like_users')).order_by('views')
-    elif sort_option == 'likes_desc':
-        print("-likes")
-        # 좋아요 수를 기반으로 내림차순 정렬
-        posts = Post_information.objects.annotate(like_count=Count('like_users')).order_by('-like_count')
-    elif sort_option == 'likes_asc':
-        print("likes")
-        # 좋아요 수를 기반으로 오름차순 정렬
-        posts = Post_information.objects.annotate(like_count=Count('like_users')).order_by('like_count')
+     # 기본적으로 모든 게시글을 가져오되, 카테고리가 선택된 경우 필터링
+    print(category,'========================================')
+    if category:
+        print('its working?')
+        posts = Post_information.objects.filter(category=category)
     else:
-        posts = Post_information.objects.all().order_by('-created_at')
+        posts = Post_information.objects.all()
+    print(posts)
+    if sort_option == 'views_desc':
+            print('-view')
+            posts = posts.annotate(like_count=Count('like_users')).order_by('-views')
+    elif sort_option == 'views_asc':
+            print("view")
+            posts = posts.annotate(like_count=Count('like_users')).order_by('views')
+    elif sort_option == 'likes_desc':
+            print("-likes")
+            # 좋아요 수를 기반으로 내림차순 정렬
+            posts = posts.annotate(like_count=Count('like_users')).order_by('-like_count')
+    elif sort_option == 'likes_asc':
+            print("likes")
+            # 좋아요 수를 기반으로 오름차순 정렬
+            posts = posts.annotate(like_count=Count('like_users')).order_by('like_count')
+    else:
+            posts = posts.order_by('-created_at')
     
     # 페이지네이션 추가
     paginator = Paginator(posts, 10)  # 페이지 당 10개의 게시글
@@ -533,7 +547,7 @@ def post_save(request):
                     # create= post.created_at
                     # update= post.updated_at
                     
-                    # post.created_at = create
+                    # post.created_at = create 
                     # post.updated_at = update
                     # # post.refresh_from_db()
                     # # post.created_at=post.created_at

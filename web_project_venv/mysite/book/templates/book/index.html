@@ -602,6 +602,7 @@
                 
                 <form method="get" action="{% url 'post_sort' %}" style="display:inline;">        
                     <input type="hidden" name="sort" value="views_desc">
+                    <input type="hidden" name="category" value="{{  request.GET.category }}">
                     <button type="submit" {% if request.GET.sort == 'views_desc' %}class="active"{% endif %}>
                         조회수 높은 순
                     </button>
@@ -610,6 +611,7 @@
                 <form method="get" action="{% url 'post_sort' %}" style="display:inline;">
                     {% comment %} {% csrf_token %} {% endcomment %}
                     <input type="hidden" name="sort" value="views_asc">
+                    <input type="hidden" name="category" value="{{  request.GET.category }}">
                     <button type="submit" {% if request.GET.sort == 'views_asc' %}class="active"{% endif %}>
                         조회수 낮은 순
                     </button>
@@ -617,6 +619,7 @@
 
                 <form method="get" action="{% url 'post_sort' %}" style="display:inline;">
                     <input type="hidden" name="sort" value="likes_desc">
+                    <input type="hidden" name="category" value="{{  request.GET.category }}">
                     <button type="submit" {% if request.GET.sort == 'likes_desc' %}class="active"{% endif %}>
                         좋아요 많은 순
                     </button>
@@ -624,12 +627,24 @@
             
                 <form method="get" action="{% url 'post_sort' %}" style="display:inline;">
                     <input type="hidden" name="sort" value="likes_asc">
+                    <input type="hidden" name="category" value="{{  request.GET.category }}">
                     <button type="submit" {% if request.GET.sort == 'likes_asc' %}class="active"{% endif %}>
                         좋아요 적은 순
                     </button>
                 </form>
 
             </div>
+            
+            <form method="get" action=".">
+                <select id="category" name="category" onchange="this.form.submit()">
+                    <option value="">로고 클릭</option>
+                    {% comment %} <option value="all" {% if category == 'all' %}selected{% endif %}>모든 카테고리</option> {% endcomment %}
+                    <option value="category1" {% if category == 'category1' %}selected{% endif %}>카테고리 1</option>
+                    <option value="category2" {% if category == 'category2' %}selected{% endif %}>카테고리 2</option>
+                    <!-- 다른 카테고리 추가 가능 -->
+                </select>
+                <input type="hidden" name="sort" value="{{ request.GET.sort }}">
+            </form>
 
             {% if results == 1%} 
                     <h2>검색 결과 </h2>
