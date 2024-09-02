@@ -7,18 +7,25 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Gugi&display=swap" rel="stylesheet">
     <style>
+        html{
+            height:100%;
+        }
         body {
-            {% comment %} Gugi {% endcomment %}
+            Gugi
             font-family: Arial, sans-serif;
             margin: 0;
             padding: 0;
             width: 1200px; /* 원하는 고정 너비 설정 */
-            height: 800px; /* 원하는 고정 높이 설정 */
-
-            {% comment %} position: relative; /* 요소의 위치를 기준으로 설정 */ {% endcomment %}
+            {% comment %} height: 800px; /* 원하는 고정 높이 설정 */ {% endcomment %}
+            height:100%;
+            position: relative; /* 요소의 위치를 기준으로 설정 */
             margin: auto; /* 화면 중앙에 위치시키기 위해 */
         }
-        
+        .header{
+            width:1200px
+            height:100%%;
+            position:relative;
+        }
         .navbar {
             display: flex;
             justify-content: space-between;
@@ -62,17 +69,8 @@
         .search-bar button:hover {
             background-color: #0056b3;
         }
-        .content {
-            padding: 20px;
-        }
-        .sidebar {
-            width: 200px;
-            float: left;
-            background-color: #f9f9f9;
-            height: 100vh;
-            box-shadow: 2px 0 5px rgba(0,0,0,0.1);
-        }
-        .sidebar a {
+        
+        {% comment %} .sidebar a {
             display: block;
             color: black;
             padding: 10px;
@@ -81,7 +79,7 @@
         }
         .sidebar a:hover {
             background-color: #ddd;
-        }
+        } {% endcomment %}
 
         {% comment %} 카테고리 영역 {% endcomment %}
         .category-bar {
@@ -108,14 +106,77 @@
             margin: 0 15px;
         }
 
+        
+        .dropdown {
+            position: relative;
+            display: inline-block;
+        }
+
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: #f9f9f9;
+            min-width: 200px;
+            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+            z-index: 1;
+        }
+
+        .dropdown-content a {
+            color: black;
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+        }
+
+        .dropdown:hover .dropdown-content {
+            display: block;
+        }
+
+
+
+
+
+        
+        .content_body{
+            {% comment %} display:block; {% endcomment %}
+            {% comment %} height:100%; {% endcomment %}
+            position:relative;
+            overflow: auto;
+            {% comment %} display:flex; {% endcomment %}
+        }
         .main-content {
-            padding: 20px;
+            {% comment %} padding: 20px; {% endcomment %}
             {% comment %} max-width: 900px; {% endcomment %}
             margin: 0 auto;
             background-color: #fff;
-            max-width: 100%;
-            max-height: 100%;
+            {% comment %} width:1050px;
+            height:1514px; {% endcomment %}
+            {% comment %} max-width: 100%; {% endcomment %}
+            {% comment %} max-height: 100%; {% endcomment %}
+            
+            margin-left:51px;
+            margin-right:51px;
+            overflow: auto;
         }
+        .content {
+            {% comment %} float : left; {% endcomment %}
+            width : 860px;
+            height:100%;
+            position:relative;
+            unicode-bidi: isolate;
+        }
+        .sidebar {
+            width: 238px;
+            height:100%;
+            float: right;
+            unicode-bidi: isolate;
+            display: inline-block;  
+            background-color: #f9f9f9;
+            box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+        }
+
+
+
 
         .login-container {
             {% comment %} margin-top: 20px;
@@ -133,7 +194,7 @@
             background-color: white;
             padding: 20px;
             border-radius: 10px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            {% comment %} box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); {% endcomment %}
             width: 200px;
             height: 200px;
         }
@@ -189,16 +250,17 @@
 
         {% comment %} 로그인시 오른쪽에 게시글 작성판을 뜨게 하기 위해서 묶음 {% endcomment %}
         .login-post-container {
-            float: right; 
+            {% comment %} float: right;  {% endcomment %}
             display: flex;
             {% comment %} justify-content: flex-start; /* 로그인과 게시글 작성만 한 줄에 배치 */
             align-items: flex-start; /* 요소들을 위쪽 정렬 */ {% endcomment %}
             {% comment %} margin-top: 10px; /* 위쪽 간격 조정 */ {% endcomment %}
             gap: 20px; /* 로그인 창과 게시글 작성 폼 사이의 간격 */
             {% comment %} transform: translate(60%, -60%); {% endcomment %}
+            padding-top:100px;
             
         }
-
+       
         {% comment %} 로그인 성공시에 뜨는 화면 {% endcomment %}
         .user-info {
             display: flex;
@@ -324,7 +386,7 @@
             list-style-type: none;
             padding: 10px;
             margin:10px;
-            margin-right:130px;
+            {% comment %} margin-right:130px; {% endcomment %}
             {% comment %} margin-left:130px; {% endcomment %}
         }
         .post-item {
@@ -454,320 +516,291 @@
     </script>
 </head>
 <body>
-    
-    <div class="navbar">
-        <a href="{% url 'index' %}" style="font-family: 'Gugi' ;">책 이야기</a>
-        <div class="search-bar">
-            <form action="{% url 'search_posts' %}" method="post">
-                {% csrf_token %}
-                <input type="text" name ="search-post" placeholder="검색어를 입력하세요"  value="{{ query }}">
-                <button>검색</button>
-            </form>
-        </div>
-        
-    </div>
-    {% comment %} <div>
-        <a href="{% url 'signup' %}">회원가입</a>
-    </div> {% endcomment %}
-    <div class="category-bar">
-        <a href="#">신작 소식</a>
-        <div class="vertical-line"></div> <!-- 첫 번째 세로선 추가 -->
-        <a href="#">추천글</a>
-        <a href="#">실시간 인기글</a>
-        <a href="#">커뮤니티</a>
-        <div class="vertical-line"></div> <!-- 두 번째 세로선 추가 -->
-        <a href="#">이벤트</a>
-    </div>
-    <div class="main-content">     
-
-        <!-- 로그인 창 추가 -->
-        <div class="login-post-container">
-            <div class="login-container">
-                {% if request.session.username %}    
-                    <div class="user-info">
-                        {% load static %}
-                        <div class="profile-pic">
-                            {% comment %} <img src="{% if request.session.profile_pic %}{{ request.session.profile_pic }}{% else %}default-profile.png{% endif %}" alt="Profile Picture"> {% endcomment %}
-                            <form method="post" action="{% url 'upload_profile_pic' %}" enctype="multipart/form-data">
-                                {% csrf_token %}
-                                <img 
-                                    src="{{ request.session.profile_pic }}" 
-                                    {% comment %} src="{% if request.session.profile_pic %}{{ request.session.profile_pic }}{% else %}{% static 'images/default-profile.png' %}{% endif %}"  {% endcomment %}
-                                    alt="Profile Picture" 
-                                    style="cursor: pointer; width: 100px; height: 100px; border-radius: 50%;" 
-                                    onclick="document.getElementById('file-input').click();"
-                                >
-                                <input 
-                                    type="file" 
-                                    id="file-input" 
-                                    name="profile_pic" 
-                                    accept="image/*" 
-                                    onchange="this.form.submit();"
-                                >
-                            </form> 
-                            
-                        </div>
-                        <h2>{{ request.session.username }}님</h2>
-                        <div class="user-actions">
-                            <a href="{%url 'post_view'%}" class="action-button">글쓰기</a>
-                            <a href="#" class="action-button">내가 올린 책</a> 
-                            
-                        </div>
-                        
-                        <a href="{% url 'logout' %}" class="logout-button">로그아웃</a>
-                    </div>
-                {% else %}
-                <form id="loginform" method="post" action="{% url 'trying_to_login' %}" onsubmit="return validateLoginForm(event);">
+    <header id="header">
+        <div class="navbar">
+            <a href="{% url 'index' %}" style="font-family: 'Gugi' ;">책 이야기</a>
+            <div class="search-bar">
+                <form action="{% url 'search_posts' %}" method="post">
                     {% csrf_token %}
-                    <input type="text" name="username" placeholder="아이디 또는 전화번호">
-                    <input type="password" name="password" placeholder="비밀번호">
-                    
-                
-                    <div class="remember-me">
-                        <input type="checkbox" name="remember">
-                        <label for="remember">로그인 상태 유지</label>
-                    </div>
-                    <button type="submit">로그인</button>   
+                    <input type="text" name ="search-post" placeholder="검색어를 입력하세요"  value="{{ query }}">
+                    <button>검색</button>
                 </form>
-                <div class="login-options">
-                    <a href="{% url 'signup' %}">회원가입</a>
-                </div> 
-                {% endif %}
             </div>
-            {% comment %} {% if request.session.username %}    
-                <div class="post-container">
-                    <form method="post" >
-                        {% csrf_token %}
-                        <div class="form-group">
-                            <label for="board-selection">게시판을 선택해 주세요.</label>
-                            <select id="board-selection" name="board">
-                                <option value="" selected>게시판을 선택하세요.</option>
-                                <option value="board1">게시판 1</option>
-                                <option value="board2">게시판 2</option>
-                                <!-- 다른 게시판 옵션 추가 가능 -->
-                            </select>
-                        </div>
-
-                        <div class="form-group">
-                            <label for="post-title">제목을 입력해 주세요.</label>
-                            <input type="text" id="post-title" name="title" placeholder="제목을 입력해 주세요.">
-                        </div>
-
-                        <div class="form-group">
-                            <textarea id="post-content" name="content" placeholder="내용을 입력하세요." rows="10"></textarea>
-                        </div>
-
-                        <div class="form-group">
-                            <button type="submit" class="submit-button">게시물 등록</button>
-                        </div>
-                    </form>
-                </div>
-            {% endif %}      {% endcomment %}
+            
         </div>
-
-        <div class="post-list" >
-            
-            {% comment %} <p>{{ posts_information }}</p>
-            <ul class="post-list">
-                {% for post in posts_information %}
-                <li class="post-item">
-                    <a href="{% url 'post_detail' post.id %}" class="post-title">{{ post.title }}</a>
-                    <div class="post-category">{{ post.category }}</div>
-                    <div class="post-meta">{{ post.created_at|date:"Y-m-d H:i" }} / {{ post.author }}</div>
-                </li>
-                {% empty %}
-                <li>게시글이 없습니다.</li>
-                {% endfor %}
-            </ul>
-            <!-- 페이지네이션 -->
-            <div class="pagination">
-                <span class="step-links">
-                    {% if posts_information.has_previous %}
-                        <a href="?page=1">&laquo; 처음</a>
-                        <a href="?page={{ posts.previous_page_number }}">이전</a>
-                    {% endif %}
-        
-                    <span class="current">
-                        페이지 {{ posts_information.number }} / {{ posts_information.paginator.num_pages }}
-                    </span>
-        
-                    {% if posts_information.has_next %}
-                        <a href="?page={{ posts_information.next_page_number }}">다음</a>
-                        <a href="?page={{ posts_information.paginator.num_pages }}">끝 &raquo;</a>
-                    {% endif %}
-                </span>
-            </div> {% endcomment %}
-     
-            <div>
-                
-                <form method="get" action="{% url 'post_sort' %}" style="display:inline;">        
-                    <input type="hidden" name="sort" value="views_desc">
-                    <input type="hidden" name="category" value="{{  request.GET.category }}">
-                    <button type="submit" {% if request.GET.sort == 'views_desc' %}class="active"{% endif %}>
-                        조회수 높은 순
-                    </button>
-                </form>
-            
-                <form method="get" action="{% url 'post_sort' %}" style="display:inline;">
-                    {% comment %} {% csrf_token %} {% endcomment %}
-                    <input type="hidden" name="sort" value="views_asc">
-                    <input type="hidden" name="category" value="{{  request.GET.category }}">
-                    <button type="submit" {% if request.GET.sort == 'views_asc' %}class="active"{% endif %}>
-                        조회수 낮은 순
-                    </button>
-                </form>
-
-                <form method="get" action="{% url 'post_sort' %}" style="display:inline;">
-                    <input type="hidden" name="sort" value="likes_desc">
-                    <input type="hidden" name="category" value="{{  request.GET.category }}">
-                    <button type="submit" {% if request.GET.sort == 'likes_desc' %}class="active"{% endif %}>
-                        좋아요 많은 순
-                    </button>
-                </form>
-            
-                <form method="get" action="{% url 'post_sort' %}" style="display:inline;">
-                    <input type="hidden" name="sort" value="likes_asc">
-                    <input type="hidden" name="category" value="{{  request.GET.category }}">
-                    <button type="submit" {% if request.GET.sort == 'likes_asc' %}class="active"{% endif %}>
-                        좋아요 적은 순
-                    </button>
-                </form>
-
+        {% comment %} <div>
+            <a href="{% url 'signup' %}">회원가입</a>
+        </div> {% endcomment %}
+        {% comment %} <div class="category-bar">
+            <div class="vertical-line"></div> <!-- 첫 번째 세로선 추가 -->
+            <a href="#">책 추천</a>
+            <div class="vertical-line"></div>
+            <a href="#">커뮤니티</a>
+            <div class="vertical-line"></div>
+            <a href="#">리뷰</a>
+            <div class="vertical-line"></div> <!-- 두 번째 세로선 추가 -->
+        </div> {% endcomment %}
+        <nav class="category-bar">
+            {% comment %} <a href="#">신작 소식</a> {% endcomment %}
+            <div class="vertical-line"></div> <!-- 첫 번째 세로선 추가 -->
+            <div class="dropdown">
+                <a href="#" class="dropbtn">책 추천</a>
+                <div class="dropdown-content">
+                    <a href="#">판타지</a>
+                    <a href="#">중세</a>
+                    <a href="#">무협</a>
+                    <a href="#">로맨스</a>
+                    <!-- 추가 장르를 여기에 추가할 수 있습니다 -->
+                </div>
             </div>
-            
-            <form method="get" action=".">
-                <select id="category" name="category" onchange="this.form.submit()">
-                    <option value="">로고 클릭</option>
-                    {% comment %} <option value="all" {% if category == 'all' %}selected{% endif %}>모든 카테고리</option> {% endcomment %}
-                    <option value="category1" {% if category == 'category1' %}selected{% endif %}>카테고리 1</option>
-                    <option value="category2" {% if category == 'category2' %}selected{% endif %}>카테고리 2</option>
-                    <!-- 다른 카테고리 추가 가능 -->
-                </select>
-                <input type="hidden" name="sort" value="{{ request.GET.sort }}">
-            </form>
+            <div class="vertical-line"></div>
+            <a href="#">커뮤니티</a>
+            <div class="vertical-line"></div>
+            <a href="#">리뷰</a>
+            <div class="vertical-line"></div> <!-- 두 번째 세로선 추가 -->
+            {% comment %} <a href="#">이벤트</a> {% endcomment %}
+        </nav>
+    </header>
 
-            {% if results == 1%} 
-                    <h2>검색 결과 </h2>
-                    <ul class="post-list">
-                        {% for post in page_obj %}
-                            <li class="post-item">
-                                {% comment %} <a href="{% url 'post_detail' post.id %}">{{ post.title }}</a> - {{ post.created_at }} {% endcomment %}
-                                <a href="{% url 'post_detail' post.pk %}" class="post-title">{{ post.title }}</a>
-                       
-                                <div class="post-category">{{ post.category }}</div>
-                                <div class="post-meta">{{ post.created_at|date:"Y-m-d H:i" }} / {{ post.author.nickname }} / 조회수:{{ post.views }} </div>
-                            </li>
-                        {% endfor %}
+    <div id ="container" class ="content_body" style ="height: auto !important;">
+        <div class="main-content" style ="height: auto !important;">     
+
+            <!-- 로그인 창 추가 -->
+            <div class ="sidebar" style ="height: auto !important;">
+                <div class="login-post-container">
+                    <div class="login-container">
+                        {% if request.session.username %}    
+                            <div class="user-info">
+                                {% load static %}
+                                <div class="profile-pic">
+                                    {% comment %} <img src="{% if request.session.profile_pic %}{{ request.session.profile_pic }}{% else %}default-profile.png{% endif %}" alt="Profile Picture"> {% endcomment %}
+                                    <form method="post" action="{% url 'upload_profile_pic' %}" enctype="multipart/form-data">
+                                        {% csrf_token %}
+                                        <img 
+                                            src="{{ request.session.profile_pic }}" 
+                                            {% comment %} src="{% if request.session.profile_pic %}{{ request.session.profile_pic }}{% else %}{% static 'images/default-profile.png' %}{% endif %}"  {% endcomment %}
+                                            alt="Profile Picture" 
+                                            style="cursor: pointer; width: 100px; height: 100px; border-radius: 50%;" 
+                                            onclick="document.getElementById('file-input').click();"
+                                        >
+                                        <input 
+                                            type="file" 
+                                            id="file-input" 
+                                            name="profile_pic" 
+                                            accept="image/*" 
+                                            onchange="this.form.submit();"
+                                        >
+                                    </form> 
+                                    
+                                </div>
+                                <h2>{{ request.session.username }}님</h2>
+                                <div class="user-actions">
+                                    <a href="{%url 'post_view'%}" class="action-button">글쓰기</a>
+                                    <a href="#" class="action-button">내가 올린 책</a> 
+                                    
+                                </div>
+                                
+                                <a href="{% url 'logout' %}" class="logout-button">로그아웃</a>
+                            </div>
+                        {% else %}
+                        <form id="loginform" method="post" action="{% url 'trying_to_login' %}" onsubmit="return validateLoginForm(event);">
+                            {% csrf_token %}
+                            <input type="text" name="username" placeholder="아이디 또는 전화번호">
+                            <input type="password" name="password" placeholder="비밀번호">
+                            
                         
-                    </ul>
-            {% else %}
-                    <h2>실시간 인기글</h2>
+                            <div class="remember-me">
+                                <input type="checkbox" name="remember">
+                                <label for="remember">로그인 상태 유지</label>
+                            </div>
+                            <button type="submit">로그인</button>   
+                        </form>
+                        <div class="login-options">
+                            <a href="{% url 'signup' %}">회원가입</a>
+                        </div> 
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <div class ="content">
+                <div class="post-list" >
+                    
+                    {% comment %} <p>{{ posts_information }}</p>
                     <ul class="post-list">
-                        {% for post in page_obj %}
+                        {% for post in posts_information %}
                         <li class="post-item">
-                            {% comment %} <div class="post-title">{{ post.title }}</a> {% endcomment %}
-                           
-                            <a href="{% url 'post_detail' post.pk %}" class="post-title">{{ post.title }}  [{{post.comments.all|length}}]</a>
-                            {% comment %} <int:pk>/
-                                {% endcomment %}
+                            <a href="{% url 'post_detail' post.id %}" class="post-title">{{ post.title }}</a>
                             <div class="post-category">{{ post.category }}</div>
-                            <div class="post-meta">{{ post.created_at|date:"Y-m-d H:i" }} / {{ post.author.nickname }} / 조회수:{{ post.views }}/좋아요:{{ post.like_count }}</div>
+                            <div class="post-meta">{{ post.created_at|date:"Y-m-d H:i" }} / {{ post.author }}</div>
                         </li>
                         {% empty %}
                         <li>게시글이 없습니다.</li>
                         {% endfor %}
                     </ul>
-            {% endif %}
-          
+                    <!-- 페이지네이션 -->
+                    <div class="pagination">
+                        <span class="step-links">
+                            {% if posts_information.has_previous %}
+                                <a href="?page=1">&laquo; 처음</a>
+                                <a href="?page={{ posts.previous_page_number }}">이전</a>
+                            {% endif %}
+                
+                            <span class="current">
+                                페이지 {{ posts_information.number }} / {{ posts_information.paginator.num_pages }}
+                            </span>
+                
+                            {% if posts_information.has_next %}
+                                <a href="?page={{ posts_information.next_page_number }}">다음</a>
+                                <a href="?page={{ posts_information.paginator.num_pages }}">끝 &raquo;</a>
+                            {% endif %}
+                        </span>
+                    </div> {% endcomment %}
+            
+                    <div>
+                        
+                        <form method="get" action="{% url 'post_sort' %}" style="display:inline;">        
+                            <input type="hidden" name="sort" value="views_desc">
+                            <input type="hidden" name="category" value="{{  request.GET.category }}">
+                            <button type="submit" {% if request.GET.sort == 'views_desc' %}class="active"{% endif %}>
+                                조회수 높은 순
+                            </button>
+                        </form>
+                    
+                        <form method="get" action="{% url 'post_sort' %}" style="display:inline;">
+                            {% comment %} {% csrf_token %} {% endcomment %}
+                            <input type="hidden" name="sort" value="views_asc">
+                            <input type="hidden" name="category" value="{{  request.GET.category }}">
+                            <button type="submit" {% if request.GET.sort == 'views_asc' %}class="active"{% endif %}>
+                                조회수 낮은 순
+                            </button>
+                        </form>
 
-            <!-- 페이지네이션 -->
-            <div class="pagination">
-                {%if results == 1%}
-                    <span class="step-links">
-                        {% if page_obj.has_previous %}
-                        <div class="pagination-controls">
-                            <a href="search_post?page=1{% if request.GET.sort %}&sort={{ request.GET.sort }}{% endif %}">&laquo; 처음</a>
-                        </div>
-                        <div class="pagination-controls2">
-                            <a href="search_post?page={{ page_obj.previous_page_number }}{% if request.GET.sort %}&sort={{ request.GET.sort }}{% endif %}">이전</a>
-                        </div>
-                        {% endif %}
-                
-                        <span class="current">
-                            페이지 {{ page_obj.number }} / {{ page_obj.paginator.num_pages }}
-                        </span>
-                
-                        {% if page_obj.has_next %}
-                        <div class="pagination-controls">
-                            <a href="search_post?page={{ page_obj.next_page_number }}{% if request.GET.sort %}&sort={{ request.GET.sort }}{% endif %}">다음</a>
-                        </div>
-                        <div class="pagination-controls2">
-                            <a href="search_post?page={{ page_obj.paginator.num_pages }}{% if request.GET.sort %}&sort={{ request.GET.sort }}{% endif %}">끝 &raquo;</a>
-                        </div>
-                    </span>
-                {% endif %}
-                {%else%}
-                    <span class="step-links">
-                        {% if page_obj.has_previous %}
-                        <div class="pagination-controls">
-                            <a href="?page=1{% if request.GET.sort %}&sort={{ request.GET.sort }}{% endif %}">&laquo; 처음</a>
-                        </div>
-                        <div class="pagination-controls2">
-                            <a href="?page={{ page_obj.previous_page_number }}{% if request.GET.sort %}&sort={{ request.GET.sort }}{% endif %}">이전</a>
-                        </div>
-                        {% endif %}
-                
-                        <span class="current">
-                            페이지 {{ page_obj.number }} / {{ page_obj.paginator.num_pages }}
-                        </span>
-                
-                        {% if page_obj.has_next %}
-                        <div class="pagination-controls">
-                            <a href="?page={{ page_obj.next_page_number }}{% if request.GET.sort %}&sort={{ request.GET.sort }}{% endif %}">다음</a>
-                        </div>
-                        <div class="pagination-controls2">
-                            <a href="?page={{ page_obj.paginator.num_pages }}{% if request.GET.sort %}&sort={{ request.GET.sort }}{% endif %}">끝 &raquo;</a>
-                        </div>
-                    </span>
+                        <form method="get" action="{% url 'post_sort' %}" style="display:inline;">
+                            <input type="hidden" name="sort" value="likes_desc">
+                            <input type="hidden" name="category" value="{{  request.GET.category }}">
+                            <button type="submit" {% if request.GET.sort == 'likes_desc' %}class="active"{% endif %}>
+                                좋아요 많은 순
+                            </button>
+                        </form>
+                    
+                        <form method="get" action="{% url 'post_sort' %}" style="display:inline;">
+                            <input type="hidden" name="sort" value="likes_asc">
+                            <input type="hidden" name="category" value="{{  request.GET.category }}">
+                            <button type="submit" {% if request.GET.sort == 'likes_asc' %}class="active"{% endif %}>
+                                좋아요 적은 순
+                            </button>
+                        </form>
+
+                    </div>
+                    
+                    <form method="get" action=".">
+                        <select id="category" name="category" onchange="this.form.submit()">
+                            <option value="">로고 클릭</option>
+                            {% comment %} <option value="all" {% if category == 'all' %}selected{% endif %}>모든 카테고리</option> {% endcomment %}
+                            <option value="category1" {% if category == 'category1' %}selected{% endif %}>카테고리 1</option>
+                            <option value="category2" {% if category == 'category2' %}selected{% endif %}>카테고리 2</option>
+                            <!-- 다른 카테고리 추가 가능 -->
+                        </select>
+                        <input type="hidden" name="sort" value="{{ request.GET.sort }}">
+                    </form>
+
+                    {% if results == 1%} 
+                            <h2>검색 결과 </h2>
+                            <ul class="post-list">
+                                {% for post in page_obj %}
+                                    <li class="post-item">
+                                        {% comment %} <a href="{% url 'post_detail' post.id %}">{{ post.title }}</a> - {{ post.created_at }} {% endcomment %}
+                                        <a href="{% url 'post_detail' post.pk %}" class="post-title">{{ post.title }}</a>
+                            
+                                        <div class="post-category">{{ post.category }}</div>
+                                        <div class="post-meta">{{ post.created_at|date:"Y-m-d H:i" }} / {{ post.author.nickname }} / 조회수:{{ post.views }} </div>
+                                    </li>
+                                {% endfor %}
+                                
+                            </ul>
+                    {% else %}
+                            <h2>실시간 인기글</h2>
+                            <ul class="post-list">
+                                {% for post in page_obj %}
+                                <li class="post-item">
+                                    {% comment %} <div class="post-title">{{ post.title }}</a> {% endcomment %}
+                                
+                                    <a href="{% url 'post_detail' post.pk %}" class="post-title">{{ post.title }}  [{{post.comments.all|length}}]</a>
+                                    {% comment %} <int:pk>/
+                                        {% endcomment %}
+                                    <div class="post-category">{{ post.category }}</div>
+                                    <div class="post-meta">{{ post.created_at|date:"Y-m-d H:i" }} / {{ post.author.nickname }} / 조회수:{{ post.views }}/좋아요:{{ post.like_count }}</div>
+                                </li>
+                                {% empty %}
+                                <li>게시글이 없습니다.</li>
+                                {% endfor %}
+                            </ul>
                     {% endif %}
                 
 
-                {%endif%}
-                
+                    <!-- 페이지네이션 -->
+                    <div class="pagination">
+                        {%if results == 1%}
+                            <span class="step-links">
+                                {% if page_obj.has_previous %}
+                                <div class="pagination-controls">
+                                    <a href="search_post?page=1{% if request.GET.sort %}&sort={{ request.GET.sort }}{% endif %}">&laquo; 처음</a>
+                                </div>
+                                <div class="pagination-controls2">
+                                    <a href="search_post?page={{ page_obj.previous_page_number }}{% if request.GET.sort %}&sort={{ request.GET.sort }}{% endif %}">이전</a>
+                                </div>
+                                {% endif %}
+                        
+                                <span class="current">
+                                    페이지 {{ page_obj.number }} / {{ page_obj.paginator.num_pages }}
+                                </span>
+                        
+                                {% if page_obj.has_next %}
+                                <div class="pagination-controls">
+                                    <a href="search_post?page={{ page_obj.next_page_number }}{% if request.GET.sort %}&sort={{ request.GET.sort }}{% endif %}">다음</a>
+                                </div>
+                                <div class="pagination-controls2">
+                                    <a href="search_post?page={{ page_obj.paginator.num_pages }}{% if request.GET.sort %}&sort={{ request.GET.sort }}{% endif %}">끝 &raquo;</a>
+                                </div>
+                            </span>
+                        {% endif %}
+                        {%else%}
+                            <span class="step-links">
+                                {% if page_obj.has_previous %}
+                                <div class="pagination-controls">
+                                    <a href="?page=1{% if request.GET.sort %}&sort={{ request.GET.sort }}{% endif %}">&laquo; 처음</a>
+                                </div>
+                                <div class="pagination-controls2">
+                                    <a href="?page={{ page_obj.previous_page_number }}{% if request.GET.sort %}&sort={{ request.GET.sort }}{% endif %}">이전</a>
+                                </div>
+                                {% endif %}
+                        
+                                <span class="current">
+                                    페이지 {{ page_obj.number }} / {{ page_obj.paginator.num_pages }}
+                                </span>
+                        
+                                {% if page_obj.has_next %}
+                                <div class="pagination-controls">
+                                    <a href="?page={{ page_obj.next_page_number }}{% if request.GET.sort %}&sort={{ request.GET.sort }}{% endif %}">다음</a>
+                                </div>
+                                <div class="pagination-controls2">
+                                    <a href="?page={{ page_obj.paginator.num_pages }}{% if request.GET.sort %}&sort={{ request.GET.sort }}{% endif %}">끝 &raquo;</a>
+                                </div>
+                            </span>
+                            {% endif %}
+                        
+
+                        {%endif%}
+                        
+                    </div>
+                    
+
+                </div>
             </div>
-            
-
-        </div>
-        
-        {% comment %} {% if book_title_list %}
-        <ul>
-        {% for title in book_title_list %}
-            <li><a href="/book/{{ title.id }}/">{{ title.book_Title }}</a></li>
-        {% endfor %}
-        </ul>
-        {% else %}
-        <p>no book title</p>
-        {% endif %}
     
-        <h2>이름 및 나이 입력</h2> 
-        <form method="post" action="{% url 'get_name' %}">
-            {% csrf_token %}
-            {% comment %} {{ form.as_p }}  이걸 사용해도 좋은데 필수 항목입니다라는 걸 없애기 위해서 아래처럼 하나씩 구현을 해줌 {% endcomment %}
-            
-            {% comment %} {{ form.as_p }} {% endcomment %}
-            {% comment %} <label for="id_name">Name:</label>
-            <input type="text" name="name" id="id_name" value="{{ form.name.value }}">
-            <br>
-            <label for="id_age">Age:</label>
-            <input type="text" name="age" id="id_age" value="{{ form.age.value }}">
-            <br>  
-             {% comment %} <h2>나이 입력</h2> {{ form.as_p }} {% endcomment %}
-            {% comment %} <label for="your_name">Your name: </label>
-            <input id="your_name" type="text" name="your_name" maxlength="100" required> {% endcomment %}
-            {% comment %} <button type="submit">제출</button>
-        </form> {% endcomment %}
-    </div> 
-
+        </div> 
+    </div>
 
 
 </body>
