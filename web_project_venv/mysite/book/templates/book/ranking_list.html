@@ -1,0 +1,6 @@
+{% for post in rank %}
+<li>
+    <a href="{% url 'post_detail' post.id %}">{{ post.title }}</a>
+    <span>조회수: {{ post.views }}</span>
+</li>
+{% endfor %}

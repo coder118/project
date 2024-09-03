@@ -20,6 +20,8 @@ urlpatterns = [
     
     path('upload_profile_pic/', views.upload_profile_pic, name='upload_profile_pic'),#마찬가지 이미지 업로드 url임
 
+    path('ranking_update/', views.ranking_update, name='ranking_update'),
+
     path('post_create/',views.post_view,name='post_view'),
     path('post_create/post_save/',views.post_save,name='post_save'),
     path('<int:pk>/post_like/',views.post_like, name = "post_like"),

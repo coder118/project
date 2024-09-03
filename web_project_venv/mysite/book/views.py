@@ -10,6 +10,8 @@ from django.shortcuts import get_object_or_404
 from django.core.paginator import Paginator
 from django.db.models import Q
 from django.db.models import Count
+from django.template.loader import render_to_string
+
 import json
 from django.views.generic import ListView
 from .models import Post_information
@@ -62,6 +64,11 @@ def get_all_replies(comment):
     print(all_replies,'alll')
     return all_replies
 
+def ranking_update(request):
+    ranking = Post_information.objects.order_by('-views')[:5]
+    print(ranking)
+    return render(request, 'book/ranking_list.html', {'rank': ranking})
+
 def post_detail(request, pk):
     post = get_object_or_404(Post_information, pk=pk)
     
@@ -103,7 +110,8 @@ def post_detail(request, pk):
         # 대댓글에 대해서도 좋아요 수 추가
         for reply in comment.replies.all():
             reply.like_count = reply.commentR_like_users.count()
-    
+    rank = Post_information.objects.all()
+    ranking = rank.order_by('-views')[:5]
     context = {
         'post': post,
         'user':user_info,
@@ -111,7 +119,7 @@ def post_detail(request, pk):
         'user_check':usernames, # 유저 정보 데이터 베이스에서 유저 아이디 값을 가져와서 현재 들어와있는 유저가 usercheck안에 존재 하면 댓글 작성 가능하게 
         'other_posts': other_posts,
         'like_count':like_count, #좋아요 카운팅
-        
+        'rank':ranking,
         'comments': comments,  # 댓글 목록 추가
         'reply':comment_replies,
         'best_comments': best_combined,

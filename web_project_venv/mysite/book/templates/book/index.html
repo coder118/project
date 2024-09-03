@@ -465,6 +465,74 @@
         }
         
 
+        /* 기본 스타일 */
+        .ranking-container {
+            background-color: #f7f7f7;
+            padding-bottom:5px;
+            border-radius: 10px;
+            width: 238px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .ranking-container h3 {
+            text-align: center;
+            font-size: 1.5em;
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        .ranking-list {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .ranking-list li {
+            font-size: 1.2em;
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+        }
+
+        /* 1등 스타일 */
+        .ranking-list li:nth-child(1) {
+            background-color: #ffd700; /* 금색 */
+            color: #333;
+            font-weight: bold;
+            border-left: 5px solid #d4af37;
+        }
+
+        /* 2등 스타일 */
+        .ranking-list li:nth-child(2) {
+            background-color: #c0c0c0; /* 은색 */
+            color: #333;
+            font-weight: bold;
+            border-left: 5px solid #a9a9a9;
+        }
+
+        /* 3등 스타일 */
+        .ranking-list li:nth-child(3) {
+            background-color: #cd7f32; /* 동색 */
+            color: #333;
+            font-weight: bold;
+            border-left: 5px solid #8b4513;
+        }
+
+        /* 4등 이후 스타일 */
+        .ranking-list li:nth-child(n+4) {
+            background-color: #f1f1f1;
+            color: #666;
+            border-left: 5px solid #ccc;
+        }
+
+        /* 마우스 오버 효과 */
+        .ranking-list li:hover {
+            background-color: #e0e0e0;
+        }
+
+
+        
     </style>
     <script>
         function validateLoginForm(event) {
@@ -621,7 +689,36 @@
                         {% endif %}
                     </div>
                 </div>
+
+                <div class="ranking-container">
+                    
+                    <h3>실시간 인기글</h3>
+                    <ul>
+                        {% include 'book/ranking_list.html' %}
+                    </ul>
+                </div>
             </div>
+            <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+            <script>
+                function updateRanking() {
+                    $.ajax({
+                        url: "{% url 'ranking_update' %}",  // AJAX 요청을 처리할 URL
+                        type: "GET",
+                        success: function(data) {
+                            $('.ranking-container ul').html(data);  // 받은 HTML로 랭킹 리스트를 갱신
+                        }
+                    });
+                } 
+                
+                $(document).ready(function() {
+                    updateRanking();  // 페이지 로드 시 첫 업데이트
+                    // 이후 10초마다 업데이트
+                    setInterval(updateRanking, 100000);
+                });
+               
+            </script>
+
 
             <div class ="content">
                 <div class="post-list" >
