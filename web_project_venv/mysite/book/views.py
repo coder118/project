@@ -66,8 +66,9 @@ def get_all_replies(comment):
 
 def ranking_update(request):
     ranking = Post_information.objects.order_by('-views')[:5]
-    print(ranking)
-    return render(request, 'book/ranking_list.html', {'rank': ranking})
+    like_ranking = Post_information.objects.all().annotate(like_count=Count('like_users')).order_by('-like_count')[:5]
+    
+    return render(request, 'book/ranking_list.html', {'rank': ranking,'like_rank':like_ranking})
 
 def post_detail(request, pk):
     post = get_object_or_404(Post_information, pk=pk)

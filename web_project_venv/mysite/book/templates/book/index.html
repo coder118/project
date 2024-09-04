@@ -171,8 +171,8 @@
             float: right;
             unicode-bidi: isolate;
             display: inline-block;  
-            background-color: #f9f9f9;
-            box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+            {% comment %} background-color: #f9f9f9; {% endcomment %}
+            {% comment %} box-shadow: 2px 0 5px rgba(0,0,0,0.1); {% endcomment %}
         }
 
 
@@ -195,8 +195,9 @@
             padding: 20px;
             border-radius: 10px;
             {% comment %} box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); {% endcomment %}
-            width: 200px;
-            height: 200px;
+            width: 238px;
+            height: 100%;
+            box-shadow: 2px 6px 6px rgba(0, 0, 0, 0.1);
         }
         .login-container h2 {
             margin-top: 0;
@@ -465,71 +466,102 @@
         }
         
 
-        /* 기본 스타일 */
+
         .ranking-container {
             background-color: #f7f7f7;
-            padding-bottom:5px;
-            border-radius: 10px;
-            width: 238px;
-            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+            padding: 5px;
+            border-radius: 8px;
+            width: 820px; /* content 크기에 맞춤 */
+            
+            {% comment %} margin: 10px auto; {% endcomment %}
         }
-
+        
         .ranking-container h3 {
             text-align: center;
-            font-size: 1.5em;
+            font-size: 1.4em;
             color: #333;
-            margin-bottom: 20px;
+            margin-bottom: 15px;
         }
-
-        .ranking-list {
-            list-style-type: none;
-            padding: 0;
-            margin: 0;
+        
+        /* 랭킹 섹션을 가로로 배치 */
+        .ranking-sections {
+            display: flex;
+            justify-content: space-between; /* 섹션 간의 간격을 고르게 분배 */
+            margin-right:32px;
         }
-
-        .ranking-list li {
+        
+        .ranking-section {
+            width: 49%; /* 두 개의 섹션이 같은 비율로 차지하도록 조정 */
+        }
+        
+        /* 각 섹션 제목 스타일 */
+        .ranking-section h4 {
             font-size: 1.2em;
-            padding: 10px;
+            color: #444;
             margin-bottom: 10px;
+            border-bottom: 1px solid #ccc;
+            padding-bottom: 4px;
+        }
+        
+        /* 랭킹 아이템 스타일 */
+        .ranking-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+            padding: 8px;
             border-radius: 5px;
             transition: background-color 0.3s ease;
         }
-
+        
         /* 1등 스타일 */
-        .ranking-list li:nth-child(1) {
+        .rank-1 {
             background-color: #ffd700; /* 금색 */
-            color: #333;
             font-weight: bold;
-            border-left: 5px solid #d4af37;
+            border-left: 4px solid #d4af37;
         }
-
+        
         /* 2등 스타일 */
-        .ranking-list li:nth-child(2) {
+        .rank-2 {
             background-color: #c0c0c0; /* 은색 */
-            color: #333;
             font-weight: bold;
-            border-left: 5px solid #a9a9a9;
+            border-left: 4px solid #a9a9a9;
         }
-
+        
         /* 3등 스타일 */
-        .ranking-list li:nth-child(3) {
+        .rank-3 {
             background-color: #cd7f32; /* 동색 */
-            color: #333;
             font-weight: bold;
-            border-left: 5px solid #8b4513;
+            border-left: 4px solid #8b4513;
         }
-
+        
         /* 4등 이후 스타일 */
-        .ranking-list li:nth-child(n+4) {
+        .ranking-item:not(.rank-1):not(.rank-2):not(.rank-3) {
             background-color: #f1f1f1;
+            border-left: 4px solid #ccc;
+        }
+        
+        /* 랭킹 번호 스타일 */
+        .rank-number {
+            width: 40px;
+            font-size: 1.1em;
+            text-align: center;
+            margin-right: 10px;
+        }
+        
+        /* 제목 스타일 */
+        .rank-title a {
+            font-size: 1.1em;
+            color: #333;
+            text-decoration: none;
+            flex-grow: 1;
+        }
+        
+        /* 조회수 및 추천수 스타일 */
+        .rank-views, .rank-likes {
+            font-size: 0.9em;
             color: #666;
-            border-left: 5px solid #ccc;
         }
-
-        /* 마우스 오버 효과 */
-        .ranking-list li:hover {
-            background-color: #e0e0e0;
-        }
+        
 
 
         
@@ -689,70 +721,43 @@
                         {% endif %}
                     </div>
                 </div>
-
-                <div class="ranking-container">
-                    
-                    <h3>실시간 인기글</h3>
-                    <ul>
-                        {% include 'book/ranking_list.html' %}
-                    </ul>
-                </div>
             </div>
-            <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-
-            <script>
-                function updateRanking() {
-                    $.ajax({
-                        url: "{% url 'ranking_update' %}",  // AJAX 요청을 처리할 URL
-                        type: "GET",
-                        success: function(data) {
-                            $('.ranking-container ul').html(data);  // 받은 HTML로 랭킹 리스트를 갱신
-                        }
-                    });
-                } 
                 
-                $(document).ready(function() {
-                    updateRanking();  // 페이지 로드 시 첫 업데이트
-                    // 이후 10초마다 업데이트
-                    setInterval(updateRanking, 100000);
-                });
-               
-            </script>
 
 
             <div class ="content">
                 <div class="post-list" >
+
+                    <div class="ranking-container">
                     
-                    {% comment %} <p>{{ posts_information }}</p>
-                    <ul class="post-list">
-                        {% for post in posts_information %}
-                        <li class="post-item">
-                            <a href="{% url 'post_detail' post.id %}" class="post-title">{{ post.title }}</a>
-                            <div class="post-category">{{ post.category }}</div>
-                            <div class="post-meta">{{ post.created_at|date:"Y-m-d H:i" }} / {{ post.author }}</div>
-                        </li>
-                        {% empty %}
-                        <li>게시글이 없습니다.</li>
-                        {% endfor %}
-                    </ul>
-                    <!-- 페이지네이션 -->
-                    <div class="pagination">
-                        <span class="step-links">
-                            {% if posts_information.has_previous %}
-                                <a href="?page=1">&laquo; 처음</a>
-                                <a href="?page={{ posts.previous_page_number }}">이전</a>
-                            {% endif %}
+                        <h3>인기글</h3>
+                        <ul>
+                            {% include 'book/ranking_list.html' %}
+                        </ul>
+                    </div>
                 
-                            <span class="current">
-                                페이지 {{ posts_information.number }} / {{ posts_information.paginator.num_pages }}
-                            </span>
-                
-                            {% if posts_information.has_next %}
-                                <a href="?page={{ posts_information.next_page_number }}">다음</a>
-                                <a href="?page={{ posts_information.paginator.num_pages }}">끝 &raquo;</a>
-                            {% endif %}
-                        </span>
-                    </div> {% endcomment %}
+                <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    
+                <script>
+                    function updateRanking() {
+                        $.ajax({
+                            url: "{% url 'ranking_update' %}",  // AJAX 요청을 처리할 URL
+                            type: "GET",
+                            success: function(data) {
+                                $('.ranking-container ul').html(data);  // 받은 HTML로 랭킹 리스트를 갱신
+                            }
+                        });
+                    } 
+                    
+                    $(document).ready(function() {
+                        updateRanking();  // 페이지 로드 시 첫 업데이트
+                        // 이후 10초마다 업데이트
+                        setInterval(updateRanking, 300000);
+                    });
+                   
+                </script>
+                    
+                    
             
                     <div>
                         

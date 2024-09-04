@@ -1,6 +1,30 @@
-{% for post in rank %}
-<li>
-    <a href="{% url 'post_detail' post.id %}">{{ post.title }}</a>
-    <span>조회수: {{ post.views }}</span>
-</li>
-{% endfor %}
+
+<div class="ranking-sections">
+    <!-- 실시간 조회수 섹션 -->
+    <div class="ranking-section views-section">
+        <h4>실시간 조회수</h4>
+        <div class="rankings">
+            {% for post in rank %}
+            <div class="ranking-item rank-{{ forloop.counter }}">
+                <div class="rank-number">{{ forloop.counter }}</div>
+                <div class="rank-title"><a href="{% url 'post_detail' post.id %}">{{ post.title }}</a></div>
+                <div class="rank-views"> &nbsp; => 조회수: {{ post.views }}</div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- 실시간 추천수 섹션 -->
+    <div class="ranking-section likes-section">
+        <h4>실시간 추천수</h4>
+        <div class="rankings">
+            {% for post in like_rank %}
+            <div class="ranking-item rank-{{ forloop.counter }}">
+                <div class="rank-number">{{ forloop.counter }}</div>
+                <div class="rank-title"><a href="{% url 'post_detail' post.id %}">{{ post.title }}</a></div>
+                <div class="rank-likes"> &nbsp; => 추천수: {{ post.like_count }}</div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
