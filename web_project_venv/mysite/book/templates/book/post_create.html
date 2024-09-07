@@ -123,8 +123,78 @@
                     <!-- 다른 카테고리 추가 가능 -->
                 </select>
             </div>
-            <div class="form-group">
-                <textarea id="content" name="content" placeholder="내용을 입력하세요" value="{{form.content.value}}" required></textarea>
+                       
+            {% comment %} <label for="size">글씨 크기 선택:</label>
+            <select id="size" onchange="updateStyle('size', this.value)">
+                <option value="12px">12px</option>
+                <option value="15px">15px</option>
+                <option value="20px">20px</option>
+                <option value="30px">30px</option>
+            </select>
+
+            <label for="bold">굵기 선택:</label>
+            <select id="bold" onchange="updateStyle('bold', this.value)">
+                <option value="normal">보통</option>
+                <option value="bold">굵게</option>
+            </select>
+
+            <div id="editor" contenteditable="true" style="border: 1px solid #ccc; padding: 10px; width: 100%; height: 200px;"></div>
+            <script>
+                function formatText(command) {
+                    if (command === 'increaseFontSize') {
+                        document.execCommand('fontSize', false, '5'); // 5는 최대 크기
+                    } else if (command === 'decreaseFontSize') {
+                        document.execCommand('fontSize', false, '1'); // 1은 최소 크기
+                    } else {
+                        document.execCommand(command, false, null);
+                    }
+                }
+
+                let currentSize = '12px'; // 기본 글씨 크기
+                let currentBold = 'normal'; // 기본 굵기
+
+                function updateStyle(type, value) {
+                    if (type === 'size') {
+                        currentSize = value;
+                    } else if (type === 'bold') {
+                        currentBold = value;
+                    }
+                    applyCurrentStyle();
+                }
+
+                function applyCurrentStyle() {
+                    const editor = document.getElementById('editor');
+                    editor.style.fontSize = currentSize;
+                    editor.style.fontWeight = currentBold;
+                }
+
+                document.getElementById('editor').addEventListener('input', function() {
+                    applyCurrentStyle();
+                });
+                function updateStyle() {
+                    const font = document.getElementById('font').value;
+                    const size = document.getElementById('size').value;
+                    const bold = document.getElementById('bold').value;
+                    const editor = document.getElementById('editor');
+                
+                    editor.style.fontFamily = font;
+                    editor.style.fontSize = size;
+                    editor.style.fontWeight = bold;
+                }required
+            </script> {% endcomment %}
+
+            <script>
+                tinymce.init({
+                    selector: '#content',  // 사용할 텍스트 영역의 id
+                    plugins: [
+                    // Core editing features
+                    'anchor', 'autolink', 'charmap','images'],
+                    license_key: 'gpl',
+                    toolbar_mode: 'floating',
+                });
+            </script>
+            <div class="form-group" >
+                <textarea id="content" name="content" placeholder="내용을 입력하세요" value="{{form.content.value}}" ></textarea>
             </div>
             <div class="form-group status">
                 <label for="status">상태:</label>

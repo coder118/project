@@ -313,7 +313,7 @@
             </div>
             <hr> {% comment %} 상단과 본문을 구분 {% endcomment %}
             <div class="post-body">
-                {{ post.content|linebreaks }}
+                {{ post.content |safe}}
             </div>
           
         {% if post.author  == user %}
