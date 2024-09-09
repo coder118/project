@@ -1,6 +1,8 @@
 from django.urls import path
 from django.views.generic import TemplateView
 from . import views # 현 디렉의 views.py파일을 임포트함 
+from django.conf import settings
+from django.conf.urls.static import static
 
 urlpatterns = [
     path('', views.index, name='index'),
@@ -41,3 +43,6 @@ urlpatterns = [
     path('search_post', views.search_posts, name='search_posts'),
 
 ]
+# 미디어 파일 제공을 위한 설정
+if settings.DEBUG:  # DEBUG 모드에서만 미디어 파일을 제공
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

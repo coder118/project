@@ -43,6 +43,13 @@ class User_information(models.Model):
     def __str__(self):
         return self.username
 
+class UserProfile(models.Model):
+    user = models.OneToOneField(User_information, on_delete=models.CASCADE)  # 사용자와 1:1 관계 설정
+    profile_image = models.ImageField(upload_to='profile_images/', blank=True, null=True)  # 프로필 이미지 필드
+
+    def __str__(self):
+        return self.user.username
+
 class Tag(models.Model):
     name = models.CharField(max_length=50, unique=True)  # 태그 이름
 

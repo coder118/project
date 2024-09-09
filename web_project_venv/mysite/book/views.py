@@ -16,7 +16,7 @@ import json
 from django.views.generic import ListView
 from .models import Post_information
 from itertools import chain
-from .models import User_information, Comment, Comment_Reply,Like
+from .models import User_information, Comment, Comment_Reply,Like,UserProfile
 from .models import bookT
 from .models import bookW
 # Create your views here.
@@ -45,10 +45,22 @@ def index(request):
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
 
+    
+    user_id = request.session.get('user_id')
+
+
+        
+    try:
+        user_profile = UserProfile.objects.get(user_id=user_id)
+    except UserProfile.DoesNotExist:
+        
+        user_profile = None  # 프로필이 없으면 None으로 설정
+        
     context = {
         'page_obj': page_obj,
+        'user_profile': user_profile,
     }
-    # print(context)
+    print(context)
     return render(request,'book/index.html',context)
     # return HttpResponse(template.render(context,request))
  
@@ -404,6 +416,7 @@ def successful_user(request): #회원가입 한 후 디비에 저장하는 함�
     return render(request, 'book/index.html', {'form': form})
 
 from django.contrib.auth.hashers import check_password
+from django.contrib.auth import authenticate, login
 # 로그인 처리하는 함수 문제가 좀 있음 
 # 비밀번호 해쉬화 저장해야 함 폼 파이 가면 해쉬화기능 킬 수가 있음 
 #로그인을 했을떄 그 사람의 계정으로 들어가서 각자의 데이터베이스가 만들어져야 함
@@ -465,7 +478,14 @@ def trying_to_login(request):
 
         # 비밀번호 확인
         if user.password == pw:  # 해시가 아닌 평문 비밀번호 비교
+            
             request.session['username'] = user_id
+            request.session['user_id'] = user.id # 숫자값 받기 
+            user_profile, created = UserProfile.objects.get_or_create(user=user)
+            if created:
+                print(f"UserProfile created for user ID: {user.id}")  # 프로필 생성 확인
+            else:
+                print(f"UserProfile already exists for user ID: {user.id}")  # 프로필이 이미 존재함
             return JsonResponse({'success': '로그인 성공했습니다!', 'redirect_url': '/book/'})  # 로그인 성공 후 리디렉션할 URL
         else:
             return JsonResponse({'error': '로그인 실패: 아이디나 비밀번호가 잘못되었습니다.'})
@@ -485,23 +505,28 @@ from django.shortcuts import render, redirect
 from django.core.files.storage import FileSystemStorage
 import os
 
-def upload_profile_pic(request):
-    if request.method == 'POST' and request.FILES['profile_pic']:
-        profile_pic = request.FILES['profile_pic']
-        fs = FileSystemStorage()
-        filename = fs.save(profile_pic.name, profile_pic)
-        uploaded_file_url = fs.url(filename)
-        # 파일의 절대 경로 생성
-        base_path = "C:\\web_project\\web_project_venv\\mysite"  # 기본 경로
-        full_path = os.path.join(base_path, uploaded_file_url.lstrip('/'))  # 앞의 '/' 제거
-        # 세션에 이미지 URL 저장
-        print('check')
-        print(full_path)
-        request.session['profile_pic'] = full_path
-        print(request.session['profile_pic'])
-        return redirect('index')  # 적절한 리다이렉션 URL로 변경하세요.
+# def upload_profile_pic(request):
+#     user_id = request.session.get('user_id')
+#     print(f"User ID from session: {user_id}") 
+#     if request.method == 'POST' and request.FILES['profile_pic']:
+#         profile_pic = request.FILES['profile_pic']
+#         fs = FileSystemStorage()
+#         filename = fs.save(profile_pic.name, profile_pic)
+#         uploaded_file_url = fs.url(filename)
+#         # 파일의 절대 경로 생성
+#         # 세션에 이미지 URL 저장
+#         try:
+#             # 사용자 ID로 UserProfile 가져오기
+#             user_profile,created = UserProfile.objects.get_or_create(user_id=user_id)
+#             user_profile.profile_image = uploaded_file_url  # 이미지 URL 저장
+#             user_profile.save()  # 변경사항 저장
+#         except UserProfile.DoesNotExist:
+#             print(f"No UserProfile found for user ID: {user_id}")  # 로그 출력
+#             # 사용자 프로필이 없는 경우에 대한 처리 추가
+#             return redirect('index')  # 적절한 리다이렉션
+#         return redirect('index')  # 적절한 리다이렉션 URL로 변경하세요.
 
-    return redirect('index')  # 적절한 템플릿으로 변경하세요.
+#     return redirect('index')  # GET 요청 시에도 리다이렉트  # 적절한 템플릿으로 변경하세요.
 
 ###게시판 
 

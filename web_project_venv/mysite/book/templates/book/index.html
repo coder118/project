@@ -700,8 +700,7 @@
                                     <form method="post" action="{% url 'upload_profile_pic' %}" enctype="multipart/form-data">
                                         {% csrf_token %}
                                         <img 
-                                            src="{{ request.session.profile_pic }}" 
-                                            {% comment %} src="{% if request.session.profile_pic %}{{ request.session.profile_pic }}{% else %}{% static 'images/default-profile.png' %}{% endif %}"  {% endcomment %}
+                                            src="{% if user_profile.profile_image %} http://127.0.0.1:8000/book{{ user_profile.profile_image }}{% endif %}" 
                                             alt="Profile Picture" 
                                             style="cursor: pointer; width: 100px; height: 100px; border-radius: 50%;" 
                                             onclick="document.getElementById('file-input').click();"
@@ -714,6 +713,7 @@
                                             onchange="this.form.submit();"
                                         >
                                     </form> 
+                                    
                                     
                                 </div>
                                 <h2>{{ request.session.username }}님</h2>
@@ -745,15 +745,16 @@
                     </div>
                 </div>
             </div>
-                
-
+                      
 
             <div class ="content">
                 <div class="post-list" >
 
                     <div class="ranking-container">
-                    
+                        
                         <h3>인기글</h3>
+                        <h2>http://127.0.0.1:8000/book{{ user_profile.profile_image}}</h2>
+               
                         <ul>
                             {% include 'book/ranking_list.html' %}
                         </ul>
