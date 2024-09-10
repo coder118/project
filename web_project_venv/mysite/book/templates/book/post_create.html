@@ -196,13 +196,13 @@
             <div class="form-group" >
                 <textarea id="content" name="content" placeholder="내용을 입력하세요" value="{{form.content.value}}" ></textarea>
             </div>
-            <div class="form-group status">
+            {% comment %} <div class="form-group status">
                 <label for="status">상태:</label>
                 <select id="status" name="status" value="{{form.status.value}}" required>
                     <option value="published">공개</option>
                     <option value="unpublished">비공개</option>
                 </select>
-            </div>
+            </div> {% endcomment %}
             <div class="tag-input">
                 <textarea id="tag-input" name="tag-input" placeholder="#태그" value="{{form.tag.value}}"></textarea>
             </div>
