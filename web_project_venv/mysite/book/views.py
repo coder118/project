@@ -26,14 +26,7 @@ from .form import PersonForm,UserForm,PostForm,CommentForm, CommentReplyForm
 def index(request):
     print("titlelist")
     
-    # book_title_list=bookT.objects.all()
-    # template = loader.get_template('book/index.html')
-    # context={
-    #     'book_title_list' : book_title_list,
-    # }
-    # if request.method == 'POST':# 이게 핵심이었어 form.as_p를 실행하면 안됐어 근데 내가 강제로 input을 만들어주니까 이곳으로 넘어가면서 get_name을 호출함 
-    #     print('stop')
-    #     return get_name(request) 
+    
     category = request.GET.get('category','all')  # 선택된 카테고리 가져오기
     print(category)
     if category == 'all' or category == '': 
@@ -44,11 +37,8 @@ def index(request):
     paginator = Paginator(post_list, 10)  # 페이지당 20개의 게시물을 표시합니다
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
-
     
     user_id = request.session.get('user_id')
-
-
         
     try:
         user_profile = UserProfile.objects.get(user_id=user_id)
@@ -348,12 +338,7 @@ def search_posts(request):
     return render(request, 'book/index.html', context)
 # {'results': results, 'query': query}
 # 내가 만들어서 적어본것     
-#def book_writer(request):
-    book_writer_list = bookW.objects.all()
-    context={
-        "book_writer_list": book_writer_list
-    }
-    return render(request,'book/index.html',context)
+
 
 def login_view(request):
     return render(request,'book/login.html')
@@ -604,23 +589,6 @@ def edit_post(request, pk):
         post.save()
         return render(request, 'book/edit_post.html', {'post': post})
      
-    # post = get_object_or_404(Post_information, pk=pk)
-    # print(post)
-    # if request.method == 'POST':
-    #     # 기존 게시물의 내용을 업데이트합니다.
-    #     print(request.POST.get('title'))
-    #     post.title = request.POST.get('title')
-    #     post.category = request.POST.get('category')
-    #     post.content = request.POST.get('content')
-    #     post.status = request.POST.get('status')
-    #     post.tag = request.POST.get('tag-input')  # 태그도 업데이트합니다.
-        
-    #     post.save()  # 변경사항을 저장합니다.
-        
-    #     return redirect('index')  # 수정 후 이동할 페이지를 설정합니다.
-    
-    # return render(request, 'book/edit_post.html', {'post': post})
-        
    
 
 
