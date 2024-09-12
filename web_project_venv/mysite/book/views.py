@@ -51,9 +51,27 @@ def index(request):
         'user_profile': user_profile,
     }
     print(context)
+    print(request)
     return render(request,'book/index.html',context)
     # return HttpResponse(template.render(context,request))
- 
+    
+def comment_profile_image(request):
+    if request.method == 'POST':
+        print("comment_profile_image 호출됨")  # 호출 확인용 로그
+        user_id = request.session.get('user_id')
+
+        try:
+            user_profile = UserProfile.objects.get(user_id=user_id)
+        except UserProfile.DoesNotExist:
+            user_profile = None  # 프로필이 없으면 None으로 설정
+
+        context = {
+            "user_profile": user_profile,
+        }
+        print("user_profile:", context)  # 디버깅용 로그
+        return render(request, "book/post_detail.html", context)
+    else:
+        print("POST 요청이 아닙니다.")  # POST가 아닐 경우 로그 확인
 def get_all_replies(comment):
     """재귀적으로 모든 대댓글과 대대댓글을 가져오는 함수"""
     all_replies = []
@@ -115,6 +133,14 @@ def post_detail(request, pk):
             reply.like_count = reply.commentR_like_users.count()
     rank = Post_information.objects.all()
     ranking = rank.order_by('-views')[:5]
+    
+    user_id = request.session.get('user_id')
+
+    try:
+        user_profile = UserProfile.objects.all()#get(user_id=user_id)
+    except UserProfile.DoesNotExist:
+        user_profile = None  # 프로필이 없으면 None으로 설정
+
     context = {
         'post': post,
         'user':user_info,
@@ -128,9 +154,10 @@ def post_detail(request, pk):
         'best_comments': best_combined,
         'comment_form': CommentForm(),  # 댓글 폼 추가
         'reply_form': CommentReplyForm(),  # 대댓글 폼 추가
+        'user_profile':user_profile,
     }
     # print('comme/nt',context)
-    print(context['reply'],type(post.author))
+    print(context['user_profile'],type(post.author))
     print(comments)
     
     return render(request, 'book/post_detail.html', context) 

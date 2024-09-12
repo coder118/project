@@ -408,10 +408,27 @@
                 {% endfor %}
             </div>
             <!-- 댓글 목록 -->
+            
+            {% comment %} <h2>{{user_profile.profile_image}}</h2>
+            {% for profile in user_profile %}
+                    <span>{{profile.user}}</span>
+                            <img 
+                                src="{% if profile.profile_image %} http://127.0.0.1:8000/book{{ profile.profile_image }}{% endif %}" 
+                                alt="Profile Picture" 
+                                style="cursor: pointer; width: 100px; height: 100px; border-radius: 50%;" 
+                            >
+                 
+                {% endfor %}
+            <img 
+                    src="{% if user_profile.profile_image %} http://127.0.0.1:8000/book{{ user_profile.profile_image }}{% endif %}" 
+                    alt="Profile Picture" 
+                    style="cursor: pointer; width: 100px; height: 100px; border-radius: 50%;" 
+                    user_profile=user_profile
+                > {% endcomment %}
             <ul class="comments-list">
                 {% for comment in post.comments.all %}
                     
-                    {% include 'book/comment_template.html' with comment=comment %}
+                    {% include 'book/comment_template.html' with comment=comment  %}
                     
                 {% endfor %}
             </ul>
