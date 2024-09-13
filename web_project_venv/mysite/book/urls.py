@@ -39,7 +39,7 @@ urlpatterns = [
     path('<int:pk>/', views.post_detail, name='post_detail'),
     path('<int:pk>/comment/', views.save_comment, name='save_comment'),
     path('<int:pk>/comment_like/',views.comment_like, name = "comment_like"),
-    path('<int:pk>/comment_profile_image/',views.comment_profile_image,name="comment_profile_image"),
+    # path('<int:pk>/comment_profile_image/',views.comment_profile_image,name="comment_profile_image"),
     path('search_post', views.search_posts, name='search_posts'),
 
 ]
