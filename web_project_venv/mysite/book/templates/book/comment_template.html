@@ -26,28 +26,7 @@
                     
                 >
             </form>
-            {% comment %} <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-            <script>
-                $(document).ready(function() {
-                    $.ajaxSetup({
-                        headers: {
-                            'X-CSRFToken': '{{ csrf_token }}'  // CSRF 토큰 포함
-                        }
-                    });
-                    $.ajax({
-                        url: "{% url 'comment_profile_image' post.pk%}",  // 자동으로 호출할 URL
-                        type: 'post',
-                        success: function(response) {
-                            // 성공적으로 호출된 경우의 처리
-                            console.log('응답:', response);
-                        },
-                        error: function(response) {
-                            // 에러 처리
-                            console.log('에러:', response);
-                        }
-                    });
-                });
-            </script> {% endcomment %}
+            
             
             <div class="comment-meta">
                 <span>{{ comment.created_at|date:"Y-m-d H:i" }}</span>
