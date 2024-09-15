@@ -2,7 +2,7 @@
 <li class="comment-item">
     <div class="comment-box">
         <div class="comment-header">
-            {% comment %} <div style="display: inline-flex; align-items: center;"> margin-left: 6px;{% endcomment %}
+            <div style="display: inline-flex; "> 
                 <strong class="comment-author">{{ comment.author.nickname }}</strong>
                 {% comment %} <form method="post" action="{% url 'comment_profile_image' post.pk %}" enctype="multipart/form-data"> {% endcomment %}
                     {% csrf_token %}
@@ -14,7 +14,7 @@
                             <img 
                                 src= "http://127.0.0.1:8000/book{{ profile.profile_image }}"
                                 alt="Profile Picture" 
-                                style="cursor: pointer; width: 30px; height: 30px; border-radius: 30%; " 
+                                style="cursor: pointer; width: 30px; height: 30px; border-radius: 30%; margin-left: 6px; " 
                             >
                         {% else %}
                             <span>aa</span>
@@ -27,7 +27,7 @@
                     
                 >
             </form> {% endcomment %}
-            {% comment %} </div> {% endcomment %}
+            </div>
             
             <div class="comment-meta">
                 <span>{{ comment.created_at|date:"Y-m-d H:i" }}</span>

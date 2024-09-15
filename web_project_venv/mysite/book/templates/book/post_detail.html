@@ -236,6 +236,25 @@
         color: #0044cc; /* 파란색 제목 */
         font-weight: bold;
     }
+
+    .shortcut-box {
+        {% comment %} background: white;
+        border-radius: 5px;
+        text-align: center; {% endcomment %}
+        position: absolute; /* relative로 설정하여 스크롤 시 함께 움직임 */
+        top: 20px;  /* 상단에서 20px 떨어진 위치 */
+        right: 20px;  /* 우측에서 20px 떨어진 위치 */
+        background: white;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        padding: 10px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        margin: 20px; /* 마진 추가 */
+    }
+    .shortcut {
+        font-weight: bold;
+        color: #007bff;
+    }
     
     </style>
     <script>
@@ -280,6 +299,32 @@
             }
         }
         
+        function goHome() {
+            window.location.href = '/book';  // 홈 화면 URL (예: '/')
+        }
+        function scrollToBottom() {
+            window.scrollTo(0, document.body.scrollHeight);  // 페이지 가장 아래로 스크롤
+        }
+
+        function scrollToTop() {
+            window.scrollTo(0, 0);  // 페이지 가장 위로 스크롤
+        }
+
+        {% comment %} document.addEventListener('keydown', function(event) { //다크 모드나 만들어볼까?
+            if (event.key === '1') {
+                goHome();  // '1' 키를 누르면 홈으로 이동
+            } else if (event.key === 'u') {
+                scrollToBottom();  // 'u' 키를 누르면 페이지 가장 아래로 스크롤
+            } else if (event.key === 'o') {
+                scrollToTop();  // 'o' 키를 누르면 페이지 가장 위로 스크롤
+            }// '1' 키를 누르면 홈으로 이동
+            
+        });
+
+        window.addEventListener('scroll', function() {
+            const shortcutBox = document.querySelector('.shortcut-box');
+            shortcutBox.style.top = (window.scrollY + 20) + 'px';  // 스크롤에 따라 박스 위치 조정
+        }); {% endcomment %}
       
     </script>
 </head>
@@ -290,6 +335,14 @@
         <a href="{% url 'index' %}"style="font-family: 'Gugi' ;">책 이야기</a>
         
     </div>
+
+    {% comment %} <div class="shortcut-box">
+        <p>단축키 정보</p>
+        <p><span class="shortcut">1</span> >> HOME</p>
+        <p><span class="shortcut">u</span> >> 맨 아래로</p>
+        <p><span class="shortcut">o</span> >> 맨 위로</p>
+    </div> {% endcomment %}
+
     <div class="category-bar">
         <a href="#">신작 소식</a>
         <div class="vertical-line"></div> <!-- 첫 번째 세로선 추가 -->

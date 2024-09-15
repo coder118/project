@@ -170,7 +170,9 @@
             height:100%;
             float: right;
             unicode-bidi: isolate;
-            display: inline-block;  
+            display: inline-block; 
+            {% comment %} overflow: auto;
+            position: relative;  {% endcomment %}
             {% comment %} background-color: #f9f9f9; {% endcomment %}
             {% comment %} box-shadow: 2px 0 5px rgba(0,0,0,0.1); {% endcomment %}
         }
@@ -582,6 +584,20 @@
             position: relative; /* 팝업이 버튼 위에 나타나도록 함 */
         }
         
+        .shortcut-box {            
+            position: absolute;
+            top: 20px;  /* 상단에서 20px 떨어진 위치 */
+            right: 20px;
+            background: white;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            padding: 10px;
+            margin: 20px; /* 마진 추가 */
+        }
+        .shortcut {
+            font-weight: bold;
+            color: #007bff;
+        }
         
 
 
@@ -633,8 +649,35 @@
             
             return false;  // 폼 제출을 막음
         }
-       
-       
+        
+        function scrollToBottom() {
+            window.scrollTo(0, document.body.scrollHeight);  // 페이지 가장 아래로 스크롤
+        }
+
+        function scrollToTop() {
+            window.scrollTo(0, 0);  // 페이지 가장 위로 스크롤
+        }
+
+        {% comment %} document.addEventListener('keydown', function(event) { //다크 모드나 만들어볼까?
+            if (event.key === 'u') {
+                scrollToBottom();  // 'u' 키를 누르면 페이지 가장 아래로 스크롤
+            } else if (event.key === 'o') {
+                scrollToTop();  // 'o' 키를 누르면 페이지 가장 위로 스크롤
+            }// '1' 키를 누르면 홈으로 이동
+            
+        }); {% endcomment %}
+        
+        {% comment %} window.addEventListener('scroll', function() {
+            const shortcutBox = document.querySelector('.shortcut-box');
+            const loginContainer = document.querySelector('.login-container').getBoundingClientRect().bottom;
+            // 변수 값 출력
+            console.log('스크롤 Y 위치:',shortcutBox);
+            console.log('스크롤 Y 위치:', window.scrollY);
+            console.log('로그인 컨테이너의 아래쪽 위치:', loginContainer);
+            // 로그인 컨테이너 아래에 위치하도록 조정
+            shortcutBox.style.top = (window.scrollY + loginContainer + 20) + 'px';  // 스크롤에 따라 박스 위치 조정
+            console.log('shortcutbox:',shortcutBox.style.top);
+        }); {% endcomment %}
     </script>
 </head>
 <body>
@@ -742,10 +785,16 @@
                             <a href="{% url 'signup' %}">회원가입</a>
                         </div> 
                         {% endif %}
+                        
                     </div>
                 </div>
+                {% comment %} <div class="shortcut-box">
+                    <p>단축키 정보</p>
+                    <p><span class="shortcut">u</span> >> 맨 아래로</p>
+                    <p><span class="shortcut">o</span> >> 맨 위로</p>
+                </div> {% endcomment %}
             </div>
-                      
+            
 
             <div class ="content">
                 <div class="post-list" >
