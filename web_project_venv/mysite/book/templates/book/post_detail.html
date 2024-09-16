@@ -310,7 +310,7 @@
             window.scrollTo(0, 0);  // 페이지 가장 위로 스크롤
         }
 
-        {% comment %} document.addEventListener('keydown', function(event) { //다크 모드나 만들어볼까?
+        document.addEventListener('keydown', function(event) { //다크 모드나 만들어볼까?
             if (event.key === '1') {
                 goHome();  // '1' 키를 누르면 홈으로 이동
             } else if (event.key === 'u') {
@@ -320,7 +320,7 @@
             }// '1' 키를 누르면 홈으로 이동
             
         });
-
+{% comment %} 
         window.addEventListener('scroll', function() {
             const shortcutBox = document.querySelector('.shortcut-box');
             shortcutBox.style.top = (window.scrollY + 20) + 'px';  // 스크롤에 따라 박스 위치 조정
