@@ -6,6 +6,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Gugi&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/light-theme.css" id="theme-link" />
     <style>
         html{
             height:100%;
@@ -585,7 +586,7 @@
         }
         
         .shortcut-box {            
-            position: absolute;
+            {% comment %} position: absolute; {% endcomment %}
             top: 20px;  /* 상단에서 20px 떨어진 위치 */
             right: 20px;
             background: white;
@@ -658,14 +659,14 @@
             window.scrollTo(0, 0);  // 페이지 가장 위로 스크롤
         }
 
-        {% comment %} document.addEventListener('keydown', function(event) { //다크 모드나 만들어볼까?
+        document.addEventListener('keydown', function(event) { //다크 모드나 만들어볼까?
             if (event.key === 'u') {
                 scrollToBottom();  // 'u' 키를 누르면 페이지 가장 아래로 스크롤
             } else if (event.key === 'o') {
                 scrollToTop();  // 'o' 키를 누르면 페이지 가장 위로 스크롤
             }// '1' 키를 누르면 홈으로 이동
             
-        }); {% endcomment %}
+        });
         
         {% comment %} window.addEventListener('scroll', function() {
             const shortcutBox = document.querySelector('.shortcut-box');
@@ -678,6 +679,39 @@
             shortcutBox.style.top = (window.scrollY + loginContainer + 20) + 'px';  // 스크롤에 따라 박스 위치 조정
             console.log('shortcutbox:',shortcutBox.style.top);
         }); {% endcomment %}
+
+        {% comment %} var theme = document.querySelector("#theme-link");
+        var currentTheme = localStorage.getItem("currentTheme");
+
+        loadTheme();
+
+        //테마를 선택한 정보를 저장한 localStorage에 따라 테마 결정
+        function loadTheme(){
+            if (currentTheme == "dark") {
+                theme.setAttribute('href', "css/dark-theme.css");
+                console.log("현재 테마 : 다크");
+            } else{
+                theme.setAttribute('href', "css/light-theme.css");
+                console.log("현재 테마 : 라이트");
+            }
+        }
+
+
+        //토글 버튼 클릭 이벤트 함수
+        function ToggleTheme(){
+            const prefersDarkScheme = window.matchMedia("(prefers-color-scheme: dark)");
+
+            if (prefersDarkScheme.matches) {
+                window.matchMedia("(prefers-color-scheme: light)").matches ? 'light' : 'dark';
+            } else {
+                window.matchMedia("(prefers-color-scheme: dark)").matches ? 'dark' : 'light';
+            }
+            
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            localStorage.setItem('currentTheme', newTheme);
+            location.reload();
+        } {% endcomment %}
+
     </script>
 </head>
 <body>
@@ -788,11 +822,12 @@
                         
                     </div>
                 </div>
-                {% comment %} <div class="shortcut-box">
+                <div class="shortcut-box">
                     <p>단축키 정보</p>
                     <p><span class="shortcut">u</span> >> 맨 아래로</p>
                     <p><span class="shortcut">o</span> >> 맨 위로</p>
-                </div> {% endcomment %}
+                </div>
+                {% comment %} <button id="darkmode_btn" onclick="ToggleTheme()">토글 버튼</button> {% endcomment %}
             </div>
             
 
