@@ -40,6 +40,7 @@ urlpatterns = [
     path('<int:pk>/comment/', views.save_comment, name='save_comment'),
     path('<int:pk>/comment_like/',views.comment_like, name = "comment_like"),
     # path('<int:pk>/comment_profile_image/',views.comment_profile_image,name="comment_profile_image"),
+    #path('post_upload_image/', views.post_upload_image, name='post_upload_image'),
     path('search_post', views.search_posts, name='search_posts'),
 
 ]

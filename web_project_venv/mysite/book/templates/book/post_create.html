@@ -182,27 +182,73 @@
                     editor.style.fontWeight = bold;
                 }required
             </script> {% endcomment %}
-            <span>아 커밋 문제 </span>
+            
+            <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    
             <script>
                 tinymce.init({
                     selector: '#content',  // 사용할 텍스트 영역의 id
                     plugins: [
                     // Core editing features
                     'anchor', 'autolink', 'charmap','images'],
+                    //plugins: 'image code',
                     license_key: 'gpl',
                     toolbar_mode: 'floating',
+                    file_picker_types: 'image', // TinyMCE에서 이미지를 선택할 때, 이미지 파일만 선택 (옵션 : media, file 등)
+                    
+                    //image_title: true,
+                    toolbar: "custom_image",
+                    setup: function(editor) {
+                        editor.ui.registry.addButton('custom_image', {
+                            title: 'Insert Image',
+                            icon: 'image',
+                            onAction: triggerTag
+                        });
+                    }
+                    
                 });
+
+
+                const triggerTag = function () {
+                    const image = $("#image");
+                    image.trigger("click");
+                    image.on('change', readImage);
+                };
+        {% comment %} 
+                const readImage = function () {
+                    const file = this.files[0];
+                    const formData = new FormData();
+                    formData.append('image', file);
+        
+                    // AJAX 요청
+                    $.ajax({
+                        url: "{% url 'post_upload_image' %}", // 이미지 업로드 URL
+                        type: 'POST',
+                        data: formData,
+                        processData: false, // FormData 객체를 처리하지 않도록 설정
+                        contentType: false, // 기본 콘텐츠 타입을 사용하지 않도록 설정
+                        success: function(data) {
+                            // 이미지 URL을 TinyMCE에 삽입
+                            tinymce.activeEditor.insertContent('<img alt="photo" src="' + data.location + '" style="width: 800px; height: 500px;"/>');
+                        },
+                        error: function(error) {
+                            console.error('Error:', error);
+                        }
+                    });
+                }; 
+{% endcomment %}
             </script>
             <div class="form-group" >
                 <textarea id="content" name="content" placeholder="내용을 입력하세요" value="{{form.content.value}}" ></textarea>
+                <input type="file" multiple="multiple" name="image" id="image" style="display: none;" accept="image/*">
             </div>
-            {% comment %} <div class="form-group status">
+            <div class="form-group status">
                 <label for="status">상태:</label>
                 <select id="status" name="status" value="{{form.status.value}}" required>
                     <option value="published">공개</option>
                     <option value="unpublished">비공개</option>
                 </select>
-            </div> {% endcomment %}
+            </div> 
             <div class="tag-input">
                 <textarea id="tag-input" name="tag-input" placeholder="#태그" value="{{form.tag.value}}"></textarea>
             </div>
