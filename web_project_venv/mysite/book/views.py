@@ -542,15 +542,15 @@ def upload_profile_pic(request):
 
 ###게시판 
 @csrf_exempt  # CSRF 보호를 비활성화 (API 엔드포인트에 필요할 수 있음)
-#def post_upload_image(request):
-    #if request.method == 'POST' and request.FILES.get('image'):
-    #    image = request.FILES['image']
-     #   fs = FileSystemStorage()
-    #    filename = fs.save(image.name, image)
-    #    file_url = fs.url(filename)
-    #    file_url_with_book = f"/book/media/{filename}"
-    #    return JsonResponse({'location': request.build_absolute_uri(file_url_with_book)})
-    #return JsonResponse({'error': 'No file uploaded.'}, status=400)
+def post_upload_image(request):
+    if request.method == 'POST' and request.FILES.get('image'):
+       image = request.FILES['image']
+       fs = FileSystemStorage()
+       filename = fs.save(image.name, image)
+       file_url = fs.url(filename)
+       file_url_with_book = f"/book/media/{filename}"
+       return JsonResponse({'location': request.build_absolute_uri(file_url_with_book)})
+    return JsonResponse({'error': 'No file uploaded.'}, status=400)
 
 def post_view(request):
     return render(request, 'book/post_create.html')
