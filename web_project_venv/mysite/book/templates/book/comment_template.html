@@ -4,7 +4,6 @@
         <div class="comment-header">
             <div style="display: inline-flex; "> 
                 <strong class="comment-author">{{ comment.author.nickname }}</strong>
-                {% comment %} <form method="post" action="{% url 'comment_profile_image' post.pk %}" enctype="multipart/form-data"> {% endcomment %}
                     {% csrf_token %}
                     <h2>{{user_profile.profile_image}}</h2>
                     {% for profile in user_profile %}
@@ -20,13 +19,7 @@
                             <span>aa</span>
                         {%endif%}
                     {% endfor %}
-                {% comment %} <img 
-                    src="{% if user_profile.profile_image %} http://127.0.0.1:8000/book{{ user_profile.profile_image }}{% endif %}" 
-                    alt="Profile Picture" 
-                    style="cursor: pointer; width: 50px; height: 50px; border-radius: 50%;" 
-                    
-                >
-            </form> {% endcomment %}
+                
             </div>
             
             <div class="comment-meta">
