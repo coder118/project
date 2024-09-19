@@ -214,7 +214,7 @@
                     image.trigger("click");
                     image.on('change', readImage);
                 };
-        {% comment %} 
+
                 const readImage = function () {
                     const file = this.files[0];
                     const formData = new FormData();
@@ -236,7 +236,7 @@
                         }
                     });
                 }; 
-{% endcomment %}
+
             </script>
             <div class="form-group" >
                 <textarea id="content" name="content" placeholder="내용을 입력하세요" value="{{form.content.value}}" ></textarea>
