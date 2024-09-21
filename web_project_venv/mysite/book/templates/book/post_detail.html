@@ -107,6 +107,18 @@
     .post-detail-container {
         padding: 20px;
     }
+    .like-btn{
+        background-image:url('http://127.0.0.1:8000/book/media/like_button.jpg');
+        width: 100px; /* 버튼 너비 */
+        height: 50px;   
+        border: none;
+        border-radius: 10px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3); /* 그림자 효과 */
+        transition: transform 0.2s
+    }
+    .like-btn:hover {
+        transform: scale(1.1); /* 마우스를 올렸을 때 약간 커짐 */
+    }
     .post-header {
         background-color: #f9f9f9;
         padding: 10px;
@@ -395,8 +407,22 @@
             <div>
                 <form method="post" action="{% url 'post_like' post.pk %}" style="display:inline;">
                     {% csrf_token %}
-                    <button type="submit">좋아요</button><p>좋아요 수: {{ like_count }}</p>
-                    
+                    <button type="submit" class = "like-btn">좋아요</button><p>좋아요 수: {{ like_count }}</p>
+                    {% comment %} <script>
+                        document.getElementById('like-btn').addEventListener('click', function() {
+                            const likeImage = document.getElementById('like-btn');
+                            console.log(likeImage)
+                            // 버튼이 눌렸을 때 이미지를 변경
+                            if (likeImage.src.includes('like_button.jpg')) {
+                                likeImage.src = 'http://127.0.0.1:8000/book/media/liked_button.png'; // 눌렀을 때 이미지
+                            } else {
+                                likeImage.src = 'http://127.0.0.1:8000/book/media/like_button.png'; // 원래 이미지
+                            }
+                        
+                            // 여기에서 폼을 제출할 수 있습니다.
+                            document.getElementById('like-form').submit();
+                        });
+                    </script> {% endcomment %}
                     
                 </form>
             </div>
