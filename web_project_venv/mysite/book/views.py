@@ -104,7 +104,8 @@ def post_detail(request, pk):
     print(type(user_info))
     print(type(usernames))
     like_count = post.like_users.count()
-    
+    # like_users = post.like_users.all()
+    # like_user_names = [user.username for user in like_users] 
     
     post.save() 
     comments_anno = post.comments.annotate(like_count=Count('comment_like_users'))
@@ -148,6 +149,7 @@ def post_detail(request, pk):
         'user_check':usernames, # 유저 정보 데이터 베이스에서 유저 아이디 값을 가져와서 현재 들어와있는 유저가 usercheck안에 존재 하면 댓글 작성 가능하게 
         'other_posts': other_posts,
         'like_count':like_count, #좋아요 카운팅
+        'like_user':like_user_names,
         'rank':ranking,
         'comments': comments,  # 댓글 목록 추가
         'reply':comment_replies,
@@ -157,7 +159,7 @@ def post_detail(request, pk):
         'user_profile':user_profile,
     }
     # print('comme/nt',context)
-    print(context['user_profile'],type(post.author))
+    print(context['like_user'],type(post.author))
     print(comments)
     
     return render(request, 'book/post_detail.html', context) 
