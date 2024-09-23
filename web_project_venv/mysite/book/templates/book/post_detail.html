@@ -417,7 +417,7 @@
                     {% csrf_token %}
                     <button type="submit" class = "like-btn {% if comment_user in like_user %}liked{% endif %}" id ="like-btn">좋아요</button><p>좋아요 수: {{ like_count }}</p>
                 </form>
-                {% comment %} <script>
+                <script>
                     document.getElementById('like-btn').addEventListener('click', function() {
                         event.preventDefault();
                         
@@ -429,7 +429,7 @@
                         // 폼을 제출
                         document.getElementById('like-form').submit();
                     });
-                </script> {% endcomment %}
+                </script>
             </div>
         {%else%}
             <div>
