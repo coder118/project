@@ -104,8 +104,8 @@ def post_detail(request, pk):
     print(type(user_info))
     print(type(usernames))
     like_count = post.like_users.count()
-    # like_users = post.like_users.all()
-    # like_user_names = [user.username for user in like_users] 
+    like_users = post.like_users.all()
+    like_user_names = [user.username for user in like_users] 
     
     post.save() 
     comments_anno = post.comments.annotate(like_count=Count('comment_like_users'))
