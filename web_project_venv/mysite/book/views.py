@@ -199,8 +199,17 @@ def post_sort(request):
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
     
+    user_id = request.session.get('user_id')
+        
+    try:
+        user_profile = UserProfile.objects.get(user_id=user_id)
+    except UserProfile.DoesNotExist:
+        
+        user_profile = None 
+    
     context = {
         'page_obj': page_obj,
+        'user_profile': user_profile,
     }
     print(context)
     return render(request, 'book/index.html', context)
@@ -724,4 +733,118 @@ def comment_like(request,pk):
 # 데이터 저장후에  book/signup/successful_user 경로로 넘어감
 # 그리고 데이터에 저장에 성공하고 원래 기본 화면창으로 넘어가는 기능이 필요함 
 
+#############################mypost
 
+# def my_post_view(request):
+#     print('mypostttt')
+#     user_id = request.session.get('username')
+#     user = User_information.objects.get(username=user_id)
+    
+#     post_list = Post_information.objects.filter(author=user).annotate(like_count=Count('like_users')).order_by('-created_at')
+#     print(post_list,'mypost')
+#     category = request.GET.get('category', 'all')  # 선택된 카테고리 가져오기
+#     print(category)
+    
+#     # 선택된 카테고리에 따라 필터링
+#     if category != 'all' and category != '':
+#         post_list = post_list.filter(category=category)
+#     paginator = Paginator(post_list, 10)  # 페이지당 20개의 게시물을 표시합니다
+#     page_number = request.GET.get('page')
+#     page_obj = paginator.get_page(page_number)
+    
+#     user_id = request.session.get('user_id')
+        
+#     try:
+#         user_profile = UserProfile.objects.get(user_id=user_id)
+#     except UserProfile.DoesNotExist:
+        
+#         user_profile = None  # 프로필이 없으면 None으로 설정
+        
+#     context = {
+#         'page_obj': page_obj,
+#         'user_profile': user_profile,
+#     }
+#     print(context['page_obj'])
+#     print(request)
+#     return render(request,'book/my_post.html',context)
+#     # return HttpRespons
+
+# def my_post_sort(request):
+#     print("sort")
+#     sort_option = request.GET.get('sort')
+#     category = request.GET.get('category')
+#     user_id = request.session.get('username')
+#     user = User_information.objects.get(username=user_id)
+    
+#     post_list = Post_information.objects.filter(author=user)
+#     # 기본 정렬: 최신순
+#      # 기본적으로 모든 게시글을 가져오되, 카테고리가 선택된 경우 필터링
+#     print(category,'========================================')
+#     if category:
+#         print('its working?')
+#         posts = post_list.filter(category=category)
+#     else:
+#         posts = post_list.all()
+#     print(posts)
+#     if sort_option == 'views_desc':
+#             print('-view')
+#             posts = posts.annotate(like_count=Count('like_users')).order_by('-views')
+#     elif sort_option == 'views_asc':
+#             print("view")
+#             posts = posts.annotate(like_count=Count('like_users')).order_by('views')
+#     elif sort_option == 'likes_desc':
+#             print("-likes")
+#             # 좋아요 수를 기반으로 내림차순 정렬
+#             posts = posts.annotate(like_count=Count('like_users')).order_by('-like_count')
+#     elif sort_option == 'likes_asc':
+#             print("likes")
+#             # 좋아요 수를 기반으로 오름차순 정렬
+#             posts = posts.annotate(like_count=Count('like_users')).order_by('like_count')
+#     else:
+#             posts = posts.order_by('-created_at')
+    
+#     # 페이지네이션 추가
+#     paginator = Paginator(posts, 10)  # 페이지 당 10개의 게시글
+#     page_number = request.GET.get('page')
+#     page_obj = paginator.get_page(page_number)
+    
+#     user_id = request.session.get('user_id')
+    
+#     try:
+#         user_profile = UserProfile.objects.get(user_id=user_id)
+#     except UserProfile.DoesNotExist:
+        
+#         user_profile = None  # 프로필이 없으면 None으로 설정
+      
+    
+#     context = {
+#         'page_obj': page_obj,
+#         'user_profile': user_profile,
+#     }
+#     print(context)
+#     return render(request, 'book/my_post.html', context)
+
+
+
+# def my_post_upload_profile_pic(request):
+#     user_id = request.session.get('user_id')
+#     print(f"User ID from session: {user_id}") 
+#     if request.method == 'POST' and request.FILES['profile_pic']:
+#         profile_pic = request.FILES['profile_pic']
+#         fs = FileSystemStorage()
+#         filename = fs.save(profile_pic.name, profile_pic)
+#         uploaded_file_url = fs.url(filename)
+#         # 파일의 절대 경로 생성
+#         # 세션에 이미지 URL 저장
+#         try:
+#             # 사용자 ID로 UserProfile 가져오기
+#             user_profile,created = UserProfile.objects.get_or_create(user_id=user_id)
+#             user_profile.profile_image = uploaded_file_url  # 이미지 URL 저장
+#             user_profile.save()  # 변경사항 저장
+#         except UserProfile.DoesNotExist:
+#             print(f"No UserProfile found for user ID: {user_id}")  # 로그 출력
+#             # 사용자 프로필이 없는 경우에 대한 처리 추가
+#             return redirect('book/my_post')  # 적절한 리다이렉션
+#         return redirect('book/my_post')  # 적절한 리다이렉션 URL로 변경하세요.
+
+#     return redirect('book/my_post.html')  # GET 요청 시에도 리다이렉트  # 적절한 템플릿으로 변경하세요.

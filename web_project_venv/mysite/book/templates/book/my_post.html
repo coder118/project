@@ -680,65 +680,23 @@
             console.log('shortcutbox:',shortcutBox.style.top);
         }); {% endcomment %}
 
-        {% comment %} var theme = document.querySelector("#theme-link");
-        var currentTheme = localStorage.getItem("currentTheme");
-
-        loadTheme();
-
-        //테마를 선택한 정보를 저장한 localStorage에 따라 테마 결정
-        function loadTheme(){
-            if (currentTheme == "dark") {
-                theme.setAttribute('href', "css/dark-theme.css");
-                console.log("현재 테마 : 다크");
-            } else{
-                theme.setAttribute('href', "css/light-theme.css");
-                console.log("현재 테마 : 라이트");
-            }
-        }
-
-
-        //토글 버튼 클릭 이벤트 함수
-        function ToggleTheme(){
-            const prefersDarkScheme = window.matchMedia("(prefers-color-scheme: dark)");
-
-            if (prefersDarkScheme.matches) {
-                window.matchMedia("(prefers-color-scheme: light)").matches ? 'light' : 'dark';
-            } else {
-                window.matchMedia("(prefers-color-scheme: dark)").matches ? 'dark' : 'light';
-            }
-            
-            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
-            localStorage.setItem('currentTheme', newTheme);
-            location.reload();
-        } {% endcomment %}
-
+        
     </script>
 </head>
 <body>
     <header id="header">
         <div class="navbar">
             <a href="{% url 'index' %}" style="font-family: 'Gugi' ;">책 이야기</a>
-            <div class="search-bar">
+            {% comment %} <div class="search-bar">
                 <form action="{% url 'search_posts' %}" method="post">
                     {% csrf_token %}
                     <input type="text" name ="search-post" placeholder="검색어를 입력하세요"  value="{{ query }}">
                     <button>검색</button>
                 </form>
-            </div>
+            </div> {% endcomment %}
             
         </div>
-        {% comment %} <div>
-            <a href="{% url 'signup' %}">회원가입</a>
-        </div> {% endcomment %}
-        {% comment %} <div class="category-bar">
-            <div class="vertical-line"></div> <!-- 첫 번째 세로선 추가 -->
-            <a href="#">책 추천</a>
-            <div class="vertical-line"></div>
-            <a href="#">커뮤니티</a>
-            <div class="vertical-line"></div>
-            <a href="#">리뷰</a>
-            <div class="vertical-line"></div> <!-- 두 번째 세로선 추가 -->
-        </div> {% endcomment %}
+       
         <nav class="category-bar">
             {% comment %} <a href="#">신작 소식</a> {% endcomment %}
             <div class="vertical-line"></div> <!-- 첫 번째 세로선 추가 -->
@@ -780,15 +738,9 @@
                                             src="{% if user_profile.profile_image %} http://127.0.0.1:8000/book{{ user_profile.profile_image }}{% endif %}" 
                                             alt="Profile Picture" 
                                             style="cursor: pointer; width: 100px; height: 100px; border-radius: 50%;" 
-                                            onclick="document.getElementById('file-input').click();"
+                                           
                                         >
-                                        <input 
-                                            type="file" 
-                                            id="file-input" 
-                                            name="profile_pic" 
-                                            accept="image/*" 
-                                            onchange="this.form.submit();"
-                                        >
+                                        
                                     </form> 
                                     
                                     
@@ -796,28 +748,13 @@
                                 <h2>{{ request.session.username }}님</h2>
                                 <div class="user-actions">
                                     <a href="{%url 'post_view'%}" class="action-button">글쓰기</a>
-                                    <a href="{%url 'my_post_view'%}" class="action-button">내가 올린 책</a> 
                                     
+                                    <a href="{% url 'index' %}"  class="logout-button">홈으로</a>
                                 </div>
                                 
-                                <a href="{% url 'logout' %}" class="logout-button">로그아웃</a>
+                                
                             </div>
-                        {% else %}
-                        <form id="loginform" method="post" action="{% url 'trying_to_login' %}" onsubmit="return validateLoginForm(event);">
-                            {% csrf_token %}
-                            <input type="text" name="username" placeholder="아이디 또는 전화번호">
-                            <input type="password" name="password" placeholder="비밀번호">
-                            
                         
-                            <div class="remember-me">
-                                <input type="checkbox" name="remember">
-                                <label for="remember">로그인 상태 유지</label>
-                            </div>
-                            <button type="submit">로그인</button>   
-                        </form>
-                        <div class="login-options">
-                            <a href="{% url 'signup' %}">회원가입</a>
-                        </div> 
                         {% endif %}
                         
                     </div>
@@ -834,42 +771,11 @@
             <div class ="content">
                 <div class="post-list" >
 
-                    <div class="ranking-container">
-                        
-                        <h3>인기글</h3>
-                        <h2>http://127.0.0.1:8000/book{{ user_profile.profile_image}}</h2>
-               
-                        <ul>
-                            {% include 'book/ranking_list.html' %}
-                        </ul>
-                    </div>
-                
-                <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    
-                <script>
-                    function updateRanking() {
-                        $.ajax({
-                            url: "{% url 'ranking_update' %}",  // AJAX 요청을 처리할 URL
-                            type: "GET",
-                            success: function(data) {
-                                $('.ranking-container ul').html(data);  // 받은 HTML로 랭킹 리스트를 갱신
-                            }
-                        });
-                    } 
-                    
-                    $(document).ready(function() {
-                        updateRanking();  // 페이지 로드 시 첫 업데이트
-                        // 이후 10초마다 업데이트
-                        setInterval(updateRanking, 300000);
-                    });
-                   
-                </script>
-                    
                     
             
                     <div>
                         
-                        <form method="get" action="{% url 'post_sort' %}" style="display:inline;">        
+                        <form method="get" action="{% url 'my_post_sort' %}" style="display:inline;">        
                             <input type="hidden" name="sort" value="views_desc">
                             <input type="hidden" name="category" value="{{  request.GET.category }}">
                             <button type="submit" {% if request.GET.sort == 'views_desc' %}class="active"{% endif %}>
@@ -877,7 +783,7 @@
                             </button>
                         </form>
                     
-                        <form method="get" action="{% url 'post_sort' %}" style="display:inline;">
+                        <form method="get" action="{% url 'my_post_sort' %}" style="display:inline;">
                             {% comment %} {% csrf_token %} {% endcomment %}
                             <input type="hidden" name="sort" value="views_asc">
                             <input type="hidden" name="category" value="{{  request.GET.category }}">
@@ -886,7 +792,7 @@
                             </button>
                         </form>
 
-                        <form method="get" action="{% url 'post_sort' %}" style="display:inline;">
+                        <form method="get" action="{% url 'my_post_sort' %}" style="display:inline;">
                             <input type="hidden" name="sort" value="likes_desc">
                             <input type="hidden" name="category" value="{{  request.GET.category }}">
                             <button type="submit" {% if request.GET.sort == 'likes_desc' %}class="active"{% endif %}>
@@ -894,7 +800,7 @@
                             </button>
                         </form>
                     
-                        <form method="get" action="{% url 'post_sort' %}" style="display:inline;">
+                        <form method="get" action="{% url 'my_post_sort' %}" style="display:inline;">
                             <input type="hidden" name="sort" value="likes_asc">
                             <input type="hidden" name="category" value="{{  request.GET.category }}">
                             <button type="submit" {% if request.GET.sort == 'likes_asc' %}class="active"{% endif %}>
@@ -915,67 +821,27 @@
                             <input type="hidden" name="sort" value="{{ request.GET.sort }}">
                         </form>
 
-                    {% if results == 1%} 
-                            <h2>검색 결과 </h2>
-                            <ul class="post-list">
-                                {% for post in page_obj %}
-                                    <li class="post-item">
-                                        {% comment %} <a href="{% url 'post_detail' post.id %}">{{ post.title }}</a> - {{ post.created_at }} {% endcomment %}
-                                        <a href="{% url 'post_detail' post.pk %}" class="post-title">{{ post.title }}</a>
-                            
-                                        <div class="post-category">{{ post.category }}</div>
-                                        <div class="post-meta">{{ post.created_at|date:"Y-m-d H:i" }} / {{ post.author.nickname }} / 조회수:{{ post.views }} </div>
-                                    </li>
-                                {% endfor %}
-                                
-                            </ul>
-                    {% else %}
-                            <h2>실시간 인기글</h2>
-                            <ul class="post-list">
-                                {% for post in page_obj %}
-                                <li class="post-item">
-                                    {% comment %} <div class="post-title">{{ post.title }}</a> {% endcomment %}
-                                
-                                    <a href="{% url 'post_detail' post.pk %}" class="post-title">{{ post.title }}  [{{post.comments.all|length}}]</a>
-                                    {% comment %} <int:pk>/
-                                        {% endcomment %}
-                                    <div class="post-category">{{ post.category }}</div>
-                                    <div class="post-meta">{{ post.created_at|date:"Y-m-d H:i" }} / {{ post.author.nickname }} / 조회수:{{ post.views }}/좋아요:{{ post.like_count }}</div>
-                                </li>
-                                {% empty %}
-                                <li>게시글이 없습니다.</li>
-                                {% endfor %}
-                            </ul>
-                    {% endif %}
-                
+                  
+                    
+                    <h2>내가 작성한 글</h2>
+                    <ul class="post-list">
+                        {% for post in page_obj %}
+                        <li class="post-item">
+                            {% comment %} <div class="post-title">{{ post.title }}</a> {% endcomment %}
+                        
+                            <a href="{% url 'post_detail' post.pk %}" class="post-title">{{ post.title }}  [{{post.comments.all|length}}]</a>
+                            {% comment %} <int:pk>/
+                                {% endcomment %}
+                            <div class="post-category">{{ post.category }}</div>
+                            <div class="post-meta">{{ post.created_at|date:"Y-m-d H:i" }} / {{ post.author.nickname }} / 조회수:{{ post.views }}/좋아요:{{ post.like_count }}</div>
+                        </li>
+                        {% empty %}
+                        <li>게시글이 없습니다.</li>
+                        {% endfor %}
+                    </ul>
 
                     <!-- 페이지네이션 -->
-                    <div class="pagination">
-                        {%if results == 1%}
-                            <span class="step-links">
-                                {% if page_obj.has_previous %}
-                                <div class="pagination-controls">
-                                    <a href="search_post?page=1{% if request.GET.sort %}&sort={{ request.GET.sort }}{% endif %}">&laquo; 처음</a>
-                                </div>
-                                <div class="pagination-controls2">
-                                    <a href="search_post?page={{ page_obj.previous_page_number }}{% if request.GET.sort %}&sort={{ request.GET.sort }}{% endif %}">이전</a>
-                                </div>
-                                {% endif %}
-                        
-                                <span class="current">
-                                    페이지 {{ page_obj.number }} / {{ page_obj.paginator.num_pages }}
-                                </span>
-                        
-                                {% if page_obj.has_next %}
-                                <div class="pagination-controls">
-                                    <a href="search_post?page={{ page_obj.next_page_number }}{% if request.GET.sort %}&sort={{ request.GET.sort }}{% endif %}">다음</a>
-                                </div>
-                                <div class="pagination-controls2">
-                                    <a href="search_post?page={{ page_obj.paginator.num_pages }}{% if request.GET.sort %}&sort={{ request.GET.sort }}{% endif %}">끝 &raquo;</a>
-                                </div>
-                            </span>
-                        {% endif %}
-                        {%else%}
+                    {% comment %} <div class="pagination">
                             <span class="step-links">
                                 {% if page_obj.has_previous %}
                                 <div class="pagination-controls">
@@ -1005,18 +871,17 @@
                                 <div class="pagination-controls2">
                                     <a href="?page={{ page_obj.paginator.num_pages }}{% if request.GET.sort %}&sort={{ request.GET.sort }}{% endif %}">끝 &raquo;</a>
                                 </div>
+                                {% endif %}
                             </span>
-                            {% endif %}
-                        
-
-                        {%endif%}
+        
+                         {% endcomment %}
                         <script>
                             {% comment %} document.getElementById("pageInputBtn").addEventListener("click", function() {
                                 // 팝업 박스 표시
                                 var popup = document.getElementById("pagePopup");
                                 popup.style.display = popup.style.display === "none" ? "block" : "none";
                             }); {% endcomment %}
-
+{% comment %} 
                             document.getElementById("movePageBtn").addEventListener("click", function() {
                                 var input = document.getElementById("pageInput");
                                 var pageNumber = parseInt(input.value);
@@ -1050,7 +915,7 @@
                                 // 해당 페이지로 이동
                                 window.location.href = newUrl;
                             });
-                        </script>
+                        </script> {% endcomment %}
                           
 
                     </div>
@@ -1067,169 +932,3 @@
 </html>        
 
 
-
-
-<!--
-<!DOCTYPE html>
-<html>
-<head>
-    <title>책 이야기</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-        }
-        .navbar {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background-color: #f1f1f1;
-            padding: 10px;
-            box-shadow: 0 4px 2px -2px gray;
-        }
-        .navbar a {
-            text-decoration: none;
-            color: black;
-            padding: 14px 20px;
-            font-weight: bold;
-        }
-        .navbar a:hover {
-            background-color: #ddd;
-            color: black;
-        }
-        .search-bar {
-            display: flex;
-            align-items: center;
-        }
-        .search-bar input[type="text"] {
-            padding: 12px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            width: 300px
-        }
-        .search-bar button {
-            padding: 12px 20px;
-            background-color: #007BFF;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            margin-left: 5px;
-            cursor: pointer;
-            width: 100px
-        }
-        .search-bar button:hover {
-            background-color: #0056b3;
-        }
-        .content {
-            padding: 20px;
-        }
-        .sidebar {
-            width: 200px;
-            float: left;
-            background-color: #f9f9f9;
-            height: 100vh;
-            box-shadow: 2px 0 5px rgba(0,0,0,0.1);
-        }
-        .sidebar a {
-            display: block;
-            color: black;
-            padding: 10px;
-            text-decoration: none;
-            font-weight: bold;
-        }
-        .sidebar a:hover {
-            background-color: #ddd;
-        }
-        .main-content {
-            {% comment %} margin-left: 220px;
-            padding: 20px; {% endcomment %}
-            padding: 20px;
-            max-width: 800px;
-            margin: 0 auto;
-            background-color: #fff;
-            {% comment %} border: 1px solid #ddd;
-            border-radius: 4px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); {% endcomment %}
-        }
-        .category-bar {
-            background-color: #007BFF;
-            padding: 10px 0;
-            display: flex;
-            justify-content: space-around;
-            color: white;
-            font-weight: bold;
-        }
-        .category-bar a {
-            color: white;
-            text-decoration: none;
-            padding: 0 15px;
-        }
-        .category-bar a:hover {
-            text-decoration: underline;
-        }
-        .category-bar .vertical-line {
-            width: 2px;
-            height: 20px;
-            background-color: #000;
-            margin: 0 15px;
-           
-        }
-        
-    </style>
-</head>
-<body>
-    <div class="navbar">
-        <a href="{% url 'index' %}">책 이야기</a>
-        <div class="search-bar">
-            <input type="text" placeholder="검색어를 입력하세요">
-            <button>검색</button>
-        </div>
-        <div>
-            <a href="{% url 'login' %}">로그인</a>
-            <a href="{% url 'signup' %}">회원가입</a> 
-        </div>
-    </div>
-    -->
-
-    {% comment %} <div class="category-bar">
-        <a href="#">신작 소식</a>
-        <div class="vertical-line"></div> <!-- 첫 번째 세로선 추가 -->
-        <a href="#">추천글</a>
-        <a href="#">실시간 인기글</a>
-        <a href="#">커뮤니티</a>
-        <div class="vertical-line"></div> <!-- 두 번째 세로선 추가 -->
-        <a href="#">이벤트</a>
-    </div>
-     {% endcomment %}
-    {% comment %} <div class="main-content">
-        <h2>실시간 인기글</h2>
-        <p>여기에 실시간 인기글 내용이 표시됩니다.</p>
-        
-        {%if book_title_list%}
-        <ul> 
-        {%for title in book_title_list%}   
-            <li><a href="/book/{{ title.id }}/">{{ title.book_Title }}</a></li>
-        {%endfor%}
-        </ul>
-        {%else%}
-        <p>no book title</p>
-        {%endif%} {
-
-        <h2>이름 및  입력</h2> 
-        <form method="post" action="{% url 'get_name' %}" >
-            {% csrf_token %}
-            
-            <label for="id_name">Name:</label>
-            <input type="text" name="name" id="id_name" value="{{ form.name.value }}">
-            <br>
-            <label for="id_age">Age:</label>
-            <input type="text" name="age" id="id_age" value="{{ form.age.value }}">
-            <br>  
-           
-            <button type="submit">제출</button>
-        </form>
-
-    </div>
-</body>
-</html> {% endcomment %}

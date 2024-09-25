@@ -43,6 +43,10 @@ urlpatterns = [
     path('post_upload_image/', views.post_upload_image, name='post_upload_image'),
     path('search_post', views.search_posts, name='search_posts'),
 
+
+    path('my_post/',views.my_post_view, name='my_post_view'),
+    # path('my_post_upload_profile_pic/', views.my_post_upload_profile_pic, name='my_post_upload_profile_pic'),#마찬가지 이미지 업로드 url임
+    path('my_post_sort/',views.my_post_sort, name='my_post_sort'),
 ]
 # 미디어 파일 제공을 위한 설정
 if settings.DEBUG:  # DEBUG 모드에서만 미디어 파일을 제공
