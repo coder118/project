@@ -735,38 +735,38 @@ def comment_like(request,pk):
 
 #############################mypost
 
-# def my_post_view(request):
-#     print('mypostttt')
-#     user_id = request.session.get('username')
-#     user = User_information.objects.get(username=user_id)
+def my_post_view(request):
+    print('mypostttt')
+    user_id = request.session.get('username')
+    user = User_information.objects.get(username=user_id)
     
-#     post_list = Post_information.objects.filter(author=user).annotate(like_count=Count('like_users')).order_by('-created_at')
-#     print(post_list,'mypost')
-#     category = request.GET.get('category', 'all')  # 선택된 카테고리 가져오기
-#     print(category)
+    post_list = Post_information.objects.filter(author=user).annotate(like_count=Count('like_users')).order_by('-created_at')
+    print(post_list,'mypost')
+    category = request.GET.get('category', 'all')  # 선택된 카테고리 가져오기
+    print(category)
     
-#     # 선택된 카테고리에 따라 필터링
-#     if category != 'all' and category != '':
-#         post_list = post_list.filter(category=category)
-#     paginator = Paginator(post_list, 10)  # 페이지당 20개의 게시물을 표시합니다
-#     page_number = request.GET.get('page')
-#     page_obj = paginator.get_page(page_number)
+    # 선택된 카테고리에 따라 필터링
+    if category != 'all' and category != '':
+        post_list = post_list.filter(category=category)
+    paginator = Paginator(post_list, 10)  # 페이지당 20개의 게시물을 표시합니다
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
     
-#     user_id = request.session.get('user_id')
+    user_id = request.session.get('user_id')
         
-#     try:
-#         user_profile = UserProfile.objects.get(user_id=user_id)
-#     except UserProfile.DoesNotExist:
+    try:
+        user_profile = UserProfile.objects.get(user_id=user_id)
+    except UserProfile.DoesNotExist:
         
-#         user_profile = None  # 프로필이 없으면 None으로 설정
+        user_profile = None  # 프로필이 없으면 None으로 설정
         
-#     context = {
-#         'page_obj': page_obj,
-#         'user_profile': user_profile,
-#     }
-#     print(context['page_obj'])
-#     print(request)
-#     return render(request,'book/my_post.html',context)
+    context = {
+        'page_obj': page_obj,
+        'user_profile': user_profile,
+    }
+    print(context['page_obj'])
+    print(request)
+    return render(request,'book/my_post.html',context)
 #     # return HttpRespons
 
 # def my_post_sort(request):
