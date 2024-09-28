@@ -769,60 +769,60 @@ def my_post_view(request):
     return render(request,'book/my_post.html',context)
 #     # return HttpRespons
 
-# def my_post_sort(request):
-#     print("sort")
-#     sort_option = request.GET.get('sort')
-#     category = request.GET.get('category')
-#     user_id = request.session.get('username')
-#     user = User_information.objects.get(username=user_id)
+def my_post_sort(request):
+    print("sort")
+    sort_option = request.GET.get('sort')
+    category = request.GET.get('category')
+    user_id = request.session.get('username')
+    user = User_information.objects.get(username=user_id)
     
-#     post_list = Post_information.objects.filter(author=user)
-#     # 기본 정렬: 최신순
-#      # 기본적으로 모든 게시글을 가져오되, 카테고리가 선택된 경우 필터링
-#     print(category,'========================================')
-#     if category:
-#         print('its working?')
-#         posts = post_list.filter(category=category)
-#     else:
-#         posts = post_list.all()
-#     print(posts)
-#     if sort_option == 'views_desc':
-#             print('-view')
-#             posts = posts.annotate(like_count=Count('like_users')).order_by('-views')
-#     elif sort_option == 'views_asc':
-#             print("view")
-#             posts = posts.annotate(like_count=Count('like_users')).order_by('views')
-#     elif sort_option == 'likes_desc':
-#             print("-likes")
-#             # 좋아요 수를 기반으로 내림차순 정렬
-#             posts = posts.annotate(like_count=Count('like_users')).order_by('-like_count')
-#     elif sort_option == 'likes_asc':
-#             print("likes")
-#             # 좋아요 수를 기반으로 오름차순 정렬
-#             posts = posts.annotate(like_count=Count('like_users')).order_by('like_count')
-#     else:
-#             posts = posts.order_by('-created_at')
+    post_list = Post_information.objects.filter(author=user)
+    # 기본 정렬: 최신순
+     # 기본적으로 모든 게시글을 가져오되, 카테고리가 선택된 경우 필터링
+    print(category,'========================================')
+    if category:
+        print('its working?')
+        posts = post_list.filter(category=category)
+    else:
+        posts = post_list.all()
+    print(posts)
+    if sort_option == 'views_desc':
+            print('-view')
+            posts = posts.annotate(like_count=Count('like_users')).order_by('-views')
+    elif sort_option == 'views_asc':
+            print("view")
+            posts = posts.annotate(like_count=Count('like_users')).order_by('views')
+    elif sort_option == 'likes_desc':
+            print("-likes")
+            # 좋아요 수를 기반으로 내림차순 정렬
+            posts = posts.annotate(like_count=Count('like_users')).order_by('-like_count')
+    elif sort_option == 'likes_asc':
+            print("likes")
+            # 좋아요 수를 기반으로 오름차순 정렬
+            posts = posts.annotate(like_count=Count('like_users')).order_by('like_count')
+    else:
+            posts = posts.order_by('-created_at')
     
-#     # 페이지네이션 추가
-#     paginator = Paginator(posts, 10)  # 페이지 당 10개의 게시글
-#     page_number = request.GET.get('page')
-#     page_obj = paginator.get_page(page_number)
+    # 페이지네이션 추가
+    paginator = Paginator(posts, 10)  # 페이지 당 10개의 게시글
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
     
-#     user_id = request.session.get('user_id')
+    user_id = request.session.get('user_id')
     
-#     try:
-#         user_profile = UserProfile.objects.get(user_id=user_id)
-#     except UserProfile.DoesNotExist:
+    try:
+        user_profile = UserProfile.objects.get(user_id=user_id)
+    except UserProfile.DoesNotExist:
         
-#         user_profile = None  # 프로필이 없으면 None으로 설정
+        user_profile = None  # 프로필이 없으면 None으로 설정
       
     
-#     context = {
-#         'page_obj': page_obj,
-#         'user_profile': user_profile,
-#     }
-#     print(context)
-#     return render(request, 'book/my_post.html', context)
+    context = {
+        'page_obj': page_obj,
+        'user_profile': user_profile,
+    }
+    print(context)
+    return render(request, 'book/my_post.html', context)
 
 
 
