@@ -822,25 +822,37 @@
                         </form>
 
                   
-                    
-                    <h2>내가 작성한 글</h2>
-                    <ul class="post-list">
-                        {% for post in page_obj %}
-                        <li class="post-item">
-                            {% comment %} <div class="post-title">{{ post.title }}</a> {% endcomment %}
-                        
-                            <a href="{% url 'post_detail' post.pk %}" class="post-title">{{ post.title }}  [{{post.comments.all|length}}]</a>
-                            {% comment %} <int:pk>/
-                                {% endcomment %}
-                            <div class="post-category">{{ post.category }}</div>
-                            <div class="post-meta">{{ post.created_at|date:"Y-m-d H:i" }} / {{ post.author.nickname }} / 조회수:{{ post.views }}/좋아요:{{ post.like_count }}</div>
-                        </li>
-                        {% empty %}
-                        <li>게시글이 없습니다.</li>
-                        {% endfor %}
-                    </ul>
-
+                    <form method="POST" action="{% url 'manage_my_posts' %}" id="postForm">
+                        {% csrf_token %}
+                        <h2>내가 작성한 글</h2>
+                        <ul class="post-list">
+                            {% for post in page_obj %}
+                            <li class="post-item">
+                                {% comment %} <div class="post-title">{{ post.title }}</a> {% endcomment %}
+                                <input type="checkbox" name="selected_posts" value="{{ post.pk }}"> <!-- 체크박스 추가 -->
+                                <a href="{% url 'post_detail' post.pk %}" class="post-title">{{ post.title }}  [{{post.comments.all|length}}]</a>
+                                {% comment %} <int:pk>/
+                                    {% endcomment %}
+                                <div class="post-category">{{ post.category }}</div>
+                                <div class="post-meta">{{ post.created_at|date:"Y-m-d H:i" }} / {{ post.author.nickname }} / 조회수:{{ post.views }}/좋아요:{{ post.like_count }}</div>
+                            </li>
+                            {% empty %}
+                            <li>게시글이 없습니다.</li>
+                            {% endfor %}
+                        </ul>
+                        <button type="submit" name="action" value="delete">선택한 게시물 삭제</button>
+                        <select name="new_category">
+                            <option value="Fantasy">판타지</option>
+                            <option value="SF">SF</option>
+                            <option value="Martial-art">무협</option>
+                            <option value="Romance">로맨스</option>
+                            <!-- 추가 카테고리 -->
+                        </select>
+                        <button type="submit" name="action" value="change_category">선택한 게시물 카테고리 변경</button>
+                    </form>
                     <!-- 페이지네이션 -->
+
+
                     <div class="pagination">
                             <span class="step-links">
                                 {% if page_obj.has_previous %}

@@ -109,8 +109,8 @@
     }
     .like-btn{
         background-image:url('http://127.0.0.1:8000/book/media/like_button.png');
-        {% comment %} background-size: cover; /* 이미지가 버튼 크기에 맞게 조정 */
-        background-position: center; {% endcomment %}
+        background-size: cover; /* 이미지가 버튼 크기에 맞게 조정 */
+        background-position: center;
         width: 100px; /* 버튼 너비 */
         height: 50px;   
         border: none;
@@ -415,7 +415,7 @@
                 <p>{{ like_user }}</p>
                 <form method="post" action="{% url 'post_like' post.pk %}" style="display:inline;"id="like-form">
                     {% csrf_token %}
-                    <button type="submit" class = " {% if comment_user in like_user %}liked{% else %} like-btn {% endif %}" id ="like-btn">좋아요</button><p>좋아요 수: {{ like_count }}</p>
+                    <button type="submit" class = "  like-btn {% if comment_user in like_user %}liked{% endif %}" id ="like-btn"></button><p>좋아요 수: {{ like_count }}</p>
                 </form>
                 <script>
                     document.getElementById('like-btn').addEventListener('click', function() {

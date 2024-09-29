@@ -824,27 +824,39 @@ def my_post_sort(request):
     print(context)
     return render(request, 'book/my_post.html', context)
 
+# def manage_my_posts(request):
+#     selected_posts = request.POST.getlist('selected_posts')
 
+#     if request.POST.get('action') == 'delete':
+#         if selected_posts:
+#             Post_information.objects.filter(pk__in=selected_posts).delete()
+    
+#     elif request.POST.get('action') == 'change_category':
+#         new_category = request.POST.get('new_category')
+#         if selected_posts and new_category:
+#             Post_information.objects.filter(pk__in=selected_posts).update(category=new_category)
 
-# def my_post_upload_profile_pic(request):
-#     user_id = request.session.get('user_id')
-#     print(f"User ID from session: {user_id}") 
-#     if request.method == 'POST' and request.FILES['profile_pic']:
-#         profile_pic = request.FILES['profile_pic']
-#         fs = FileSystemStorage()
-#         filename = fs.save(profile_pic.name, profile_pic)
-#         uploaded_file_url = fs.url(filename)
-#         # 파일의 절대 경로 생성
-#         # 세션에 이미지 URL 저장
-#         try:
-#             # 사용자 ID로 UserProfile 가져오기
-#             user_profile,created = UserProfile.objects.get_or_create(user_id=user_id)
-#             user_profile.profile_image = uploaded_file_url  # 이미지 URL 저장
-#             user_profile.save()  # 변경사항 저장
-#         except UserProfile.DoesNotExist:
-#             print(f"No UserProfile found for user ID: {user_id}")  # 로그 출력
-#             # 사용자 프로필이 없는 경우에 대한 처리 추가
-#             return redirect('book/my_post')  # 적절한 리다이렉션
-#         return redirect('book/my_post')  # 적절한 리다이렉션 URL로 변경하세요.
+#     return redirect('/book/my_post')  # 모든 작업 후 리다이렉트할 URL
 
-#     return redirect('book/my_post.html')  # GET 요청 시에도 리다이렉트  # 적절한 템플릿으로 변경하세요.
+def my_post_upload_profile_pic(request):
+    user_id = request.session.get('user_id')
+    print(f"User ID from session: {user_id}") 
+    if request.method == 'POST' and request.FILES['profile_pic']:
+        profile_pic = request.FILES['profile_pic']
+        fs = FileSystemStorage()
+        filename = fs.save(profile_pic.name, profile_pic)
+        uploaded_file_url = fs.url(filename)
+        # 파일의 절대 경로 생성
+        # 세션에 이미지 URL 저장
+        try:
+            # 사용자 ID로 UserProfile 가져오기
+            user_profile,created = UserProfile.objects.get_or_create(user_id=user_id)
+            user_profile.profile_image = uploaded_file_url  # 이미지 URL 저장
+            user_profile.save()  # 변경사항 저장
+        except UserProfile.DoesNotExist:
+            print(f"No UserProfile found for user ID: {user_id}")  # 로그 출력
+            # 사용자 프로필이 없는 경우에 대한 처리 추가
+            return redirect('book/my_post')  # 적절한 리다이렉션
+        return redirect('book/my_post')  # 적절한 리다이렉션 URL로 변경하세요.
+
+    return redirect('book/my_post.html')  # GET 요청 시에도 리다이렉트  # 적절한 템플릿으로 변경하세요.
