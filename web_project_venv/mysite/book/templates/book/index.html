@@ -600,7 +600,7 @@
             color: #007bff;
         }
         
-        {% comment %} .quote-slider {
+        .quote-slider {
             position: relative;
             overflow: hidden;
             height: 100px; /* 슬라이드 높이 조정 */
@@ -621,7 +621,7 @@
         
         .quote-slide.active {
             opacity: 1; /* 현재 활성화된 슬라이드만 보이게 함 */
-        } {% endcomment %}
+        }
 
 
         
@@ -748,18 +748,7 @@
             </div>
             
         </div>
-        {% comment %} <div>
-            <a href="{% url 'signup' %}">회원가입</a>
-        </div> {% endcomment %}
-        {% comment %} <div class="category-bar">
-            <div class="vertical-line"></div> <!-- 첫 번째 세로선 추가 -->
-            <a href="#">책 추천</a>
-            <div class="vertical-line"></div>
-            <a href="#">커뮤니티</a>
-            <div class="vertical-line"></div>
-            <a href="#">리뷰</a>
-            <div class="vertical-line"></div> <!-- 두 번째 세로선 추가 -->
-        </div> {% endcomment %}
+        
         <nav class="category-bar">
             {% comment %} <a href="#">신작 소식</a> {% endcomment %}
             <div class="vertical-line"></div> <!-- 첫 번째 세로선 추가 -->
