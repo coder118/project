@@ -775,6 +775,7 @@
     <div id ="container" class ="content_body" style ="height: auto !important;">
         <div class="main-content" style ="height: auto !important;">     
 
+            
             <!-- 로그인 창 추가 -->
             <div class ="sidebar" style ="height: auto !important;">
                 <div class="login-post-container">
@@ -783,8 +784,7 @@
                             <div class="user-info">
                                 {% load static %}
                                 <div class="profile-pic">
-                                    {% comment %} <img src="{% if request.session.profile_pic %}{{ request.session.profile_pic }}{% else %}default-profile.png{% endif %}" alt="Profile Picture"> {% endcomment %}
-                                    <form method="post" action="{% url 'upload_profile_pic' %}" enctype="multipart/form-data">
+                                      <form method="post" action="{% url 'upload_profile_pic' %}" enctype="multipart/form-data">
                                         {% csrf_token %}
                                         <img 
                                             src="{% if user_profile.profile_image %} http://127.0.0.1:8000/book{{ user_profile.profile_image }}{% endif %}" 
@@ -845,7 +845,6 @@
                     <div class="quote-slide">"성공은 준비가 기회를 만나는 곳이다." - 세네카</div>
                     <div class="quote-slide">"미래는 우리가 만드는 것이다." - 엘리너 루즈벨트</div>
                 </div>
-                {% comment %} <button id="darkmode_btn" onclick="ToggleTheme()">토글 버튼</button> {% endcomment %}
             </div>
             
                         
