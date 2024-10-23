@@ -355,13 +355,6 @@
         
     </div>
 
-    {% comment %} <div class="shortcut-box">
-        <p>단축키 정보</p>
-        <p><span class="shortcut">1</span> >> HOME</p>
-        <p><span class="shortcut">u</span> >> 맨 아래로</p>
-        <p><span class="shortcut">o</span> >> 맨 위로</p>
-    </div> {% endcomment %}
-
     <div class="category-bar">
         <a href="#">신작 소식</a>
         <div class="vertical-line"></div> <!-- 첫 번째 세로선 추가 -->
@@ -401,13 +394,6 @@
                     <button type="submit" onclick="return confirm('정말로 삭제하시겠습니까?');">삭제</button>
                 </form>
             </div>
-            {% comment %} <div>
-                <form method="post" action="{% url 'post_like' post.pk %}" style="display:inline;">
-                    {% csrf_token %}
-                    <button type="submit" onclick="return confirm('회원가입 혹은 로그인을 하셔야 합니다.');">좋아요</button>
-                </form>
-            </div> {% endcomment %}
-
         {% endif %}
 
         {% if comment_user in user_check %} 
@@ -442,15 +428,6 @@
 
         </div>
 
-        {% comment %} <h2>댓글</h2>
-        <ul>
-            {% for comment in comments %}
-                <li>{{ comment.author }}: {{ comment.text }}</li>
-            {% empty %}
-                <li>댓글이 없습니다.</li>
-            {% endfor %}
-        </ul> {% endcomment %}
-
         <!-- 댓글 작성 섹션 -->
         <div class="comments-section">
             {% with total_comments=post.comments.all|length %}
@@ -469,15 +446,6 @@
                 <button onclick="showSignupPopup()">로그인 또는 회원가입 후 댓글을 작성할 수 있습니다.</button>
             {% endif %}
             
-            {% comment %} <div class="best-comments">
-                <h3>베스트 댓글</h3>
-                {% for comment in best_comments %}
-                    <div class="best-comment-box">
-                        {% include 'book/comment_template.html' with comment=comment %}
-                    </div>
-                {% endfor %}
-            </div> {% endcomment %}
-
             <div class="best-comments">
                 {%if best_comments%}
                     <h3>베스트 댓글</h3>
