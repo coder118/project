@@ -719,19 +719,6 @@ def comment_like(request,pk):
         
         return redirect('post_detail', pk=post_id)
     
-# class PostListView(ListView):
-#     print("postlist working")
-#     model = Post_information
-#     template_name = 'index.html'  # 사용할 템플릿 파일
-#     context_object_name = 'posts_information'  # 템플릿에서 사용할 컨텍스트 변수 이름
-#     paginate_by = 20  # 페이지당 표시할 게시글 수
-#     print("workin done")
-#     def get_context_data(self, **kwargs):
-#         context = super().get_context_data(**kwargs)
-#         print(context['posts_information'])  # 데이터가 제대로 전달되는지 확인
-#         return context
-# 데이터 저장후에  book/signup/successful_user 경로로 넘어감
-# 그리고 데이터에 저장에 성공하고 원래 기본 화면창으로 넘어가는 기능이 필요함 
 
 #############################mypost
 
