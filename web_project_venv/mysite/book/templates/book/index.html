@@ -689,49 +689,7 @@
             
         });
         
-        {% comment %} window.addEventListener('scroll', function() {
-            const shortcutBox = document.querySelector('.shortcut-box');
-            const loginContainer = document.querySelector('.login-container').getBoundingClientRect().bottom;
-            // 변수 값 출력
-            console.log('스크롤 Y 위치:',shortcutBox);
-            console.log('스크롤 Y 위치:', window.scrollY);
-            console.log('로그인 컨테이너의 아래쪽 위치:', loginContainer);
-            // 로그인 컨테이너 아래에 위치하도록 조정
-            shortcutBox.style.top = (window.scrollY + loginContainer + 20) + 'px';  // 스크롤에 따라 박스 위치 조정
-            console.log('shortcutbox:',shortcutBox.style.top);
-        }); {% endcomment %}
-
-        {% comment %} var theme = document.querySelector("#theme-link");
-        var currentTheme = localStorage.getItem("currentTheme");
-
-        loadTheme();
-
-        //테마를 선택한 정보를 저장한 localStorage에 따라 테마 결정
-        function loadTheme(){
-            if (currentTheme == "dark") {
-                theme.setAttribute('href', "css/dark-theme.css");
-                console.log("현재 테마 : 다크");
-            } else{
-                theme.setAttribute('href', "css/light-theme.css");
-                console.log("현재 테마 : 라이트");
-            }
-        }
-
-
-        //토글 버튼 클릭 이벤트 함수
-        function ToggleTheme(){
-            const prefersDarkScheme = window.matchMedia("(prefers-color-scheme: dark)");
-
-            if (prefersDarkScheme.matches) {
-                window.matchMedia("(prefers-color-scheme: light)").matches ? 'light' : 'dark';
-            } else {
-                window.matchMedia("(prefers-color-scheme: dark)").matches ? 'dark' : 'light';
-            }
-            
-            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
-            localStorage.setItem('currentTheme', newTheme);
-            location.reload();
-        } {% endcomment %}
+       
 
     </script>
 </head>
